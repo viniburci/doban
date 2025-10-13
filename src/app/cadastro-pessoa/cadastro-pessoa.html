@@ -1,0 +1,154 @@
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Cadastro de Pessoa</h4>
+            <small class="text-white-50">Preencha os dados abaixo</small>
+          </div>
+          <div class="card-body">
+            <form (submit)="onSubmit($event)" novalidate>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Nome</label>
+                  <input name="nome" type="text" class="form-control" placeholder="Nome completo" required>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Email</label>
+                  <input name="email" type="email" class="form-control" placeholder="seu@exemplo.com">
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Endereço</label>
+                  <input name="endereco" type="text" class="form-control" placeholder="Rua, número, complemento">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Bairro</label>
+                  <input name="bairro" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Cidade</label>
+                  <input name="cidade" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Estado</label>
+                  <input name="estado" type="text" class="form-control" placeholder="SP, RJ...">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">CEP</label>
+                  <input name="cep" type="text" class="form-control" placeholder="00000-000">
+                </div>
+
+                <div class="col-md-2">
+                  <label class="form-label">DDD</label>
+                  <input name="ddd" type="text" class="form-control" placeholder="11">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Telefone</label>
+                  <input name="telefone" type="tel" class="form-control" placeholder="(11) 91234-5678">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Número CTPS</label>
+                  <input name="numeroCtps" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Série CTPS</label>
+                  <input name="serieCtps" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Data Emissão CTPS</label>
+                  <input name="dataEmissaoCtps" type="date" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">RG</label>
+                  <input name="rg" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Data Emissão RG</label>
+                  <input name="dataEmissaoRg" type="date" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">UF RG</label>
+                  <input name="ufRg" type="text" class="form-control" placeholder="SP">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">CPF</label>
+                  <input name="cpf" type="text" class="form-control" placeholder="000.000.000-00">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">PIS</label>
+                  <input name="pis" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Data Emissão PIS</label>
+                  <input name="dataEmissaoPis" type="date" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Título Eleitoral</label>
+                  <input name="tituloEleitor" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Data de Nascimento</label>
+                  <input name="dataNascimento" type="date" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Local de Nascimento</label>
+                  <input name="localNascimento" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Nome da Mãe</label>
+                  <input name="nomeMae" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Nome do Pai</label>
+                  <input name="nomePai" type="text" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Estado Civil</label>
+                  <select name="estadoCivil" class="form-select">
+                    <option value="">Selecione...</option>
+                    <option value="solteiro">Solteiro(a)</option>
+                    <option value="casado">Casado(a)</option>
+                    <option value="divorciado">Divorciado(a)</option>
+                    <option value="viuvo">Viúvo(a)</option>
+                  </select>
+                </div>
+
+                <div class="col-12 mt-3 d-flex justify-content-end">
+                  <button type="reset" class="btn btn-outline-secondary me-2">Limpar</button>
+                  <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="mt-4" *ngIf="lastSubmission()">
+              <h6>Último envio (visualização):</h6>
+              <pre class="bg-light p-3 border rounded">{{ lastSubmission() }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
