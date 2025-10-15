@@ -7,7 +7,7 @@
           <small class="text-white-50">Preencha os dados abaixo</small>
         </div>
         <div class="card-body">
-          <form [formGroup]="form" (submit)="onSubmit($event)" novalidate>
+          <form [formGroup]="form" (submit)="onSubmit()" novalidate>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Nome</label>
@@ -49,7 +49,7 @@
               <div class="col-md-6">
                 <label class="form-label">Telefone</label>
                 <input name="telefone" type="tel" class="form-control" placeholder="(00) 00000-0000"
-                  formControlName="telefone">
+                  formControlName="telefone" mask="(00) 00000-0000">
               </div>
 
               <div class="col-md-6">
@@ -65,7 +65,8 @@
 
               <div class="col-md-4">
                 <label class="form-label">RG</label>
-                <input name="rg" type="text" class="form-control" placeholder="00.000.000-0" formControlName="numeroRg">
+                <input name="rg" type="text" class="form-control" placeholder="00.000.000-0" formControlName="numeroRg"
+                  mask="AA.AAA.AAA-A">
               </div>
 
               <div class="col-md-4">
@@ -81,12 +82,14 @@
 
               <div class="col-md-4">
                 <label class="form-label">CPF</label>
-                <input name="cpf" type="text" class="form-control" placeholder="000.000.000-00" formControlName="cpf">
+                <input name="cpf" type="text" class="form-control" placeholder="000.000.000-00" formControlName="cpf"
+                  mask="000.000.000-00">
               </div>
 
               <div class="col-md-6">
                 <label class="form-label">Título Eleitoral</label>
-                <input name="tituloEleitor" type="text" class="form-control" formControlName="tituloEleitor">
+                <input name="tituloEleitor" type="text" class="form-control" formControlName="tituloEleitor"
+                  placeholder="0000.0000.0000" mask="0000.0000.0000">
               </div>
 
               <div class="col-md-6">
@@ -119,12 +122,14 @@
 
               <div class="col-md-6">
                 <label class="form-label">Número CTPS</label>
-                <input name="numeroCtps" type="text" class="form-control" formControlName="numeroCtps">
+                <input name="numeroCtps" type="text" class="form-control" formControlName="numeroCtps" mask="0000000"
+                  placeholder="0000000">
               </div>
 
               <div class="col-md-6">
                 <label class="form-label">Série CTPS</label>
-                <input name="serieCtps" type="text" class="form-control" formControlName="serieCtps">
+                <input name="serieCtps" type="text" class="form-control" formControlName="serieCtps" mask="000-0"
+                  placeholder="000-0">
               </div>
 
               <div class="col-md-6">
@@ -135,7 +140,8 @@
 
               <div class="col-md-4">
                 <label class="form-label">PIS</label>
-                <input name="pis" type="text" class="form-control" formControlName="pis">
+                <input name="pis" type="text" class="form-control" formControlName="pis" placeholder="000.00000.00-0"
+                  mask="000.00000.00-0">
               </div>
 
               <div class="col-md-4">
@@ -161,12 +167,14 @@
 
               <div class="col-md-6">
                 <label class="form-label">Numero CNH</label>
-                <input name="nomePai" type="text" class="form-control" formControlName="numeroCnh">
+                <input name="nomePai" type="text" class="form-control" formControlName="numeroCnh"
+                  placeholder="00000000000" mask="00000000000">
               </div>
 
               <div class="col-md-6">
                 <label class="form-label">Registro CNH</label>
-                <input name="nomePai" type="text" class="form-control" formControlName="registroCnh">
+                <input name="nomePai" type="text" class="form-control" formControlName="registroCnh"
+                  placeholder="00000000000" mask="00000000000">
               </div>
 
               <div class="col-md-6">

@@ -35,23 +35,47 @@ export class CadastroPessoa {
     ufRg: new FormControl(''),
     cpf: new FormControl(''),
     pis: new FormControl(''),
-    dataEmissaoPis : new FormControl(''),
-    tituloEleitor: new FormControl(''), 
-    localNascimento: new FormControl(''), 
+    dataEmissaoPis: new FormControl(''),
+    tituloEleitor: new FormControl(''),
+    localNascimento: new FormControl(''),
     mae: new FormControl(''),
     pai: new FormControl(''),
     estadoCivil: new FormControl(''),
     categoriaCnh: new FormControl(''),
-    numeroCnh: new FormControl({value: '', disabled: this.possuiCnh()}),
-    registroCnh: new FormControl({value: '', disabled: this.possuiCnh()}),
-    validadeCnh: new FormControl({value: '', disabled: this.possuiCnh()}),
+    numeroCnh: new FormControl({ value: '', disabled: this.possuiCnh() }),
+    registroCnh: new FormControl({ value: '', disabled: this.possuiCnh() }),
+    validadeCnh: new FormControl({ value: '', disabled: this.possuiCnh() }),
     chavePix: new FormControl(''),
   });
 
+  convertDateToISO = (rawDate: string): string => {
+    if (!rawDate) return '';
 
-  onSubmit(event: Event) {
-    event.preventDefault();
-    console.log('Form submitted');
-    console.log(this.form.value);
+    // Remove qualquer caractere que não seja número
+    const onlyDigits = rawDate.replace(/\D/g, '');
+
+    if (onlyDigits.length !== 8) return '';
+
+    const dia = onlyDigits.slice(0, 2);
+    const mes = onlyDigits.slice(2, 4);
+    const ano = onlyDigits.slice(4, 8);
+
+    return `${ano}-${mes}-${dia}`;
+  };
+
+
+  onSubmit() {
+    const raw = this.form.value;
+
+    const cleaned = {
+      ...raw,
+      dataNascimento: this.convertDateToISO(this.form.get('dataNascimento')?.value || ''),
+      dataEmissaoCtps: this.convertDateToISO(this.form.get('dataEmissaoCtps')?.value || ''),
+      dataEmissaoRg: this.convertDateToISO(this.form.get('dataEmissaoRg')?.value || ''),
+      dataEmissaoPis: this.convertDateToISO(this.form.get('dataEmissaoPis')?.value || ''),
+      validadeCnh: this.convertDateToISO(this.form.get('validadeCnh')?.value || ''),
+    };
+
+    console.log(cleaned);
   }
 }
