@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -12,41 +12,42 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   templateUrl: './cadastro-pessoa.html',
   styleUrl: './cadastro-pessoa.css'
 })
-export class CadastroPessoa {
+export class CadastroPessoa implements OnInit {
 
-  possuiCnh = signal<boolean>(false);
-  lastSubmission = signal<Date | null>(null);
-
-  form = new FormGroup({
-    nome: new FormControl(''),
-    email: new FormControl(''),
-    telefone: new FormControl(''),
-    dataNascimento: new FormControl(''),
-    endereco: new FormControl(''),
-    bairro: new FormControl(''),
-    cidade: new FormControl(''),
-    estado: new FormControl(''),
-    cep: new FormControl(''),
-    numeroCtps: new FormControl(''),
-    serieCtps: new FormControl(''),
-    dataEmissaoCtps: new FormControl(''),
-    numeroRg: new FormControl(''),
-    dataEmissaoRg: new FormControl(''),
-    ufRg: new FormControl(''),
-    cpf: new FormControl(''),
-    pis: new FormControl(''),
-    dataEmissaoPis: new FormControl(''),
-    tituloEleitor: new FormControl(''),
-    localNascimento: new FormControl(''),
-    mae: new FormControl(''),
-    pai: new FormControl(''),
-    estadoCivil: new FormControl(''),
-    categoriaCnh: new FormControl(''),
-    numeroCnh: new FormControl({ value: '', disabled: this.possuiCnh() }),
-    registroCnh: new FormControl({ value: '', disabled: this.possuiCnh() }),
-    validadeCnh: new FormControl({ value: '', disabled: this.possuiCnh() }),
-    chavePix: new FormControl(''),
-  });
+  form!: FormGroup;
+  
+  ngOnInit(): void {
+    this.form = new FormGroup({
+      nome: new FormControl(''),
+      email: new FormControl(''),
+      telefone: new FormControl(''),
+      dataNascimento: new FormControl(''),
+      endereco: new FormControl(''),
+      bairro: new FormControl(''),
+      cidade: new FormControl(''),
+      estado: new FormControl(''),
+      cep: new FormControl(''),
+      numeroCtps: new FormControl(''),
+      serieCtps: new FormControl(''),
+      dataEmissaoCtps: new FormControl(''),
+      numeroRg: new FormControl(''),
+      dataEmissaoRg: new FormControl(''),
+      ufRg: new FormControl(''),
+      cpf: new FormControl(''),
+      pis: new FormControl(''),
+      dataEmissaoPis: new FormControl(''),
+      tituloEleitor: new FormControl(''),
+      localNascimento: new FormControl(''),
+      mae: new FormControl(''),
+      pai: new FormControl(''),
+      estadoCivil: new FormControl(''),
+      categoriaCnh: new FormControl(''),
+      numeroCnh: new FormControl(''),
+      registroCnh: new FormControl(''),
+      validadeCnh: new FormControl(''),
+      chavePix: new FormControl(''),
+    });
+  }
 
   convertDateToISO = (rawDate: string): string => {
     if (!rawDate) return '';
