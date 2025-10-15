@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, FormGroup, FormControl, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { PessoaFormData } from '../entities/pessoaFormaData.model';
 
 @Component({
   selector: 'app-cadastro-pessoa',
@@ -14,15 +14,18 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 })
 export class CadastroPessoa implements OnInit {
 
-  form!: FormGroup;
+  constructor(private fb: FormBuilder) { }
+
+  form!: FormGroup<{ [K in keyof PessoaFormData]: FormControl<PessoaFormData[K]> }>;
   
   ngOnInit(): void {
-    this.form = new FormGroup({
+    this.form = this.fb.group({
       nome: new FormControl(''),
       email: new FormControl(''),
       telefone: new FormControl(''),
       dataNascimento: new FormControl(''),
       endereco: new FormControl(''),
+      complemento: new FormControl(''),
       bairro: new FormControl(''),
       cidade: new FormControl(''),
       estado: new FormControl(''),

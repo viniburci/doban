@@ -1,0 +1,31 @@
+export interface PessoaFormData {
+  nome: string | null;
+  email: string | null;
+  telefone: string | null;
+  dataNascimento: string | null;
+  endereco: string | null;
+  complemento: string | null;
+  bairro: string | null;
+  cidade: string | null;
+  estado: string | null;
+  cep: string | null;
+  numeroCtps: string | null;
+  serieCtps: string | null;
+  dataEmissaoCtps: string | null;
+  numeroRg: string | null;
+  dataEmissaoRg: string | null;
+  ufRg: string | null;
+  cpf: string | null;
+  pis: string | null;
+  dataEmissaoPis: string | null;
+  tituloEleitor: string | null;
+  localNascimento: string | null;
+  mae: string | null;
+  pai: string | null;
+  estadoCivil: string | null;
+  categoriaCnh: string | null;
+  numeroCnh: string | null;
+  registroCnh: string | null;
+  validadeCnh: string | null;
+  chavePix: string | null;
+}
