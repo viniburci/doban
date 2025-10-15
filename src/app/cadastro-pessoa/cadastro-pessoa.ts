@@ -2,10 +2,13 @@ import { Component } from '@angular/core';
 import { signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
   selector: 'app-cadastro-pessoa',
-  imports: [FormsModule, CommonModule, FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule, FormsModule, CommonModule, ReactiveFormsModule, NgxMaskDirective],
+  standalone: true,
+  providers: [provideNgxMask()],
   templateUrl: './cadastro-pessoa.html',
   styleUrl: './cadastro-pessoa.css'
 })
