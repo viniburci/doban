@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, FormControl, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { PessoaFormData } from '../entities/pessoaFormaData.model';
+import { PessoaService } from '../services/pessoa-service';
 
 @Component({
   selector: 'app-cadastro-pessoa',
@@ -14,10 +15,12 @@ import { PessoaFormData } from '../entities/pessoaFormaData.model';
 })
 export class CadastroPessoa implements OnInit {
 
+  private pessoaService = inject(PessoaService);
+
   constructor(private fb: FormBuilder) { }
 
   form!: FormGroup<{ [K in keyof PessoaFormData]: FormControl<PessoaFormData[K]> }>;
-  
+
   ngOnInit(): void {
     this.form = this.fb.group({
       nome: new FormControl(''),
@@ -67,12 +70,31 @@ export class CadastroPessoa implements OnInit {
     return `${ano}-${mes}-${dia}`;
   };
 
+  emptyStringsToNull<T>(obj: T): T {
+    const result = {} as T;
+
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+
+        if (typeof value === 'string' && value.trim() === '') {
+          result[key] = null as any;
+        } else {
+          result[key] = value;
+        }
+      }
+    }
+    return result;
+  }
+
 
   onSubmit() {
-    const raw = this.form.value;
+    const raw = this.form.getRawValue();
 
-    const cleaned = {
-      ...raw,
+    let cleaned = this.emptyStringsToNull(raw);
+
+    cleaned = {
+      ...cleaned,
       dataNascimento: this.convertDateToISO(this.form.get('dataNascimento')?.value || ''),
       dataEmissaoCtps: this.convertDateToISO(this.form.get('dataEmissaoCtps')?.value || ''),
       dataEmissaoRg: this.convertDateToISO(this.form.get('dataEmissaoRg')?.value || ''),
@@ -81,5 +103,8 @@ export class CadastroPessoa implements OnInit {
     };
 
     console.log(cleaned);
+    this.pessoaService.criarPessoa(cleaned).subscribe((response) => {
+      console.log(response)
+    });
   }
 }

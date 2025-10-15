@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class PessoaService {
-  private baseUrl = '/api/v1/pessoa';
+  private baseUrl = 'http://localhost:8080/api/v1/pessoa';
 
   constructor(private http: HttpClient) {}
 
