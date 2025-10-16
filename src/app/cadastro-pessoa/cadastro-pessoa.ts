@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, FormControl, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
@@ -16,6 +16,9 @@ import { PessoaService } from '../services/pessoa-service';
 export class CadastroPessoa implements OnInit {
 
   private pessoaService = inject(PessoaService);
+
+  pessoaId = input<string | null>(null);
+  editMode = signal<boolean>(false);
 
   constructor(private fb: FormBuilder) { }
 
@@ -53,6 +56,16 @@ export class CadastroPessoa implements OnInit {
       validadeCnh: new FormControl(''),
       chavePix: new FormControl(''),
     });
+
+    if (this.pessoaId()) {
+      this.pessoaService.buscarPessoa(Number(this.pessoaId())).subscribe(response => {
+        this.editMode.set(true);
+        let data = this.convertDatesToBr(response);
+        this.form.patchValue(data);
+        console.log(data);
+      })
+    }
+
   }
 
   convertDateToISO = (rawDate: string): string => {
@@ -69,6 +82,18 @@ export class CadastroPessoa implements OnInit {
 
     return `${ano}-${mes}-${dia}`;
   };
+
+  convertISOToDateBR = (isoDate: string | null | undefined): string => {
+    if (!isoDate) return '';
+
+    // Verifica se está no formato ISO esperado
+    const match = isoDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return '';
+
+    const [, year, month, day] = match;
+    return `${day}/${month}/${year}`;
+  };
+
 
   emptyStringsToNull<T>(obj: T): T {
     const result = {} as T;
@@ -87,6 +112,19 @@ export class CadastroPessoa implements OnInit {
     return result;
   }
 
+  convertDatesToBr(data: PessoaFormData) {
+    let cleaned = this.emptyStringsToNull(data);
+
+    cleaned = {
+      ...cleaned,
+      dataNascimento: this.convertISOToDateBR(data.dataNascimento ?? ''),
+      dataEmissaoCtps: this.convertISOToDateBR(data.dataEmissaoCtps ?? ''),
+      dataEmissaoRg: this.convertISOToDateBR(data.dataEmissaoRg ?? ''),
+      dataEmissaoPis: this.convertISOToDateBR(data.dataEmissaoPis ?? ''),
+      validadeCnh: this.convertISOToDateBR(data.validadeCnh ?? ''),
+    };
+    return cleaned;
+  }
 
   onSubmit() {
     const raw = this.form.getRawValue();
@@ -103,8 +141,13 @@ export class CadastroPessoa implements OnInit {
     };
 
     console.log(cleaned);
-    this.pessoaService.criarPessoa(cleaned).subscribe((response) => {
-      console.log(response)
-    });
+
+    if(this.editMode()) {
+      this.pessoaService.atualizarPessoa(Number(this.pessoaId()), cleaned).subscribe(response => console.log(response));
+    } else {
+      this.pessoaService.criarPessoa(cleaned).subscribe((response) => console.log(response));
+    }
   }
+
+
 }
