@@ -65,7 +65,6 @@ export class CadastroPessoa implements OnInit {
         console.log(data);
       })
     }
-
   }
 
   convertDateToISO = (rawDate: string): string => {

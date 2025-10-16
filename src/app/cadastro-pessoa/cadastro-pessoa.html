@@ -3,7 +3,7 @@
     <div class="col-lg-10">
       <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-          <h4 class="mb-0">Cadastro de Pessoa</h4>
+          <h4 class="mb-0">{{editMode() ? 'Atualizar Pessoa' : 'Cadastro de Pessoa'}}</h4>
           <small class="text-white-50">Preencha os dados abaixo</small>
         </div>
         <div class="card-body">
@@ -28,8 +28,7 @@
 
               <div class="col-12">
                 <label class="form-label">Complemento</label>
-                <input name="complemento" type="text" class="form-control" placeholder=""
-                  formControlName="complemento">
+                <input name="complemento" type="text" class="form-control" placeholder="" formControlName="complemento">
               </div>
 
               <div class="col-md-4">
@@ -112,10 +111,11 @@
                 <label class="form-label">Estado Civil</label>
                 <select name="estadoCivil" class="form-select" formControlName="estadoCivil">
                   <option value="">Selecione...</option>
-                  <option value="solteiro">Solteiro(a)</option>
-                  <option value="casado">Casado(a)</option>
-                  <option value="divorciado">Divorciado(a)</option>
-                  <option value="viuvo">Viúvo(a)</option>
+                  <option value="Solteiro(a)">Solteiro(a)</option>
+                  <option value="Casado(a)">Casado(a)</option>
+                  <option value="Divorciado(a)">Divorciado(a)</option>
+                  <option value="União Estável">União Estável</option>
+                  <option value="Viúvo(a)">Viúvo(a)</option>
                 </select>
               </div>
 
@@ -159,16 +159,9 @@
               <hr class="mt-5">
 
               <div class="col-md-6">
-                <label class="form-label">Categoria Cnh</label>
-                <select name="categoriaCnh" class="form-select" formControlName="categoriaCnh">
-                  <option value="">Selecione...</option>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                  <option value="E">E</option>
-                  <option value="false">Não possui CNH</option>
-                </select>
+                <label class="form-label">Categoria CNH</label>
+                <input name="categoriaCnh" type="text" class="form-control" formControlName="categoriaCnh"
+                  placeholder="A, B, AB...">
               </div>
 
               <div class="col-md-6">
@@ -190,8 +183,10 @@
               </div>
 
               <div class="col-12 mt-3 d-flex justify-content-end">
-                <button type="reset" class="btn btn-outline-secondary me-2">Limpar</button>
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                @if(!editMode()){
+                  <button type="reset" class="btn btn-outline-secondary me-2">Limpar</button>
+                }
+                <button type="submit" class="btn btn-primary">{{editMode() ? 'Atualizar' : 'Salvar'}}</button>
               </div>
             </div>
           </form>
