@@ -2,8 +2,8 @@ import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, FormControl, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { PessoaFormData } from '../entities/pessoaFormaData.model';
-import { PessoaService } from '../services/pessoa-service';
+import { PessoaFormData } from '../../entities/pessoaFormaData.model';
+import { PessoaService } from '../../services/pessoa-service';
 
 @Component({
   selector: 'app-cadastro-pessoa',

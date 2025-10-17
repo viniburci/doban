@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { CadastroPessoa } from './cadastro-pessoa/cadastro-pessoa';
-import { PessoasPage } from './pessoa/pessoas-page/pessoas-page';
+import { CadastroPessoa } from './pessoa/cadastro-pessoa/cadastro-pessoa';
+import { ListaPessoa } from './pessoa/lista-pessoa/lista-pessoa';
 
 export const routes: Routes = [
     {
@@ -13,7 +13,7 @@ export const routes: Routes = [
             },
             {
                 path: 'lista',
-                component: PessoasPage
+                component: ListaPessoa
             },
             {
                 path: 'criar',
