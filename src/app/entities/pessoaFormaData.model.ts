@@ -1,4 +1,5 @@
 export interface PessoaFormData {
+  id?: string | null;
   nome: string | null;
   email: string | null;
   telefone: string | null;
