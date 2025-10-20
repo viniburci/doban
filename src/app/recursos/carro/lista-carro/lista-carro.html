@@ -1,0 +1,10 @@
+<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+
+    <div class="list-group">
+
+        @for(pessoa of listaCarros; track pessoa.id) {
+            <a [routerLink]="['/pessoas', pessoa.id, 'detalhes']" class="list-group-item list-group-item-action list-group-item-success">{{pessoa.nome}}</a>
+        }
+
+    </div>
+</div>
