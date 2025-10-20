@@ -4,6 +4,7 @@ import { ListaPessoa } from './pessoa/lista-pessoa/lista-pessoa';
 import { DetalhesPessoa } from './pessoa/detalhes-pessoa/detalhes-pessoa';
 import { RecursoCelular } from './recursos/recurso-celular/recurso-celular';
 import { RecursoCarro } from './recursos/recurso-carro/recurso-carro';
+import { CadastroCelular } from './recursos/celular/cadastro-celular/cadastro-celular';
 
 export const routes: Routes = [
     {
@@ -36,17 +37,35 @@ export const routes: Routes = [
         path: 'celular',
         children: [
             {
-                path: 'lista',
-                component: RecursoCelular
+                path: 'criar',
+                component: CadastroCelular
+            },
+            {
+                path: ':celularId/editar',
+                component: CadastroCelular
             }
         ]
     },
     {
-        path: 'carro',
+        path: 'recurso',
         children: [
             {
-                path: 'lista',
-                component: RecursoCarro
+                path: 'celular',
+                children: [
+                    {
+                        path: 'lista',
+                        component: RecursoCelular
+                    }
+                ]
+            },
+            {
+                path: 'carro',
+                children: [
+                    {
+                        path: 'lista',
+                        component: RecursoCarro
+                    }
+                ]
             }
         ]
     },
