@@ -5,6 +5,7 @@ import { DetalhesPessoa } from './pessoa/detalhes-pessoa/detalhes-pessoa';
 import { RecursoCelular } from './recursos/recurso-celular/recurso-celular';
 import { RecursoCarro } from './recursos/recurso-carro/recurso-carro';
 import { CadastroCelular } from './recursos/celular/cadastro-celular/cadastro-celular';
+import { CadastroCarro } from './recursos/carro/cadastro-carro/cadastro-carro';
 
 export const routes: Routes = [
     {
@@ -43,6 +44,19 @@ export const routes: Routes = [
             {
                 path: ':celularId/editar',
                 component: CadastroCelular
+            }
+        ]
+    },
+    {
+        path: 'carro',
+        children: [
+            {
+                path: 'criar',
+                component: CadastroCarro
+            },
+            {
+                path: ':carroId/editar',
+                component: CadastroCarro
             }
         ]
     },

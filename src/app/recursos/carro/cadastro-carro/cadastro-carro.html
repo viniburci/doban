@@ -1,0 +1,59 @@
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">{{editMode() ? 'Atualizar Carro' : 'Cadastro de Carro'}}</h4>
+                    <small class="text-white-50">Preencha os dados abaixo</small>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Marca</label>
+                                <input name="marca" type="text" class="form-control" placeholder="FIAT..."
+                                    formControlName="marca">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Modelo</label>
+                                <input name="modelo" type="text" class="form-control" placeholder="MOBI..."
+                                    formControlName="modelo">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cor</label>
+                                <input name="cor" type="text" class="form-control" placeholder="BRANCO..."
+                                    formControlName="cor">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Chassi</label>
+                                <input name="chassi" type="text" class="form-control" placeholder="9BD341A2XKY576025"
+                                    formControlName="chassi">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Placa</label>
+                                <input name="placa" type="text" class="form-control" placeholder="AAA0000"
+                                    formControlName="placa">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Ano Modelo</label>
+                                <input name="anoModelo" type="text" class="form-control" placeholder="2018/2019"
+                                    formControlName="anoModelo">
+                            </div>
+
+                        </div>
+                        <div class="col-12 mt-3 d-flex justify-content-end">
+                            @if(!editMode()){
+                            <button type="reset" class="btn btn-outline-secondary me-2">Limpar</button>
+                            }
+                            <button type="submit" class="btn btn-primary">{{editMode() ? 'Atualizar' :
+                                'Salvar'}}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
