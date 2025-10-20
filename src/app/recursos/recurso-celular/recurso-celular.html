@@ -1,0 +1,10 @@
+<div class="list-group">
+    @for (recursoCelular of recursosCelulares; track recursoCelular.id) {
+    <div class="list-group-item">
+        <h5>{{ recursoCelular.nomePessoa }}</h5>
+        <p><strong>Modelo Celular:</strong> {{ recursoCelular.modeloCelular }}</p>
+        <p><strong>Data de Entrega:</strong> {{ recursoCelular.dataEntrega | date }}</p>
+        <p><strong>Data de Devolução:</strong> {{ recursoCelular.dataDevolucao | date }}</p>
+    </div>
+    }
+</div>
