@@ -1,16 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-lista-pessoa',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './lista-pessoa.html',
   styleUrl: './lista-pessoa.css'
 })
 export class ListaPessoa implements OnInit{
 
   private pessoaService = inject(PessoaService);
+  private router = inject(Router);
 
   listaPessoas: PessoaFormData[] = [];
 
