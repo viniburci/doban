@@ -29,7 +29,7 @@ export class CadastroCelular implements OnInit {
     })
 
     if (this.celularId()) {
-      this.celularService.buscar(Number(this.celularId())).subscribe(response => {
+      this.celularService.buscarPorId(Number(this.celularId())).subscribe(response => {
         this.editMode.set(true);
         this.form.patchValue(response);
         console.log(response);

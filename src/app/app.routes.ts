@@ -8,6 +8,7 @@ import { CadastroCelular } from './recursos/celular/cadastro-celular/cadastro-ce
 import { CadastroCarro } from './recursos/carro/cadastro-carro/cadastro-carro';
 import { ListaCarro } from './recursos/carro/lista-carro/lista-carro';
 import { DetalhesCarro } from './recursos/carro/detalhes-carro/detalhes-carro';
+import { ListaCelular } from './recursos/celular/lista-celular/lista-celular';
 
 export const routes: Routes = [
     {
@@ -40,12 +41,21 @@ export const routes: Routes = [
         path: 'celulares',
         children: [
             {
+                path: 'lista',
+                component: ListaCelular
+            },
+            {
                 path: 'novo',
                 component: CadastroCelular
             },
             {
                 path: ':celularId/editar',
                 component: CadastroCelular
+            },
+            {
+                path: '',
+                pathMatch: 'full',
+                redirectTo: 'lista'
             }
         ]
     },

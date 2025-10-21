@@ -16,7 +16,11 @@ export class CelularService {
     return this.http.get<CelularFormData[]>(this.apiUrl);
   }
 
-  buscar(id: number): Observable<CelularFormData> {
+  buscarTodos(): Observable<CelularFormData[]> {
+    return this.http.get<CelularFormData[]>(`${this.apiUrl}`);
+  }
+
+  buscarPorId(id: number): Observable<CelularFormData> {
     return this.http.get<CelularFormData>(`${this.apiUrl}/${id}`);
   }
 

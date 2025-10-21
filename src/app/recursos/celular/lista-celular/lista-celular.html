@@ -1,0 +1,10 @@
+<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+
+    <div class="list-group">
+
+        @for(celular of listaCelulares; track celular.id) {
+            <a [routerLink]="['/celulares', celular.id, 'detalhes']" class="list-group-item list-group-item-action list-group-item-success">{{celular.modelo}} - {{celular.imei}}</a>
+        }
+
+    </div>
+</div>
