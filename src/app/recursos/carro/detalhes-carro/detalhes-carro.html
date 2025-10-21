@@ -9,6 +9,9 @@
             <strong>Cor:</strong> {{ carro.cor }}<br>
             <strong>Ano Modelo:</strong> {{ carro.anoModelo }}<br>
         </p>
+        <a [routerLink]="['/carros', carro.id, 'editar']" class="btn btn-primary">
+            Editar
+        </a>
     </div>
 </div>
 }

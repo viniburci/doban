@@ -1,10 +1,11 @@
 import { Component, input, OnInit } from '@angular/core';
 import { CarroService } from '../../../services/carro-service';
 import { CarroFormData } from '../../../entities/carroFormData.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-detalhes-carro',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './detalhes-carro.html',
   styleUrl: './detalhes-carro.css'
 })
