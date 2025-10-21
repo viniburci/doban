@@ -7,6 +7,7 @@ import { RecursoCarro } from './recursos/recurso-carro/recurso-carro';
 import { CadastroCelular } from './recursos/celular/cadastro-celular/cadastro-celular';
 import { CadastroCarro } from './recursos/carro/cadastro-carro/cadastro-carro';
 import { ListaCarro } from './recursos/carro/lista-carro/lista-carro';
+import { DetalhesCarro } from './recursos/carro/detalhes-carro/detalhes-carro';
 
 export const routes: Routes = [
     {
@@ -59,9 +60,18 @@ export const routes: Routes = [
                 path: 'novo',
                 component: CadastroCarro
             },
+                        {
+                path: ':carroId/detalhes',
+                component: DetalhesCarro
+            },
             {
                 path: ':carroId/editar',
                 component: CadastroCarro
+            },
+            {
+                path: '',
+                pathMatch: 'full',
+                redirectTo: 'lista'
             }
         ]
     },

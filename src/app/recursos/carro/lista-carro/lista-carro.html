@@ -3,7 +3,7 @@
     <div class="list-group">
 
         @for(carro of listaCarros; track carro.id) {
-            <a [routerLink]="['/carro', carro.id, 'detalhes']" class="list-group-item list-group-item-action list-group-item-success">{{carro.modelo}} - {{carro.placa}}</a>
+            <a [routerLink]="['/carros', carro.id, 'detalhes']" class="list-group-item list-group-item-action list-group-item-success">{{carro.modelo}} - {{carro.placa}}</a>
         }
 
     </div>
