@@ -29,7 +29,7 @@ export class CadastroCarro implements OnInit{
     })
 
     if (this.carroId()) {
-      this.carroService.buscar(Number(this.carroId())).subscribe(response => {
+      this.carroService.buscarPorId(Number(this.carroId())).subscribe(response => {
         this.editMode.set(true);
         this.form.patchValue(response);
         console.log(response);

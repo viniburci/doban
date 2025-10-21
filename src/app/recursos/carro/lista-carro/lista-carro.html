@@ -2,8 +2,8 @@
 
     <div class="list-group">
 
-        @for(pessoa of listaCarros; track pessoa.id) {
-            <a [routerLink]="['/pessoas', pessoa.id, 'detalhes']" class="list-group-item list-group-item-action list-group-item-success">{{pessoa.nome}}</a>
+        @for(carro of listaCarros; track carro.id) {
+            <a [routerLink]="['/carro', carro.id, 'detalhes']" class="list-group-item list-group-item-action list-group-item-success">{{carro.modelo}} - {{carro.placa}}</a>
         }
 
     </div>

@@ -15,7 +15,11 @@ export class CarroService {
     return this.http.get<CarroFormData[]>(this.apiUrl);
   }
 
-  buscar(id: number): Observable<CarroFormData> {
+  buscarTodos(): Observable<CarroFormData[]> {
+    return this.http.get<CarroFormData[]>(`${this.apiUrl}`);
+  }
+
+  buscarPorId(id: number): Observable<CarroFormData> {
     return this.http.get<CarroFormData>(`${this.apiUrl}/${id}`);
   }
 
