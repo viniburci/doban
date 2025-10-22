@@ -3,10 +3,11 @@ import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../../services/data-service';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterOutlet, RouterLink],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })

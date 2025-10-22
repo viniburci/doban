@@ -1,42 +1,63 @@
-@if (pessoa != null && errorMessage == null) {
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-5">
 
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-        <h5 class="card-title">{{ pessoa.nome || 'Nome não disponível' }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Email: {{ pessoa.email || 'Email não disponível' }}</h6>
-        <p class="card-text">
-            <strong>Telefone:</strong> {{ pessoa.telefone || 'Telefone não disponível' }}<br>
-            <strong>Data de Nascimento:</strong> {{ pessoa.dataNascimento || 'Data não disponível' }}<br>
-            <strong>Endereço:</strong> {{ pessoa.endereco || 'Endereço não disponível' }}<br>
-            <strong>Complemento:</strong> {{ pessoa.complemento || 'Complemento não disponível' }}<br>
-            <strong>Bairro:</strong> {{ pessoa.bairro || 'Bairro não disponível' }}<br>
-            <strong>Cidade:</strong> {{ pessoa.cidade || 'Cidade não disponível' }}<br>
-            <strong>Estado:</strong> {{ pessoa.estado || 'Estado não disponível' }}<br>
-            <strong>CEP:</strong> {{ pessoa.cep || 'CEP não disponível' }}<br>
-            <strong>Número CTPS:</strong> {{ pessoa.numeroCtps || 'Número não disponível' }}<br>
-            <strong>Série CTPS:</strong> {{ pessoa.serieCtps || 'Série não disponível' }}<br>
-            <strong>Data Emissão CTPS:</strong> {{ pessoa.dataEmissaoCtps || 'Data não disponível' }}<br>
-            <strong>Número RG:</strong> {{ pessoa.numeroRg || 'Número não disponível' }}<br>
-            <strong>Data Emissão RG:</strong> {{ pessoa.dataEmissaoRg || 'Data não disponível' }}<br>
-            <strong>UF RG:</strong> {{ pessoa.ufRg || 'UF não disponível' }}<br>
-            <strong>CPF:</strong> {{ pessoa.cpf || 'CPF não disponível' }}<br>
-            <strong>PIS:</strong> {{ pessoa.pis || 'PIS não disponível' }}<br>
-            <strong>Data Emissão PIS:</strong> {{ pessoa.dataEmissaoPis || 'Data não disponível' }}<br>
-            <strong>Título Eleitor:</strong> {{ pessoa.tituloEleitor || 'Título não disponível' }}<br>
-            <strong>Local de Nascimento:</strong> {{ pessoa.localNascimento || 'Local não disponível' }}<br>
-            <strong>Mãe:</strong> {{ pessoa.mae || 'Mãe não disponível' }}<br>
-            <strong>Pai:</strong> {{ pessoa.pai || 'Pai não disponível' }}<br>
-            <strong>Estado Civil:</strong> {{ pessoa.estadoCivil || 'Estado Civil não disponível' }}<br>
-            <strong>Categoria CNH:</strong> {{ pessoa.categoriaCnh || 'Categoria não disponível' }}<br>
-            <strong>Número CNH:</strong> {{ pessoa.numeroCnh || 'Número não disponível' }}<br>
-            <strong>Registro CNH:</strong> {{ pessoa.registroCnh || 'Registro não disponível' }}<br>
-            <strong>Validade CNH:</strong> {{ pessoa.validadeCnh || 'Validade não disponível' }}<br>
-            <strong>Chave Pix:</strong> {{ pessoa.chavePix || 'Chave Pix não disponível' }}<br>
-        </p>
+            @if (pessoa != null && errorMessage == null) {
+
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ pessoa.nome || 'Nome não disponível' }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Email: {{ pessoa.email || 'Email não disponível' }}</h6>
+                    <p class="card-text">
+                        <strong>Telefone:</strong> {{ pessoa.telefone || 'Telefone não disponível' }}<br>
+                        <strong>Data de Nascimento:</strong> {{ pessoa.dataNascimento || 'Data não disponível' }}<br>
+                        <strong>Endereço:</strong> {{ pessoa.endereco || 'Endereço não disponível' }}<br>
+                        <strong>Complemento:</strong> {{ pessoa.complemento || 'Complemento não disponível' }}<br>
+                        <strong>Bairro:</strong> {{ pessoa.bairro || 'Bairro não disponível' }}<br>
+                        <strong>Cidade:</strong> {{ pessoa.cidade || 'Cidade não disponível' }}<br>
+                        <strong>Estado:</strong> {{ pessoa.estado || 'Estado não disponível' }}<br>
+                        <strong>CEP:</strong> {{ pessoa.cep || 'CEP não disponível' }}<br>
+                        <strong>Número CTPS:</strong> {{ pessoa.numeroCtps || 'Número não disponível' }}<br>
+                        <strong>Série CTPS:</strong> {{ pessoa.serieCtps || 'Série não disponível' }}<br>
+                        <strong>Data Emissão CTPS:</strong> {{ pessoa.dataEmissaoCtps || 'Data não disponível' }}<br>
+                        <strong>Número RG:</strong> {{ pessoa.numeroRg || 'Número não disponível' }}<br>
+                        <strong>Data Emissão RG:</strong> {{ pessoa.dataEmissaoRg || 'Data não disponível' }}<br>
+                        <strong>UF RG:</strong> {{ pessoa.ufRg || 'UF não disponível' }}<br>
+                        <strong>CPF:</strong> {{ pessoa.cpf || 'CPF não disponível' }}<br>
+                        <strong>PIS:</strong> {{ pessoa.pis || 'PIS não disponível' }}<br>
+                        <strong>Data Emissão PIS:</strong> {{ pessoa.dataEmissaoPis || 'Data não disponível' }}<br>
+                        <strong>Título Eleitor:</strong> {{ pessoa.tituloEleitor || 'Título não disponível' }}<br>
+                        <strong>Local de Nascimento:</strong> {{ pessoa.localNascimento || 'Local não disponível' }}<br>
+                        <strong>Mãe:</strong> {{ pessoa.mae || 'Mãe não disponível' }}<br>
+                        <strong>Pai:</strong> {{ pessoa.pai || 'Pai não disponível' }}<br>
+                        <strong>Estado Civil:</strong> {{ pessoa.estadoCivil || 'Estado Civil não disponível' }}<br>
+                        <strong>Categoria CNH:</strong> {{ pessoa.categoriaCnh || 'Categoria não disponível' }}<br>
+                        <strong>Número CNH:</strong> {{ pessoa.numeroCnh || 'Número não disponível' }}<br>
+                        <strong>Registro CNH:</strong> {{ pessoa.registroCnh || 'Registro não disponível' }}<br>
+                        <strong>Validade CNH:</strong> {{ pessoa.validadeCnh || 'Validade não disponível' }}<br>
+                        <strong>Chave Pix:</strong> {{ pessoa.chavePix || 'Chave Pix não disponível' }}<br>
+                    </p>
+                    <a [routerLink]="['/pessoas', pessoa.id, 'editar']" class="btn btn-primary">
+                        Editar
+                    </a>
+                </div>
+            </div>
+            } @else if (errorMessage != null) {
+            <div class="alert alert-danger" role="alert">
+                {{ errorMessage }}
+            </div>
+            }
+
+        </div>
+
+        <div class="col-md-4">
+            detalhes vagas vinculadas a pessoa
+        </div>
+
+        <div class="col-md-3">
+            espaço botoes para imprimir
+        </div>
     </div>
+
+    <router-outlet></router-outlet>
 </div>
-} @else if (errorMessage != null) {
-<div class="alert alert-danger" role="alert">
-    {{ errorMessage }}
-</div>
-}

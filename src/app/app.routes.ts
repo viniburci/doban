@@ -10,6 +10,7 @@ import { ListaCarro } from './recursos/carro/lista-carro/lista-carro';
 import { DetalhesCarro } from './recursos/carro/detalhes-carro/detalhes-carro';
 import { ListaCelular } from './recursos/celular/lista-celular/lista-celular';
 import { DetalhesCelular } from './recursos/celular/detalhes-celular/detalhes-celular';
+import { CadastroVaga } from './vaga/cadastro-vaga/cadastro-vaga';
 
 export const routes: Routes = [
     {
@@ -26,7 +27,13 @@ export const routes: Routes = [
             },
             {
                 path: ':pessoaId/detalhes',
-                component: DetalhesPessoa
+                component: DetalhesPessoa,
+                children: [
+                    {
+                        path: 'vaga',
+                        component: CadastroVaga
+                    }
+                ]
             },
             {
                 path: 'novo',
