@@ -1,3 +1,33 @@
-<p>cadastro-vaga works!</p>
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">{{editMode() ? 'Atualizar Carro' : 'Cadastro de Carro'}}</h4>
+                    <small class="text-white-50">Preencha os dados abaixo</small>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Marca</label>
+                                <input name="marca" type="text" class="form-control" placeholder="FIAT..."
+                                    formControlName="marca">
+                            </div>
 
-pessoa id: {{ pessoaId() }}
+                          
+
+                        </div>
+                        <div class="col-12 mt-3 d-flex justify-content-end">
+                            @if(!editMode()){
+                            <button type="reset" class="btn btn-outline-secondary me-2">Limpar</button>
+                            }
+                            <button type="submit" class="btn btn-primary">{{editMode() ? 'Atualizar' :
+                                'Salvar'}}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
