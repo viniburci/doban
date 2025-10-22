@@ -1,4 +1,4 @@
-@if (pessoa != null) {
+@if (pessoa != null && errorMessage == null) {
 
 <div class="card" style="width: 18rem;">
     <div class="card-body">
@@ -34,5 +34,9 @@
             <strong>Chave Pix:</strong> {{ pessoa.chavePix || 'Chave Pix não disponível' }}<br>
         </p>
     </div>
+</div>
+} @else if (errorMessage != null) {
+<div class="alert alert-danger" role="alert">
+    {{ errorMessage }}
 </div>
 }

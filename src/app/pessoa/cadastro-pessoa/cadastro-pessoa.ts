@@ -4,6 +4,7 @@ import { FormsModule, FormGroup, FormControl, ReactiveFormsModule, FormBuilder }
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { PessoaService } from '../../services/pessoa-service';
+import { DataService } from '../../services/data-service';
 
 @Component({
   selector: 'app-cadastro-pessoa',
@@ -16,6 +17,7 @@ import { PessoaService } from '../../services/pessoa-service';
 export class CadastroPessoa implements OnInit {
 
   private pessoaService = inject(PessoaService);
+  private dataService = inject(DataService);
 
   pessoaId = input<string | null>(null);
   editMode = signal<boolean>(false);
@@ -67,33 +69,6 @@ export class CadastroPessoa implements OnInit {
     }
   }
 
-  convertDateToISO = (rawDate: string): string => {
-    if (!rawDate) return '';
-
-    // Remove qualquer caractere que não seja número
-    const onlyDigits = rawDate.replace(/\D/g, '');
-
-    if (onlyDigits.length !== 8) return '';
-
-    const dia = onlyDigits.slice(0, 2);
-    const mes = onlyDigits.slice(2, 4);
-    const ano = onlyDigits.slice(4, 8);
-
-    return `${ano}-${mes}-${dia}`;
-  };
-
-  convertISOToDateBR = (isoDate: string | null | undefined): string => {
-    if (!isoDate) return '';
-
-    // Verifica se está no formato ISO esperado
-    const match = isoDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (!match) return '';
-
-    const [, year, month, day] = match;
-    return `${day}/${month}/${year}`;
-  };
-
-
   emptyStringsToNull<T>(obj: T): T {
     const result = {} as T;
 
@@ -116,11 +91,11 @@ export class CadastroPessoa implements OnInit {
 
     cleaned = {
       ...cleaned,
-      dataNascimento: this.convertISOToDateBR(data.dataNascimento ?? ''),
-      dataEmissaoCtps: this.convertISOToDateBR(data.dataEmissaoCtps ?? ''),
-      dataEmissaoRg: this.convertISOToDateBR(data.dataEmissaoRg ?? ''),
-      dataEmissaoPis: this.convertISOToDateBR(data.dataEmissaoPis ?? ''),
-      validadeCnh: this.convertISOToDateBR(data.validadeCnh ?? ''),
+      dataNascimento: this.dataService.convertISOToDateBR(data.dataNascimento ?? ''),
+      dataEmissaoCtps: this.dataService.convertISOToDateBR(data.dataEmissaoCtps ?? ''),
+      dataEmissaoRg: this.dataService.convertISOToDateBR(data.dataEmissaoRg ?? ''),
+      dataEmissaoPis: this.dataService.convertISOToDateBR(data.dataEmissaoPis ?? ''),
+      validadeCnh: this.dataService.convertISOToDateBR(data.validadeCnh ?? ''),
     };
     return cleaned;
   }
@@ -132,11 +107,11 @@ export class CadastroPessoa implements OnInit {
 
     cleaned = {
       ...cleaned,
-      dataNascimento: this.convertDateToISO(this.form.get('dataNascimento')?.value || ''),
-      dataEmissaoCtps: this.convertDateToISO(this.form.get('dataEmissaoCtps')?.value || ''),
-      dataEmissaoRg: this.convertDateToISO(this.form.get('dataEmissaoRg')?.value || ''),
-      dataEmissaoPis: this.convertDateToISO(this.form.get('dataEmissaoPis')?.value || ''),
-      validadeCnh: this.convertDateToISO(this.form.get('validadeCnh')?.value || ''),
+      dataNascimento: this.dataService.convertDateToISO(this.form.get('dataNascimento')?.value || ''),
+      dataEmissaoCtps: this.dataService.convertDateToISO(this.form.get('dataEmissaoCtps')?.value || ''),
+      dataEmissaoRg: this.dataService.convertDateToISO(this.form.get('dataEmissaoRg')?.value || ''),
+      dataEmissaoPis: this.dataService.convertDateToISO(this.form.get('dataEmissaoPis')?.value || ''),
+      validadeCnh: this.dataService.convertDateToISO(this.form.get('validadeCnh')?.value || ''),
     };
 
     console.log(cleaned);
