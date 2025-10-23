@@ -27,13 +27,7 @@ export const routes: Routes = [
             },
             {
                 path: ':pessoaId/detalhes',
-                component: DetalhesPessoa,
-                children: [
-                    {
-                        path: 'vaga',
-                        component: CadastroVaga
-                    }
-                ]
+                component: DetalhesPessoa
             },
             {
                 path: 'novo',

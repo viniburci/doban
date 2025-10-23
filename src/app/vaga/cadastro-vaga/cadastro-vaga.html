@@ -10,20 +10,19 @@
                     <form [formGroup]="form" (submit)="onSubmit()" novalidate>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Marca</label>
-                                <input name="marca" type="text" class="form-control" placeholder="FIAT..."
+                                <label class="form-label">Cliente</label>
+                                <input name="marca" type="text" class="form-control" placeholder=""
                                     formControlName="marca">
                             </div>
 
-                          
+
 
                         </div>
                         <div class="col-12 mt-3 d-flex justify-content-end">
-                            @if(!editMode()){
-                            <button type="reset" class="btn btn-outline-secondary me-2">Limpar</button>
-                            }
-                            <button type="submit" class="btn btn-primary">{{editMode() ? 'Atualizar' :
-                                'Salvar'}}</button>
+
+                            <button type="button" (click)="onCloseForm()" class="btn btn-danger me-2">Fechar</button>
+
+                            <button type="submit" class="btn btn-primary">Salvar</button>
                         </div>
                     </form>
                 </div>

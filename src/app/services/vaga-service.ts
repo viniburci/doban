@@ -14,7 +14,7 @@ export class VagaFormDataFormDataService {
   getVagaFormDatasPorPessoa(pessoaId: number): Observable<VagaFormData[]> {
     return this.http.get<VagaFormData[]>(`${this.apiUrl}/pessoa/${pessoaId}`);
   }
-0
+
   getVagaFormDataMaisRecentePorPessoa(pessoaId: number): Observable<VagaFormData> {
     return this.http.get<VagaFormData>(`${this.apiUrl}/mais-recente/${pessoaId}`);
   }

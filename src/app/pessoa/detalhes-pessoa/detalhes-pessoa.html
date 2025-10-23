@@ -59,5 +59,11 @@
         </div>
     </div>
 
-    <router-outlet></router-outlet>
+    <button class="btn btn-primary" (click)="toggleRegistrarVaga()">Registrar Vaga</button>
+
+    @if(showRegistrarVaga()) {
+    <app-cadastro-vaga #vagaForm (rendered)="scrollToVaga()" (close)="toggleRegistrarVaga()"
+        (closeForm)="toggleRegistrarVaga()" [pessoaId]="pessoaId()"></app-cadastro-vaga>
+    }
+
 </div>
