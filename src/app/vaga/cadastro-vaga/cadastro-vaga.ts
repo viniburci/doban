@@ -1,5 +1,5 @@
-import { Component, input, OnInit, signal, inject, output, AfterViewInit, ViewContainerRef } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, input, OnInit, signal, inject, output } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AtestadoSaudeOcupacional, TipoAcrescimoSubstituicao, TipoContratante, TipoContrato, VagaFormData } from '../../entities/vagaFormData.model';
 
 @Component({
@@ -9,7 +9,7 @@ import { AtestadoSaudeOcupacional, TipoAcrescimoSubstituicao, TipoContratante, T
   templateUrl: './cadastro-vaga.html',
   styleUrl: './cadastro-vaga.css'
 })
-export class CadastroVaga implements OnInit, AfterViewInit {
+export class CadastroVaga implements OnInit {
   private fb = inject(FormBuilder);
 
   pessoaId = input<string | null>(null);
@@ -19,18 +19,6 @@ export class CadastroVaga implements OnInit, AfterViewInit {
   editMode = signal<boolean>(false);
 
   form!: FormGroup<{ [K in keyof VagaFormData]: FormControl<VagaFormData[K]> }>;
-
-  rendered = output<void>();
-
-  private vcr = inject(ViewContainerRef);
-
-  ngAfterViewInit() {
-    queueMicrotask(() => this.rendered.emit());
-  }
-
-  getHostElement(): HTMLElement {
-    return this.vcr.element.nativeElement;
-  }
 
   ngOnInit() {
     const id = this.pessoaId();

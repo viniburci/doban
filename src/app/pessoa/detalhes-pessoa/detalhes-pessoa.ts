@@ -1,14 +1,15 @@
-import { afterNextRender, ChangeDetectorRef, Component, effect, ElementRef, inject, input, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit, signal } from '@angular/core';
 import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../../services/data-service';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CadastroVaga } from "../../vaga/cadastro-vaga/cadastro-vaga";
+import { ScrollOnRenderDirective } from '../../directives/scroll-on-render-directive';
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })
@@ -25,8 +26,6 @@ export class DetalhesPessoa implements OnInit {
   pessoa: PessoaFormData | null = null;
 
   showRegistrarVaga = signal<boolean>(false);
-
-  @ViewChild('vagaForm') vagaFormComponent?: CadastroVaga;
 
   ngOnInit() {
     const id = this.pessoaId();
@@ -56,17 +55,6 @@ export class DetalhesPessoa implements OnInit {
   toggleRegistrarVaga() {
     this.showRegistrarVaga.set(!this.showRegistrarVaga());
     this.cdr.detectChanges();
-  }
-
-  scrollToVaga() {
-    setTimeout(() => {
-      const element = this.vagaFormComponent?.getHostElement();
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        console.warn('Elemento host ainda não disponível');
-      }
-    });
   }
 
 }
