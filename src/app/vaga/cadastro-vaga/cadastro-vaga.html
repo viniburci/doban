@@ -3,25 +3,148 @@
         <div class="col-lg-10">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">{{editMode() ? 'Atualizar Carro' : 'Cadastro de Carro'}}</h4>
+                    <h4 class="mb-0">{{editMode() ? 'Atualizar Vaga' : 'Cadastro de Vaga'}}</h4>
                     <small class="text-white-50">Preencha os dados abaixo</small>
                 </div>
                 <div class="card-body">
                     <form [formGroup]="form" (submit)="onSubmit()" novalidate>
                         <div class="row g-3">
+
                             <div class="col-md-6">
-                                <label class="form-label">Cliente</label>
-                                <input name="marca" type="text" class="form-control" placeholder=""
-                                    formControlName="marca">
+                                <label class="form-label" for="aso">Contratante</label>
+                                <select id="contratante" class="form-select" formControlName="contratante">
+                                    <option value="null">Selecione...</option>
+                                    @for (option of Object.values(TipoContratante); track option) {
+                                    <option [value]="option">
+                                        {{ option }}
+                                    </option>
+                                    }
+                                </select>
                             </div>
 
+                            <div class="col-md-6">
+                                <label class="form-label">Cliente</label>
+                                <input name="cliente" type="text" class="form-control" placeholder=""
+                                    formControlName="cliente">
+                            </div>
 
+                            <div class="col-md-6">
+                                <label class="form-label">Setor</label>
+                                <input name="setor" type="text" class="form-control" placeholder=""
+                                    formControlName="setor">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cargo</label>
+                                <input name="cargo" type="text" class="form-control" placeholder=""
+                                    formControlName="cargo">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cidade</label>
+                                <input name="cidade" type="text" class="form-control" placeholder=""
+                                    formControlName="cidade">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">UF</label>
+                                <input name="uf" type="text" class="form-control" placeholder="" formControlName="uf">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="aso">Tipo contrato</label>
+                                <select id="tipoContrato" class="form-select" formControlName="tipoContrato">
+                                    <option value="null">Selecione...</option>
+                                    @for (option of Object.values(TipoContrato); track option) {
+                                    <option [value]="option">
+                                        {{ option }}
+                                    </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Salario</label>
+                                <input name="salario" type="text" class="form-control" placeholder="0,00"
+                                    mask="separator.2" prefix="R$ " thousandSeparator="." decimalSeparator=","
+                                    placeholder="0,00" formControlName="salario">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="aso">Acrescimo ou Substituição</label>
+                                <select id="acrescimoOuSubstituicao" class="form-select"
+                                    formControlName="acrescimoOuSubstituicao">
+                                    <option value="null">Selecione...</option>
+                                    @for (option of Object.values(TipoAcrescimoSubstituicao); track option) {
+                                    <option [value]="option">
+                                        {{ option | titlecase }}
+                                    </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Optante VT</label>
+                                <div class="d-flex">
+                                    <div class="form-check me-3">
+                                        <input class="form-check-input" type="radio" formControlName="optanteVT"
+                                            [value]="true" id="radioDefault1"
+                                            (change)="form.get('optanteVT')?.setValue(true)">
+                                        <label class="form-check-label" for="radioDefault1">
+                                            Sim
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" formControlName="optanteVT"
+                                            [value]="false" id="radioDefault2"
+                                            (change)="form.get('optanteVT')?.setValue(false)" checked>
+                                        <label class="form-check-label" for="radioDefault2">
+                                            Não
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data Admissão</label>
+                                <input name="dataAdmissao" type="text" class="form-control"
+                                    placeholder="dd/mm/aaaa     " mask="00/00/0000" formControlName="dataAdmissao">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data Demissão</label>
+                                <input name="dataDemissao" type="text" class="form-control" placeholder="dd/mm/aaaa"
+                                    mask="00/00/0000" formControlName="dataDemissao">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Horario Entrada</label>
+                                <input name="horarioEntrada" type="text" class="form-control" placeholder="HH:mm"
+                                    mask="00:00" formControlName="horarioEntrada">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Horario Saída</label>
+                                <input name="horarioSaida" type="text" class="form-control" placeholder="HH:mm"
+                                    mask="00:00" formControlName="horarioSaida">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="aso">Atestado de Saúde Ocupacional</label>
+                                <select id="aso" class="form-select" formControlName="aso">
+                                    <option value="null">Selecione...</option>
+                                    @for (option of Object.values(AtestadoSaudeOcupacional); track option) {
+                                    <option [value]="option">
+                                        {{ option | titlecase }}
+                                    </option>
+                                    }
+                                </select>
+                            </div>
 
                         </div>
                         <div class="col-12 mt-3 d-flex justify-content-end">
-
                             <button type="button" (click)="onCloseForm()" class="btn btn-danger me-2">Fechar</button>
-
                             <button type="submit" class="btn btn-primary">Salvar</button>
                         </div>
                     </form>

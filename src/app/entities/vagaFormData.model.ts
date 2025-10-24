@@ -1,6 +1,9 @@
 export enum TipoContrato {
-    CLT = 'CLT',
-    PJ = 'PJ',
+    CLT_CE_CJ = 'CLT_CE_CJ',
+    CLT_CE_SJ = 'CLT_CE_SJ',
+    CLT_SE_SJ = 'CLT_SE_SJ',
+    TEMP_CJ = 'TEMP_CJ',
+    INDEFINIDO = 'INDEFINIDO',
 }
 
 export enum TipoAcrescimoSubstituicao {
@@ -9,18 +12,16 @@ export enum TipoAcrescimoSubstituicao {
 }
 
 export enum AtestadoSaudeOcupacional {
-    APT = 'APT',
-    INAPT = 'INAPT',
+    ADMISSIONAL = 'ADMISSIONAL',
+    DEMISSIONAL = 'DEMISSIONAL',
+    RETORNO = 'RETORNO',
 }
 
 export enum TipoContratante {
-    EMPRESA = 'EMPRESA',
-    CONTRATADO = 'CONTRATADO',
+    DOBAN_PRESTADORA_DE_SERVIÇOS_LTDA = 'DOBAN_PRESTADORA_DE_SERVIÇOS_LTDA',
 }
 
 export interface VagaFormData {
-    pessoaId: string | null; 
-
     id: string | null;
     cliente: string | null;
     cidade: string | null;
