@@ -31,4 +31,19 @@ export class DataService {
     return `${ano}-${mes}-${dia}`;
   };
 
+  convertToLocalTime(timeValue: string): string {
+    // Convertendo o número (ex: 1200) em uma string de tempo (hh:mm)
+    let numberTimeValue = Number(timeValue);
+
+    const hours = Math.floor(numberTimeValue / 100);  // Pega as horas (1200 / 100 = 12)
+    const minutes = numberTimeValue % 100;  // Pega os minutos (1200 % 100 = 00)
+
+    // Cria um objeto Date com a hora e os minutos
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);  // Define as horas e minutos
+
+    // Retorna a hora no formato "HH:mm"
+    return date.toTimeString().slice(0, 5);  // Ex: "12:00"
+  }
+
 }

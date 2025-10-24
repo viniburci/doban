@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angul
 import { AtestadoSaudeOcupacional, TipoAcrescimoSubstituicao, TipoContratante, TipoContrato, VagaFormData } from '../../entities/vagaFormData.model';
 import { TitleCasePipe } from '@angular/common';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { VagaService } from '../../services/vaga-service';
+import { DataService } from '../../services/data-service';
 
 @Component({
   selector: 'app-cadastro-vaga',
@@ -14,6 +16,8 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 })
 export class CadastroVaga implements OnInit {
   private fb = inject(FormBuilder);
+  private vagaService = inject(VagaService);
+  private dataService = inject(DataService);
 
   pessoaId = input<string | null>(null);
 
@@ -64,7 +68,26 @@ export class CadastroVaga implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
+    const raw = this.form.getRawValue();
+
+    let cleaned = {
+      ...raw,
+      dataDemissao: raw.dataDemissao ? this.dataService.convertDateToISO(raw.dataDemissao) : null,
+      dataAdmissao: raw.dataAdmissao ? this.dataService.convertDateToISO(raw.dataAdmissao) : null,
+      horarioEntrada: raw.horarioEntrada ? this.dataService.convertToLocalTime(raw.horarioEntrada) : null,
+      horarioSaida: raw.horarioSaida ? this.dataService.convertToLocalTime(raw.horarioSaida) : null,
+    }
+
+    console.log(cleaned);
+    this.vagaService.criarVaga(Number(this.pessoaId()), cleaned as VagaFormData).subscribe({
+      next: (response) => {
+        console.log('Vaga criada com sucesso:', response);
+        this.onCloseForm();
+      },
+      error: (error) => {
+        console.error('Erro ao criar vaga:', error);
+      }
+    });
   }
 
 }

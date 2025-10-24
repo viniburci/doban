@@ -6,28 +6,28 @@ import { VagaFormData } from '../entities/vagaFormData.model';
 @Injectable({
   providedIn: 'root'
 })
-export class VagaFormDataFormDataService {
+export class VagaService {
 
   private apiUrl = 'http://localhost:8080/api/v1/vaga'; 
   constructor(private http: HttpClient) { }
 
-  getVagaFormDatasPorPessoa(pessoaId: number): Observable<VagaFormData[]> {
+  getVagaPorPessoa(pessoaId: number): Observable<VagaFormData[]> {
     return this.http.get<VagaFormData[]>(`${this.apiUrl}/pessoa/${pessoaId}`);
   }
 
-  getVagaFormDataMaisRecentePorPessoa(pessoaId: number): Observable<VagaFormData> {
+  getVagaMaisRecentePorPessoa(pessoaId: number): Observable<VagaFormData> {
     return this.http.get<VagaFormData>(`${this.apiUrl}/mais-recente/${pessoaId}`);
   }
 
-  criarVagaFormData(pessoaId: number, VagaFormData: VagaFormData): Observable<VagaFormData> {
+  criarVaga(pessoaId: number, VagaFormData: VagaFormData): Observable<VagaFormData> {
     return this.http.post<VagaFormData>(`${this.apiUrl}/criar/${pessoaId}`, VagaFormData);
   }
 
-  atualizarVagaFormData(VagaFormDataId: number, VagaFormData: VagaFormData): Observable<VagaFormData> {
+  atualizarVaga(VagaFormDataId: number, VagaFormData: VagaFormData): Observable<VagaFormData> {
     return this.http.put<VagaFormData>(`${this.apiUrl}/atualizar/${VagaFormDataId}`, VagaFormData);
   }
 
-  deletarVagaFormData(VagaFormDataId: number): Observable<void> {
+  deletarVaga(VagaFormDataId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${VagaFormDataId}`);
   }
 
