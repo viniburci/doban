@@ -55,7 +55,7 @@ export class CadastroVaga implements OnInit {
       optanteVT: new FormControl<boolean | null>(null),
       horarioEntrada: new FormControl<string | null>(null),
       horarioSaida: new FormControl<string | null>(null),
-      contratante: new FormControl<TipoContratante | null>(null)
+      contratante: new FormControl<TipoContratante | null>(TipoContratante.DOBAN_PRESTADORA_DE_SERVIÇOS_LTDA)
     });
   }
 
@@ -78,7 +78,6 @@ export class CadastroVaga implements OnInit {
       horarioSaida: raw.horarioSaida ? this.dataService.convertToLocalTime(raw.horarioSaida) : null,
     }
 
-    console.log(cleaned);
     this.vagaService.criarVaga(Number(this.pessoaId()), cleaned as VagaFormData).subscribe({
       next: (response) => {
         console.log('Vaga criada com sucesso:', response);
