@@ -70,7 +70,7 @@
     <button class="btn btn-primary" (click)="toggleRegistrarVaga()">Registrar Vaga</button>
 
     @if(showRegistrarVaga()) {
-    <app-cadastro-vaga #vagaForm appScrollOnRender (close)="toggleRegistrarVaga()" (closeForm)="toggleRegistrarVaga()"
+    <app-cadastro-vaga #vagaForm appScrollOnRender (updated)="handleUpdateAndClose()" [editVaga]="editVaga() ? editVaga() : null" (close)="handleOnlyClose()" (closeForm)="handleOnlyClose()"
         [pessoaId]="pessoaId()"></app-cadastro-vaga>
     }
 

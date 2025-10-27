@@ -29,7 +29,9 @@ export class DetalhesPessoa implements OnInit {
 
   pessoa: PessoaFormData | null = null;
 
-  vagasPessoa = signal<VagaFormData[] | null >(null);
+  vagasPessoa = signal<VagaFormData[] | null>(null);
+
+  editVaga = signal<VagaFormData | null>(null);
 
   showRegistrarVaga = signal<boolean>(false);
 
@@ -67,9 +69,31 @@ export class DetalhesPessoa implements OnInit {
   }
 
   editarVaga(event: any) {
-    this.toggleRegistrarVaga() ;
-    console.log('Editar vaga: ', event);
-
+    this.toggleRegistrarVaga();
+    let vaga = this.vagasPessoa()?.find(v => v.id === event);
+    console.log('Editar vaga event: ', event, " vaga: ", vaga);
+    if (vaga) {
+      this.editVaga.set(vaga);
+    }
   }
+
+  handleUpdateAndClose() {
+    this.updateComponent();
+
+    this.toggleRegistrarVaga();
+  }
+
+  handleOnlyClose() {
+    this.toggleRegistrarVaga();
+  }
+
+  updateComponent() {
+    console.log("updateComponent chamado");
+    const id = this.pessoaId();
+    this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
+      this.vagasPessoa.set(data);
+    })
+  }
+
 
 }

@@ -1,10 +1,11 @@
-import { Component, input, OnInit, signal, inject, output } from '@angular/core';
+import { Component, input, OnInit, signal, inject, output, ChangeDetectorRef, effect } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AtestadoSaudeOcupacional, TipoAcrescimoSubstituicao, TipoContratante, TipoContrato, VagaFormData } from '../../entities/vagaFormData.model';
 import { TitleCasePipe } from '@angular/common';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { VagaService } from '../../services/vaga-service';
 import { DataService } from '../../services/data-service';
+import { timeout } from 'rxjs';
 
 @Component({
   selector: 'app-cadastro-vaga',
@@ -18,12 +19,13 @@ export class CadastroVaga implements OnInit {
   private fb = inject(FormBuilder);
   private vagaService = inject(VagaService);
   private dataService = inject(DataService);
+  private cfr = inject(ChangeDetectorRef);
 
   pessoaId = input<string | null>(null);
-
-  closeForm = output<void>();
-
   editMode = signal<boolean>(false);
+  editVaga = input<VagaFormData | null>(null);
+  updated = output<boolean>();
+  closeForm = output<void>();
 
   form!: FormGroup<{ [K in keyof VagaFormData]: FormControl<VagaFormData[K]> }>;
 
@@ -32,6 +34,13 @@ export class CadastroVaga implements OnInit {
   AtestadoSaudeOcupacional = AtestadoSaudeOcupacional;
   TipoContratante = TipoContratante;
   protected readonly Object = Object;
+
+  constructor() {
+    effect(() => {
+      console.log("efecto vagaId: " + this.editVaga()?.id);
+      this.patchForm();
+    });
+  }
 
   ngOnInit() {
     const id = this.pessoaId();
@@ -59,6 +68,11 @@ export class CadastroVaga implements OnInit {
     });
   }
 
+  patchForm() {
+    this.editMode.set(!!this.editVaga());
+    this.form.patchValue(this.editVaga() || {});
+  }
+
   getEnumValues(enumObj: any): string[] {
     return Object.values(enumObj);
   }
@@ -78,15 +92,34 @@ export class CadastroVaga implements OnInit {
       horarioSaida: raw.horarioSaida ? this.dataService.convertToLocalTime(raw.horarioSaida) : null,
     }
 
-    this.vagaService.criarVaga(Number(this.pessoaId()), cleaned as VagaFormData).subscribe({
-      next: (response) => {
-        console.log('Vaga criada com sucesso:', response);
-        this.onCloseForm();
-      },
-      error: (error) => {
-        console.error('Erro ao criar vaga:', error);
-      }
-    });
+    if (this.editMode()) {
+      this.vagaService.atualizarVaga(Number(cleaned.id), cleaned as VagaFormData).subscribe({
+        next: (response) => {
+          console.log('Vaga atualizada com sucesso:', response);
+          this.updated.emit(true);
+          queueMicrotask(() => {
+            this.onCloseForm();
+          });
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar vaga:', error);
+        }
+      });
+      return;
+    } else {
+      this.vagaService.criarVaga(Number(this.pessoaId()), cleaned as VagaFormData).subscribe({
+        next: (response) => {
+          console.log('Vaga criada com sucesso:', response);
+          this.updated.emit(true);
+          queueMicrotask(() => {
+            this.onCloseForm();
+          });
+        },
+        error: (error) => {
+          console.error('Erro ao criar vaga:', error);
+        }
+      });
+    }
   }
 
 }
