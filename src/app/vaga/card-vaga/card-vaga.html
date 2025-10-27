@@ -1,0 +1,68 @@
+<div class="card" style="width: 100%;">
+    <div class="card-body">
+
+        <h5 class="card-title d-flex justify-content-between align-items-center card-header-clickable"
+            (click)="toggleCollapse()" [attr.aria-expanded]="!isCollapsed()"
+            [attr.aria-controls]="'vagaDetalhes-' + vaga()?.id" tabindex="0" role="button">
+            {{ vaga()?.cargo || 'Cargo não disponível' }}
+            <i class="bi" [class]="isCollapsed() ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
+        </h5>
+
+        <h6 class="card-subtitle mb-2 text-muted">{{ vaga()?.setor || 'Setor não disponível' }}</h6>
+
+        <div class="collapse" [class.show]="!isCollapsed()" id="vagaDetalhes-{{ vaga()?.id }}">
+            <div class="row mt-3 nowrap-details">
+
+                <div class="col-md-6 mb-2">
+                    <strong>Cliente:</strong> {{ vaga()?.cliente || 'N/D' }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Cidade:</strong> {{ vaga()?.cidade || 'N/D' }}
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <strong>UF:</strong> {{ vaga()?.uf || 'N/D' }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Salário:</strong> R$ {{ vaga()?.salario || 'N/D' }}
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <strong>Tipo Contrato:</strong> {{ vaga()?.tipoContrato?.toString() || 'N/D' }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Contratante:</strong> {{ vaga()?.contratante?.toString() || 'N/D' }}
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <strong>Admissão:</strong> {{ vaga()?.dataAdmissao || 'N/D' }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Demissão:</strong> {{ vaga()?.dataDemissao || 'N/D' }}
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <strong>Acrés./Subst.:</strong> {{ vaga()?.acrescimoOuSubstituicao?.toString() || 'N/D' }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>ASO:</strong> {{ vaga()?.aso || 'N/D' }}
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <strong>Entrada:</strong> {{ vaga()?.horarioEntrada || 'N/D' }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Saída:</strong> {{ vaga()?.horarioSaida || 'N/D' }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Optante VT:</strong> {{ vaga()?.optanteVT != null ? (vaga()?.optanteVT ? 'Sim' : 'Não') :
+                    'N/D' }}
+                </div>
+
+            </div>
+            <button (click)="onEditarVaga()" class="btn btn-primary mt-2">
+                Editar
+            </button>
+        </div>
+    </div>
+</div>

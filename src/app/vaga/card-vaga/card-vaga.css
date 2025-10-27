@@ -1,0 +1,17 @@
+/* ... Outros estilos (card-header-clickable) ... */
+
+/* NOVO CSS: Truncagem para evitar quebra de linha e sobreposição */
+.truncated-details .col-4 {
+  /* Garante que o conteúdo que ultrapasse o container seja escondido */
+  overflow: hidden; 
+  /* Evita a quebra de linha */
+  white-space: nowrap; 
+  /* Adiciona reticências ao final do texto cortado */
+  text-overflow: ellipsis; 
+}
+
+/* Opcional: Se o seu card externo não for responsivo e precisar ser maior */
+/* Se a largura do col-md-5 for o problema, você precisaria mudar no HTML pai */
+/* .card {
+  min-width: 350px; 
+} */

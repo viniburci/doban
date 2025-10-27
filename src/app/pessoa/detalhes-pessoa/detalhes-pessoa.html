@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-3">
 
             @if (pessoa != null && errorMessage == null) {
 
@@ -50,20 +50,28 @@
 
         </div>
 
-        <div class="col-md-4">
-            detalhes vagas vinculadas a pessoa
+        <div class="col-md-6">
+            @for(vaga of vagasPessoa(); track vaga.id) {
+                <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
+            }
         </div>
 
         <div class="col-md-3">
-            espaço botoes para imprimir
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Imprimir</h5>
+                    <button class="btn btn-success">Imprimir Vaga</button>
+                    <button class="btn btn-danger mt-2">Imprimir Contrato</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <button class="btn btn-primary" (click)="toggleRegistrarVaga()">Registrar Vaga</button>
 
     @if(showRegistrarVaga()) {
-    <app-cadastro-vaga #vagaForm appScrollOnRender (close)="toggleRegistrarVaga()"
-        (closeForm)="toggleRegistrarVaga()" [pessoaId]="pessoaId()"></app-cadastro-vaga>
+    <app-cadastro-vaga #vagaForm appScrollOnRender (close)="toggleRegistrarVaga()" (closeForm)="toggleRegistrarVaga()"
+        [pessoaId]="pessoaId()"></app-cadastro-vaga>
     }
 
 </div>

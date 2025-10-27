@@ -6,16 +6,20 @@ import { DataService } from '../../services/data-service';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CadastroVaga } from "../../vaga/cadastro-vaga/cadastro-vaga";
 import { ScrollOnRenderDirective } from '../../directives/scroll-on-render-directive';
+import { VagaFormData } from '../../entities/vagaFormData.model';
+import { VagaService } from '../../services/vaga-service';
+import { CardVaga } from "../../vaga/card-vaga/card-vaga";
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })
 export class DetalhesPessoa implements OnInit {
 
   private pessoaService = inject(PessoaService);
+  private vagaService = inject(VagaService);
   private dataService = inject(DataService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -24,6 +28,8 @@ export class DetalhesPessoa implements OnInit {
   errorMessage: string | null = null;
 
   pessoa: PessoaFormData | null = null;
+
+  vagasPessoa = signal<VagaFormData[] | null >(null);
 
   showRegistrarVaga = signal<boolean>(false);
 
@@ -35,6 +41,9 @@ export class DetalhesPessoa implements OnInit {
         this.pessoa = data;
         this.convertDatesToBr();
       });
+      this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
+        this.vagasPessoa.set(data);
+      })
     } else {
       this.errorMessage = 'Id inválido.'
     }
@@ -55,6 +64,12 @@ export class DetalhesPessoa implements OnInit {
   toggleRegistrarVaga() {
     this.showRegistrarVaga.set(!this.showRegistrarVaga());
     this.cdr.detectChanges();
+  }
+
+  editarVaga(event: any) {
+    this.toggleRegistrarVaga() ;
+    console.log('Editar vaga: ', event);
+
   }
 
 }
