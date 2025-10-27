@@ -31,7 +31,7 @@ export class DataService {
     return `${ano}-${mes}-${dia}`;
   };
 
-  convertToLocalTime(timeValue: string): string {
+  convertToLocalTime(timeValue: string | null): string {
     // Convertendo o número (ex: 1200) em uma string de tempo (hh:mm)
     let numberTimeValue = Number(timeValue);
 

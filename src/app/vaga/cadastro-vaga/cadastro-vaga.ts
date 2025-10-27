@@ -1,11 +1,10 @@
-import { Component, input, OnInit, signal, inject, output, ChangeDetectorRef, effect } from '@angular/core';
+import { Component, input, OnInit, signal, inject, output, effect } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AtestadoSaudeOcupacional, TipoAcrescimoSubstituicao, TipoContratante, TipoContrato, VagaFormData } from '../../entities/vagaFormData.model';
 import { TitleCasePipe } from '@angular/common';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { VagaService } from '../../services/vaga-service';
 import { DataService } from '../../services/data-service';
-import { timeout } from 'rxjs';
 
 @Component({
   selector: 'app-cadastro-vaga',
@@ -19,7 +18,6 @@ export class CadastroVaga implements OnInit {
   private fb = inject(FormBuilder);
   private vagaService = inject(VagaService);
   private dataService = inject(DataService);
-  private cfr = inject(ChangeDetectorRef);
 
   pessoaId = input<string | null>(null);
   editMode = signal<boolean>(false);
@@ -70,7 +68,15 @@ export class CadastroVaga implements OnInit {
 
   patchForm() {
     this.editMode.set(!!this.editVaga());
-    this.form.patchValue(this.editVaga() || {});
+    const vagaFormatada: VagaFormData = {
+      ...this.editVaga(),
+      id: this.editVaga()?.id ?? null,
+      dataAdmissao: this.editVaga()?.dataAdmissao ? this.dataService.convertISOToDateBR(this.editVaga()!.dataAdmissao) : null,
+      dataDemissao: this.editVaga()?.dataDemissao ? this.dataService.convertISOToDateBR(this.editVaga()!.dataDemissao) : null,
+      horarioEntrada: this.editVaga()?.horarioEntrada ? this.dataService.convertToLocalTime(this.editVaga()!.horarioEntrada) : null,
+      horarioSaida: this.editVaga()?.horarioSaida ? this.dataService.convertToLocalTime(this.editVaga()!.horarioSaida) : null,
+    } as VagaFormData;
+    this.form.patchValue(vagaFormatada || {});
   }
 
   getEnumValues(enumObj: any): string[] {
