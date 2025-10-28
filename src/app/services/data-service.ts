@@ -31,19 +31,44 @@ export class DataService {
     return `${ano}-${mes}-${dia}`;
   };
 
-  convertToLocalTime(timeValue: string | null): string {
-    // Convertendo o número (ex: 1200) em uma string de tempo (hh:mm)
-    let numberTimeValue = Number(timeValue);
+  convertToLocalTime(timeValue: string | null | undefined): string | null {
+    // 1. Checa se o valor existe
+    if (!timeValue) {
+      return null;
+    }
 
-    const hours = Math.floor(numberTimeValue / 100);  // Pega as horas (1200 / 100 = 12)
-    const minutes = numberTimeValue % 100;  // Pega os minutos (1200 % 100 = 00)
+    // 2. Garante que é uma string de horário completa (HH:mm:ss tem 8 caracteres)
+    // Se for 'HH:mm:ss', ele tem 8 caracteres. Queremos 'HH:mm' (5 caracteres).
+    if (timeValue.length >= 5 && timeValue.includes(':')) {
+      // 3. Retorna os 5 primeiros caracteres (HH:mm)
+      // Exemplo: "12:12:00" -> "12:12"
+      return timeValue.substring(0, 5);
+    }
 
-    // Cria um objeto Date com a hora e os minutos
-    const date = new Date();
-    date.setHours(hours, minutes, 0, 0);  // Define as horas e minutos
+    // Retorna nulo se o formato for inválido ou muito curto
+    return null;
+  }
 
-    // Retorna a hora no formato "HH:mm"
-    return date.toTimeString().slice(0, 5);  // Ex: "12:00"
+  formatTimeForBackend(timeValue: string | null | undefined): string | null {
+    if (!timeValue) {
+      return null;
+    }
+
+    if (timeValue.length === 4 && !timeValue.includes(':')) {
+      const hours = timeValue.substring(0, 2);
+      const minutes = timeValue.substring(2, 4);
+
+      return `${hours}:${minutes}`;
+    }
+
+    // O valor do formulário deve ser "HH:mm" (5 caracteres)
+    if (timeValue.length === 5 && timeValue.includes(':')) {
+      // Simplesmente concatena ":00"
+      return timeValue + ':00'; // Ex: "08:00" -> "08:00:00"
+    }
+
+    // Retorna nulo ou o valor original se o formato não for o esperado (evitando erros)
+    return null;
   }
 
 }

@@ -39,7 +39,6 @@ export class DetalhesPessoa implements OnInit {
     const id = this.pessoaId();
     if (id && !isNaN(Number(id))) {
       this.pessoaService.buscarPessoa(Number(id)).subscribe(data => {
-        console.log(data);
         this.pessoa = data;
         this.convertDatesToBr();
       });
@@ -82,11 +81,7 @@ export class DetalhesPessoa implements OnInit {
 
     this.toggleRegistrarVaga();
   }
-
-  handleOnlyClose() {
-    this.toggleRegistrarVaga();
-  }
-
+  
   updateComponent() {
     console.log("updateComponent chamado");
     const id = this.pessoaId();
@@ -94,6 +89,11 @@ export class DetalhesPessoa implements OnInit {
       this.vagasPessoa.set(data);
     })
   }
+
+  handleOnlyClose() {
+    this.toggleRegistrarVaga();
+  }
+
 
 
 }

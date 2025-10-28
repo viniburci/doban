@@ -68,15 +68,19 @@ export class CadastroVaga implements OnInit {
 
   patchForm() {
     this.editMode.set(!!this.editVaga());
-    const vagaFormatada: VagaFormData = {
-      ...this.editVaga(),
-      id: this.editVaga()?.id ?? null,
-      dataAdmissao: this.editVaga()?.dataAdmissao ? this.dataService.convertISOToDateBR(this.editVaga()!.dataAdmissao) : null,
-      dataDemissao: this.editVaga()?.dataDemissao ? this.dataService.convertISOToDateBR(this.editVaga()!.dataDemissao) : null,
-      horarioEntrada: this.editVaga()?.horarioEntrada ? this.dataService.convertToLocalTime(this.editVaga()!.horarioEntrada) : null,
-      horarioSaida: this.editVaga()?.horarioSaida ? this.dataService.convertToLocalTime(this.editVaga()!.horarioSaida) : null,
-    } as VagaFormData;
-    this.form.patchValue(vagaFormatada || {});
+    console.log("editVaga: " + JSON.stringify(this.editVaga(), null, 2));
+    if (this.editVaga() != null) {
+      const vagaFormatada: VagaFormData = {
+        ...this.editVaga(),
+        id: this.editVaga()?.id ?? null,
+        dataAdmissao: this.editVaga()?.dataAdmissao ? this.dataService.convertISOToDateBR(this.editVaga()!.dataAdmissao) : null,
+        dataDemissao: this.editVaga()?.dataDemissao ? this.dataService.convertISOToDateBR(this.editVaga()!.dataDemissao) : null,
+        horarioEntrada: this.editVaga()?.horarioEntrada ? this.dataService.convertToLocalTime(this.editVaga()!.horarioEntrada) : null,
+        horarioSaida: this.editVaga()?.horarioSaida ? this.dataService.convertToLocalTime(this.editVaga()?.horarioSaida!) : null,
+      } as VagaFormData;
+      this.form.patchValue(vagaFormatada || {});
+      console.log("Form patched with: ", vagaFormatada);
+    }
   }
 
   getEnumValues(enumObj: any): string[] {
@@ -94,9 +98,11 @@ export class CadastroVaga implements OnInit {
       ...raw,
       dataDemissao: raw.dataDemissao ? this.dataService.convertDateToISO(raw.dataDemissao) : null,
       dataAdmissao: raw.dataAdmissao ? this.dataService.convertDateToISO(raw.dataAdmissao) : null,
-      horarioEntrada: raw.horarioEntrada ? this.dataService.convertToLocalTime(raw.horarioEntrada) : null,
-      horarioSaida: raw.horarioSaida ? this.dataService.convertToLocalTime(raw.horarioSaida) : null,
+      horarioEntrada: raw.horarioEntrada ? this.dataService.formatTimeForBackend(raw.horarioEntrada) : null,
+      horarioSaida: raw.horarioSaida ? this.dataService.formatTimeForBackend(raw.horarioSaida) : null
     }
+
+    console.log("Cleaned data: ", cleaned);
 
     if (this.editMode()) {
       this.vagaService.atualizarVaga(Number(cleaned.id), cleaned as VagaFormData).subscribe({
