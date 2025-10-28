@@ -1,17 +1,81 @@
-/* ... Outros estilos (card-header-clickable) ... */
+/* ======================================================= */
+/* ESTILOS DO CARD VAGA (FINAL) - FOCO NA ELIMINAÇÃO DE FAIXA BRANCA */
+/* ======================================================= */
 
-/* NOVO CSS: Truncagem para evitar quebra de linha e sobreposição */
-.truncated-details .col-4 {
-  /* Garante que o conteúdo que ultrapasse o container seja escondido */
-  overflow: hidden; 
-  /* Evita a quebra de linha */
-  white-space: nowrap; 
-  /* Adiciona reticências ao final do texto cortado */
-  text-overflow: ellipsis; 
+/* Estilo Básico do Card */
+.card {
+    margin: 10px;
+    padding: 0; 
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Opcional: Se o seu card externo não for responsivo e precisar ser maior */
-/* Se a largura do col-md-5 for o problema, você precisaria mudar no HTML pai */
-/* .card {
-  min-width: 350px; 
-} */
+/* CABEÇALHO COLORIDO E CLICÁVEL */
+.card-header-styled {
+    padding: 0.75rem 1.25rem; 
+    margin: 0; /* Essencial */
+    cursor: pointer;
+    border-top-left-radius: 8px; 
+    border-top-right-radius: 8px;
+}
+
+/* ÁREA DE CONTEÚDO (Substitui .card-body) */
+.card-content-area {
+    /* 🛑 CRÍTICO: Zera a margem superior E o padding superior para que o conteúdo cole no header */
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+
+    /* Mantém o padding lateral e inferior para o conteúdo */
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    padding-bottom: 1.25rem;
+}
+
+/* 🛑 AJUSTE NO ROW INTERNO DO CONTEÚDO 🛑 */
+/* Aplica o padding superior apenas dentro do div.collapse para dar o respiro inicial */
+.card-content-area .collapse .row.nowrap-details {
+    /* Zera margens verticais que possam ter sido herdadas */
+    margin-top: 0;
+    margin-bottom: 0;
+    
+    /* Adiciona padding superior APENAS se necessário, 
+       mas na maioria dos casos, o padding do próprio .card-content-area já basta 
+       se a faixa branca sumir. Se precisar, descomente e use um valor menor (ex: 0.75rem) */
+    /* padding-top: 0.75rem; */
+}
+
+
+/* REGRAS DE MARGEM (Reforço) */
+
+/* Garante que o subtítulo não tenha margem inferior extra (dentro do header) */
+.card-header-styled .card-subtitle {
+    margin-bottom: 0 !important; 
+}
+
+/* ======================================================= */
+/* ESTRUTURA E TIPOGRAFIA (Não alterados)                   */
+/* ======================================================= */
+
+.card-header-clickable {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    flex-grow: 1;
+    overflow: hidden; 
+    white-space: nowrap;
+    text-overflow: ellipsis; 
+}
+
+.card-subtitle {
+    font-size: 0.875rem;
+    color: #6c757d; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

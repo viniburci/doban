@@ -1,18 +1,45 @@
-<div class="card" style="width: 100%;">
-    <div class="card-body">
+<div class="card" 
+     [class.border-success]="isVagaAtiva()" 
+     [class.border-danger]="!isVagaAtiva()" 
+     style="width: 100%;">
+    
+    <div class="card-header-styled"
+         [class.bg-success-subtle]="isVagaAtiva()" 
+         [class.bg-danger-subtle]="!isVagaAtiva()"
+         (click)="toggleCollapse()" 
+         [attr.aria-expanded]="!isCollapsed()"
+         [attr.aria-controls]="'vagaDetalhes-' + vaga()?.id" 
+         tabindex="0" 
+         role="button">
 
-        <h5 class="card-title d-flex justify-content-between align-items-center card-header-clickable"
-            (click)="toggleCollapse()" [attr.aria-expanded]="!isCollapsed()"
-            [attr.aria-controls]="'vagaDetalhes-' + vaga()?.id" tabindex="0" role="button">
-            {{ vaga()?.cargo || 'Cargo não disponível' }}
-            <i class="bi" [class]="isCollapsed() ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
-        </h5>
+        <div class="d-flex justify-content-between align-items-center card-header-clickable">
+            
+            <h5 class="card-title flex-grow-1 mb-0 me-3 text-truncate">
+                {{ vaga()?.cargo || 'Cargo não disponível' }}
+            </h5>
 
-        <h6 class="card-subtitle mb-2 text-muted">{{ vaga()?.setor || 'Setor não disponível' }}</h6>
+            <h6 class="card-subtitle text-muted text-end mb-0 d-none d-sm-block">
+                {{ vaga()?.dataAdmissao | dateDisplayPipe }} - {{vaga()?.dataDemissao | dateDisplayPipe}}
+            </h6>
+            
+            <i class="bi ms-3" [class]="isCollapsed() ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
+        </div>
+        
+        <h6 class="card-subtitle mb-0 text-muted mt-1">
+             {{ vaga()?.setor || 'Setor não disponível' }}
+             
+             <span class="d-sm-none">
+                <br>{{ vaga()?.dataAdmissao | dateDisplayPipe }} - {{vaga()?.dataDemissao | dateDisplayPipe}}
+             </span>
+        </h6>
+        
+    </div>
+    <div class="card-content-area"> 
 
         <div class="collapse" [class.show]="!isCollapsed()" id="vagaDetalhes-{{ vaga()?.id }}">
-            <div class="row mt-3 nowrap-details">
-
+            
+            <div class="row nowrap-details"> 
+                
                 <div class="col-md-6 mb-2">
                     <strong>Cliente:</strong> {{ vaga()?.cliente || 'N/D' }}
                 </div>
@@ -35,10 +62,10 @@
                 </div>
 
                 <div class="col-md-6 mb-2">
-                    <strong>Admissão:</strong> {{ vaga()?.dataAdmissao || 'N/D' }}
+                    <strong>Admissão:</strong> {{ vaga()?.dataAdmissao | dateDisplayPipe }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Demissão:</strong> {{ vaga()?.dataDemissao || 'N/D' }}
+                    <strong>Demissão:</strong> {{ vaga()?.dataDemissao | dateDisplayPipe }}
                 </div>
 
                 <div class="col-md-6 mb-2">
@@ -55,12 +82,11 @@
                     <strong>Saída:</strong> {{ vaga()?.horarioSaida | timeDisplayPipe }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Optante VT:</strong> {{ vaga()?.optanteVT != null ? (vaga()?.optanteVT ? 'Sim' : 'Não') :
-                    'N/D' }}
+                    <strong>Optante VT:</strong> {{ vaga()?.optanteVT != null ? (vaga()?.optanteVT ? 'Sim' : 'Não') : 'N/D' }}
                 </div>
 
             </div>
-            <button (click)="onEditarVaga()" class="btn btn-primary mt-2">
+            <button (click)="onEditarVaga()" class="btn btn-primary mt-3"> 
                 Editar
             </button>
         </div>
