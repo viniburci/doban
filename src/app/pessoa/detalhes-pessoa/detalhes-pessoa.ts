@@ -70,7 +70,6 @@ export class DetalhesPessoa implements OnInit {
   editarVaga(event: any) {
     this.toggleRegistrarVaga();
     let vaga = this.vagasPessoa()?.find(v => v.id === event);
-    console.log('Editar vaga event: ', event, " vaga: ", vaga);
     if (vaga) {
       this.editVaga.set(vaga);
     }
@@ -83,7 +82,6 @@ export class DetalhesPessoa implements OnInit {
   }
   
   updateComponent() {
-    console.log("updateComponent chamado");
     const id = this.pessoaId();
     this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
       this.vagasPessoa.set(data);

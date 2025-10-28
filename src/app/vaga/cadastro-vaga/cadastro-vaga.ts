@@ -68,7 +68,6 @@ export class CadastroVaga implements OnInit {
 
   patchForm() {
     this.editMode.set(!!this.editVaga());
-    console.log("editVaga: " + JSON.stringify(this.editVaga(), null, 2));
     if (this.editVaga() != null) {
       const vagaFormatada: VagaFormData = {
         ...this.editVaga(),
@@ -79,7 +78,6 @@ export class CadastroVaga implements OnInit {
         horarioSaida: this.editVaga()?.horarioSaida ? this.dataService.convertToLocalTime(this.editVaga()?.horarioSaida!) : null,
       } as VagaFormData;
       this.form.patchValue(vagaFormatada || {});
-      console.log("Form patched with: ", vagaFormatada);
     }
   }
 
@@ -102,12 +100,9 @@ export class CadastroVaga implements OnInit {
       horarioSaida: raw.horarioSaida ? this.dataService.formatTimeForBackend(raw.horarioSaida) : null
     }
 
-    console.log("Cleaned data: ", cleaned);
-
     if (this.editMode()) {
       this.vagaService.atualizarVaga(Number(cleaned.id), cleaned as VagaFormData).subscribe({
         next: (response) => {
-          console.log('Vaga atualizada com sucesso:', response);
           this.updated.emit(true);
           queueMicrotask(() => {
             this.onCloseForm();
@@ -121,7 +116,6 @@ export class CadastroVaga implements OnInit {
     } else {
       this.vagaService.criarVaga(Number(this.pessoaId()), cleaned as VagaFormData).subscribe({
         next: (response) => {
-          console.log('Vaga criada com sucesso:', response);
           this.updated.emit(true);
           queueMicrotask(() => {
             this.onCloseForm();
