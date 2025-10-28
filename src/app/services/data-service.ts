@@ -70,5 +70,4 @@ export class DataService {
     // Retorna nulo ou o valor original se o formato não for o esperado (evitando erros)
     return null;
   }
-
 }

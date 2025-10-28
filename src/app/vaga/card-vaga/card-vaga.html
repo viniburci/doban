@@ -49,10 +49,10 @@
                 </div>
 
                 <div class="col-md-6 mb-2">
-                    <strong>Entrada:</strong> {{ vaga()?.horarioEntrada || 'N/D' }}
+                    <strong>Entrada:</strong> {{ vaga()?.horarioEntrada | timeDisplayPipe }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Saída:</strong> {{ vaga()?.horarioSaida || 'N/D' }}
+                    <strong>Saída:</strong> {{ vaga()?.horarioSaida | timeDisplayPipe }}
                 </div>
                 <div class="col-md-6 mb-2">
                     <strong>Optante VT:</strong> {{ vaga()?.optanteVT != null ? (vaga()?.optanteVT ? 'Sim' : 'Não') :
