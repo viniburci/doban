@@ -43,6 +43,7 @@ export class DetalhesPessoa implements OnInit {
         this.convertDatesToBr();
       });
       this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
+        data.sort((a,b) => (a.dataAdmissao ?? '') < (b.dataAdmissao ?? '') ? 1 : -1);
         this.vagasPessoa.set(data);
       })
     } else {
@@ -84,6 +85,7 @@ export class DetalhesPessoa implements OnInit {
   updateComponent() {
     const id = this.pessoaId();
     this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
+      data.sort((a,b) => (a.dataAdmissao ?? '') < (b.dataAdmissao ?? '') ? 1 : -1);
       this.vagasPessoa.set(data);
     })
   }
@@ -91,7 +93,4 @@ export class DetalhesPessoa implements OnInit {
   handleOnlyClose() {
     this.toggleRegistrarVaga();
   }
-
-
-
 }
