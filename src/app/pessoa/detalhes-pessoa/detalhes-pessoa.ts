@@ -64,6 +64,7 @@ export class DetalhesPessoa implements OnInit {
   }
 
   toggleRegistrarVaga() {
+    this.editVaga.set(null);
     this.showRegistrarVaga.set(!this.showRegistrarVaga());
     this.cdr.detectChanges();
   }

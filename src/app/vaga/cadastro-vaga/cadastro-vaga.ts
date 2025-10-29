@@ -5,6 +5,7 @@ import { TitleCasePipe } from '@angular/common';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { VagaService } from '../../services/vaga-service';
 import { DataService } from '../../services/data-service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-cadastro-vaga',
@@ -18,6 +19,7 @@ export class CadastroVaga implements OnInit {
   private fb = inject(FormBuilder);
   private vagaService = inject(VagaService);
   private dataService = inject(DataService);
+  private destroy$ = new Subject<void>();
 
   pessoaId = input<string | null>(null);
   editMode = signal<boolean>(false);
@@ -35,7 +37,6 @@ export class CadastroVaga implements OnInit {
 
   constructor() {
     effect(() => {
-      console.log("efecto vagaId: " + this.editVaga()?.id);
       this.patchForm();
     });
   }
@@ -68,6 +69,10 @@ export class CadastroVaga implements OnInit {
 
   patchForm() {
     this.editMode.set(!!this.editVaga());
+    if (this.editVaga() == null) {
+      this.form.reset();
+      return;
+    }
     if (this.editVaga() != null) {
       const vagaFormatada: VagaFormData = {
         ...this.editVaga(),
@@ -100,32 +105,20 @@ export class CadastroVaga implements OnInit {
       horarioSaida: raw.horarioSaida ? this.dataService.formatTimeForBackend(raw.horarioSaida) : null
     }
 
-    if (this.editMode()) {
-      this.vagaService.atualizarVaga(Number(cleaned.id), cleaned as VagaFormData).subscribe({
-        next: (response) => {
-          this.updated.emit(true);
-          queueMicrotask(() => {
-            this.onCloseForm();
-          });
+    const request$ = this.editVaga()
+      ? this.vagaService.atualizarVaga(Number(cleaned.id), cleaned)
+      : this.vagaService.criarVaga(Number(this.pessoaId()), cleaned);
+
+    request$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.updated.emit(true); // 🔹 Avise o pai que terminou
         },
         error: (error) => {
-          console.error('Erro ao atualizar vaga:', error);
+          console.error('Erro ao salvar vaga:', error);
         }
       });
-      return;
-    } else {
-      this.vagaService.criarVaga(Number(this.pessoaId()), cleaned as VagaFormData).subscribe({
-        next: (response) => {
-          this.updated.emit(true);
-          queueMicrotask(() => {
-            this.onCloseForm();
-          });
-        },
-        error: (error) => {
-          console.error('Erro ao criar vaga:', error);
-        }
-      });
-    }
   }
 
 }
