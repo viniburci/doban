@@ -1,7 +1,8 @@
-export interface RecursoCelularResponseDTO {
-  id: number;
+import { Recurso } from "./recurso.model";
+
+export interface RecursoCelularResponseDTO extends Recurso {
+  celularId: string;
   nomePessoa: string;
   modeloCelular: string;
-  dataEntrega: string; // Data em formato string
-  dataDevolucao: string; // Data em formato string
+  imei: string;
 }

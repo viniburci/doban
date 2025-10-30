@@ -1,6 +1,5 @@
-export interface RecursoCelularRequestDTO {
+import { Recurso } from "./recurso.model";
+
+export interface RecursoCelularRequestDTO extends Recurso {
   celularId: number;
-  pessoaId: number;
-  dataEntrega: string; // Data em formato string
-  dataDevolucao: string; // Data em formato string
 }

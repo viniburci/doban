@@ -1,6 +1,5 @@
-export interface RecursoCarroRequestDTO {
+import { Recurso } from "./recurso.model";
+
+export interface RecursoCarroRequestDTO extends Recurso {
   carroId: number;
-  pessoaId: number;
-  dataEntrega: string;
-  dataDevolucao: string;
 }

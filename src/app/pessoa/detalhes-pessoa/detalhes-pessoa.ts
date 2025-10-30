@@ -9,10 +9,13 @@ import { ScrollOnRenderDirective } from '../../directives/scroll-on-render-direc
 import { VagaFormData } from '../../entities/vagaFormData.model';
 import { VagaService } from '../../services/vaga-service';
 import { CardVaga } from "../../vaga/card-vaga/card-vaga";
+import { RecursoCelularResponseDTO } from '../../entities/recursoCelularResponseDTO.model';
+import { RecursoService } from '../../services/recurso-service';
+import { RecursoCelular } from "../../recursos/recurso-celular/recurso-celular";
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, RecursoCelular],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })
@@ -21,6 +24,7 @@ export class DetalhesPessoa implements OnInit {
   private pessoaService = inject(PessoaService);
   private vagaService = inject(VagaService);
   private dataService = inject(DataService);
+  private recursoService = inject(RecursoService);
   private cdr = inject(ChangeDetectorRef);
 
   pessoaId = input<string | null>(null);
@@ -35,6 +39,8 @@ export class DetalhesPessoa implements OnInit {
 
   showRegistrarVaga = signal<boolean>(false);
 
+  celularesList = signal<RecursoCelularResponseDTO[] | null>(null);
+
   ngOnInit() {
     const id = this.pessoaId();
     if (id && !isNaN(Number(id))) {
@@ -46,6 +52,10 @@ export class DetalhesPessoa implements OnInit {
         data.sort((a,b) => (a.dataAdmissao ?? '') < (b.dataAdmissao ?? '') ? 1 : -1);
         this.vagasPessoa.set(data);
       })
+      this.recursoService.getRecursoCelularByPessoaId(+id).subscribe(data => {
+        this.celularesList.set(data);
+        console.log(data);
+      });
     } else {
       this.errorMessage = 'Id inválido.'
     }

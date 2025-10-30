@@ -29,6 +29,10 @@ export class RecursoService {
     return this.http.get<RecursoCelularResponseDTO>(`${this.baseUrl}/celulares/${id}`);
   }
 
+  getRecursoCelularByPessoaId(pessoaId: number): Observable<RecursoCelularResponseDTO[]> {
+    return this.http.get<RecursoCelularResponseDTO[]>(`${this.baseUrl}/celulares/pessoa/${pessoaId}`);
+  }
+
   registrarDevolucaoCelular(id: number, dto: any): Observable<RecursoCelularResponseDTO> {
     return this.http.put<RecursoCelularResponseDTO>(`${this.baseUrl}/celulares/${id}/devolucao`, dto);
   }
