@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RecursoCelularRequestDTO } from '../../../entities/recursoCelularRequestDTO.model';
 
@@ -8,9 +8,10 @@ import { RecursoCelularRequestDTO } from '../../../entities/recursoCelularReques
   templateUrl: './cadastro-recurso-celular.html',
   styleUrl: './cadastro-recurso-celular.css'
 })
-export class CadastroRecursoCelular implements OnInit {
+export class CadastroRecursoCelular implements OnInit, AfterViewInit {
 
   private fb = inject(FormBuilder);
+  private cdRef = inject(ChangeDetectorRef);
 
   editMode = signal<boolean>(false);
   pessoaId = input<string | null>(null);
@@ -33,5 +34,9 @@ export class CadastroRecursoCelular implements OnInit {
 
   onCloseForm() {
     this.closeForm.emit();
+  }
+
+  ngAfterViewInit() {
+    this.cdRef.detectChanges();
   }
 }
