@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Celular } from '../entities/celular.model';
 import { CelularFormData } from '../entities/celularFormData.model';
 
 @Injectable({

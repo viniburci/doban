@@ -1,6 +1,6 @@
 export interface Recurso {
-  id: number;
-  dataEntrega: string;
-  dataDevolucao: string;
-  pessoaId: number;
+  id?: string | null;
+  pessoaId: string | null;
+  dataEntrega: string | null;
+  dataDevolucao: string | null;
 }

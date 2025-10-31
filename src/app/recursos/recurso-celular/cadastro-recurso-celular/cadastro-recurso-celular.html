@@ -1,0 +1,62 @@
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">{{editMode() ? 'Atualizar Recurso Celular' : 'Cadastro de Recurso Celular'}}</h4>
+                    <small class="text-white-50">Preencha os dados abaixo</small>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cliente</label>
+                                <input name="cliente" type="text" class="form-control" placeholder=""
+                                    formControlName="cliente">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Setor</label>
+                                <input name="setor" type="text" class="form-control" placeholder=""
+                                    formControlName="setor">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cargo</label>
+                                <input name="cargo" type="text" class="form-control" placeholder=""
+                                    formControlName="cargo">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cidade</label>
+                                <input name="cidade" type="text" class="form-control" placeholder=""
+                                    formControlName="cidade">
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data Admissão</label>
+                                <input name="dataAdmissao" type="text" class="form-control"
+                                    placeholder="dd/mm/aaaa     " mask="00/00/0000" formControlName="dataAdmissao">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data Demissão</label>
+                                <input name="dataDemissao" type="text" class="form-control" placeholder="dd/mm/aaaa"
+                                    mask="00/00/0000" formControlName="dataDemissao">
+                            </div>
+
+                        </div>
+                        <div class="col-12 mt-3 d-flex justify-content-end">
+                            <button type="button" (click)="onCloseForm()" class="btn btn-danger me-2">Fechar</button>
+                            <button type="submit" class="btn btn-primary">
+                                {{ editMode() ? 'Atualizar' : 'Salvar' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,10 +12,11 @@ import { CardVaga } from "../../vaga/card-vaga/card-vaga";
 import { RecursoCelularResponseDTO } from '../../entities/recursoCelularResponseDTO.model';
 import { RecursoService } from '../../services/recurso-service';
 import { CardRecursoCelular } from "../../recursos/recurso-celular/card-recurso-celular/card-recurso-celular";
+import { CadastroRecursoCelular } from "../../recursos/recurso-celular/cadastro-recurso-celular/cadastro-recurso-celular";
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })
@@ -28,17 +29,12 @@ export class DetalhesPessoa implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   pessoaId = input<string | null>(null);
-
   errorMessage: string | null = null;
-
   pessoa: PessoaFormData | null = null;
-
   vagasPessoa = signal<VagaFormData[] | null>(null);
-
   editVaga = signal<VagaFormData | null>(null);
-
   showRegistrarVaga = signal<boolean>(false);
-
+  showRegistrarRecursoCelular = signal<boolean>(false);
   celularesList = signal<RecursoCelularResponseDTO[] | null>(null);
 
   ngOnInit() {
@@ -79,6 +75,12 @@ export class DetalhesPessoa implements OnInit {
     this.cdr.detectChanges();
   }
 
+  toggleRegistrarCelular() {
+    this.editVaga.set(null);
+    this.showRegistrarRecursoCelular.set(!this.showRegistrarRecursoCelular());
+    this.cdr.detectChanges();
+  }
+
   editarVaga(event: any) {
     this.toggleRegistrarVaga();
     let vaga = this.vagasPessoa()?.find(v => v.id === event);
@@ -90,7 +92,7 @@ export class DetalhesPessoa implements OnInit {
   handleUpdateAndClose() {
     this.updateComponent();
 
-    this.toggleRegistrarVaga();
+    this.handleOnlyClose();
   }
   
   updateComponent() {
@@ -102,6 +104,7 @@ export class DetalhesPessoa implements OnInit {
   }
 
   handleOnlyClose() {
-    this.toggleRegistrarVaga();
+    this.showRegistrarVaga.set(false);
+    this.showRegistrarRecursoCelular.set(false);
   }
 }

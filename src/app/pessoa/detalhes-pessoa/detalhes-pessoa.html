@@ -1,9 +1,10 @@
 <div class="container-fluid">
+    <!-- Início da linha -->
     <div class="row">
+        <!-- Coluna para detalhes da pessoa -->
         <div class="col-md-3">
-
+            <!-- Exibição de Pessoa (se existirem dados) -->
             @if (pessoa != null && errorMessage == null) {
-
             <div class="card w-100">
                 <div class="card-body">
                     <h5 class="card-title">{{ pessoa.nome || 'Nome não disponível' }}</h5>
@@ -42,22 +43,24 @@
                     </a>
                 </div>
             </div>
-            } @else if (errorMessage != null) {
+            }
+            <!-- Exibição de erro -->
+            @else if (errorMessage != null) {
             <div class="alert alert-danger" role="alert">
                 {{ errorMessage }}
             </div>
             }
-
         </div>
 
+        <!-- Coluna para as Vagas -->
         <div class="col-md-6">
             @for(vaga of vagasPessoa(); track vaga.id) {
-            <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
+                <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
             }
             <button class="btn btn-primary" (click)="toggleRegistrarVaga()">Registrar Vaga</button>
         </div>
 
-
+        <!-- Coluna para Botões de Impressão -->
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
@@ -69,18 +72,33 @@
         </div>
     </div>
 
-    <div class="col-md-6">
-        @for(recursoCelular of celularesList(); track recursoCelular.id) {
-        <app-card-recurso-celular [recurso]="recursoCelular"></app-card-recurso-celular>
-        }
+    <!-- Coluna para os Recursos Celulares -->
+    <div class="row">
+        <!-- Cada card ocupará 4 colunas em telas médias (col-md-4) para caber 3 cards na mesma linha -->
+        <div class="col-md-4 mb-4">
+            @for(recursoCelular of celularesList(); track recursoCelular.id) {
+                <app-card-recurso-celular [recurso]="recursoCelular"></app-card-recurso-celular>
+            }
+            <button class="btn btn-primary" (click)="toggleRegistrarCelular()">Registrar Celular</button>
+        </div>
+        <div class="col-md-4 mb-4">
+            recurso carro
+        </div>
     </div>
 
+    <!-- Formulário de Registro de Vaga -->
     @if(showRegistrarVaga()) {
-
-    <hr>
-    <app-cadastro-vaga #vagaForm appScrollOnRender (updated)="handleUpdateAndClose()"
-        [editVaga]="editVaga() ? editVaga() : null" (close)="handleOnlyClose()" (closeForm)="handleOnlyClose()"
-        [pessoaId]="pessoaId()"></app-cadastro-vaga>
+        <hr>
+        <app-cadastro-vaga #vagaForm appScrollOnRender (updated)="handleUpdateAndClose()"
+            [editVaga]="editVaga() ? editVaga() : null" (close)="handleOnlyClose()" (closeForm)="handleOnlyClose()"
+            [pessoaId]="pessoaId()">
+        </app-cadastro-vaga>
     }
 
+    @if (showRegistrarRecursoCelular()) {
+        <hr>
+        <app-cadastro-recurso-celular #recursoCelularForm appScrollOnRender
+            (closeForm)="handleOnlyClose()" (close)="handleOnlyClose()" [pessoaId]="pessoaId()">
+        </app-cadastro-recurso-celular>
+    }
 </div>

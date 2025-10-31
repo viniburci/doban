@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RecursoCarroResponseDTO } from '../entities/recursoCarroResponseDTO.model';
 import { RecursoCarroRequestDTO } from '../entities/recursoCarroRequestDTO.model';
-import { RecursoCarro } from '../entities/recursoCarro.model';
 import { RecursoCelularRequestDTO } from '../entities/recursoCelularRequestDTO.model';
 import { RecursoCelularResponseDTO } from '../entities/recursoCelularResponseDTO.model';
 
