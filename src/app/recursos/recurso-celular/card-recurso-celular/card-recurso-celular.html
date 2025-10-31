@@ -1,0 +1,64 @@
+<div class="card" 
+     [class.border-success]="isRecursoAtivo()" 
+     [class.border-danger]="!isRecursoAtivo()" 
+     style="width: 100%;">
+    
+    <div class="card-header-styled"
+         [class.bg-success-subtle]="isRecursoAtivo()" 
+         [class.bg-danger-subtle]="!isRecursoAtivo()"
+         (click)="toggleCollapse()" 
+         [attr.aria-expanded]="!isCollapsed()"
+         [attr.aria-controls]="'recursoDetalhes-' + recurso()?.id" 
+         tabindex="0" 
+         role="button">
+
+        <div class="d-flex justify-content-between align-items-center card-header-clickable">
+            
+            <h5 class="card-title flex-grow-1 mb-0 me-3 text-truncate">
+                {{ recurso()?.modeloCelular || 'Modelo não disponível' }}
+            </h5>
+
+            <h6 class="card-subtitle text-muted text-end mb-0 d-none d-sm-block">
+                {{ recurso()?.dataEntrega | dateDisplayPipe }} - {{recurso()?.dataDevolucao | dateDisplayPipe}}
+            </h6>
+            
+            <i class="bi ms-3" [class]="isCollapsed() ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
+        </div>
+        
+        <h6 class="card-subtitle mb-0 text-muted mt-1">
+             {{ recurso()?.imei || 'Modelo não disponível' }}
+             
+             <span class="d-sm-none">
+                <br>{{ recurso()?.dataEntrega | dateDisplayPipe }} - {{recurso()?.dataDevolucao | dateDisplayPipe}}
+             </span>
+        </h6>
+        
+    </div>
+    
+    <div class="card-content-area"> 
+
+        <div class="collapse" [class.show]="!isCollapsed()" id="recursoDetalhes-{{ recurso()?.id }}">
+            
+            <div class="row nowrap-details"> 
+                
+                <div class="col-md-6 mb-2">
+                    <strong>Celular ID:</strong> {{ recurso()?.celularId || 'N/D' }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>IMEI:</strong> {{ recurso()?.imei || 'N/D' }}
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <strong>Data de Entrega:</strong> {{ recurso()?.dataEntrega | dateDisplayPipe }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Data de Devolução:</strong> {{ recurso()?.dataDevolucao | dateDisplayPipe }}
+                </div>
+
+            </div>
+            <button (click)="onEditarRecurso()" class="btn btn-primary mt-3"> 
+                Editar
+            </button>
+        </div>
+    </div>
+</div>

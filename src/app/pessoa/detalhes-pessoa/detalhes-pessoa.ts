@@ -11,11 +11,11 @@ import { VagaService } from '../../services/vaga-service';
 import { CardVaga } from "../../vaga/card-vaga/card-vaga";
 import { RecursoCelularResponseDTO } from '../../entities/recursoCelularResponseDTO.model';
 import { RecursoService } from '../../services/recurso-service';
-import { RecursoCelular } from "../../recursos/recurso-celular/recurso-celular";
+import { CardRecursoCelular } from "../../recursos/recurso-celular/card-recurso-celular/card-recurso-celular";
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, RecursoCelular],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })

@@ -52,11 +52,11 @@
 
         <div class="col-md-6">
             @for(vaga of vagasPessoa(); track vaga.id) {
-                <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
+            <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
             }
             <button class="btn btn-primary" (click)="toggleRegistrarVaga()">Registrar Vaga</button>
         </div>
-        
+
 
         <div class="col-md-3">
             <div class="card">
@@ -69,14 +69,17 @@
         </div>
     </div>
 
-    {{celularesList() | json}}
-
-    <app-recurso-celular></app-recurso-celular>
+    <div class="col-md-6">
+        @for(recursoCelular of celularesList(); track recursoCelular.id) {
+        <app-card-recurso-celular [recurso]="recursoCelular"></app-card-recurso-celular>
+        }
+    </div>
 
     @if(showRegistrarVaga()) {
 
     <hr>
-    <app-cadastro-vaga #vagaForm appScrollOnRender (updated)="handleUpdateAndClose()" [editVaga]="editVaga() ? editVaga() : null" (close)="handleOnlyClose()" (closeForm)="handleOnlyClose()"
+    <app-cadastro-vaga #vagaForm appScrollOnRender (updated)="handleUpdateAndClose()"
+        [editVaga]="editVaga() ? editVaga() : null" (close)="handleOnlyClose()" (closeForm)="handleOnlyClose()"
         [pessoaId]="pessoaId()"></app-cadastro-vaga>
     }
 
