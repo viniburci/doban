@@ -25,6 +25,7 @@ export class CadastroRecursoCelular implements OnInit {
 
   pessoaId = input<string | null>(null);
   editMode = input<boolean>(false);
+  updated = output<void>();
   listaCelulares = signal<CelularFormData[] | null>(null);
   closeForm = output<void>();
 
@@ -53,6 +54,7 @@ export class CadastroRecursoCelular implements OnInit {
     request$.subscribe({
       next: (response: RecursoCelularResponseDTO) => {
         console.log('Recurso celular criado com sucesso:', response);
+        this.updated.emit();
         this.onCloseForm();
       },
       error: (error) => {

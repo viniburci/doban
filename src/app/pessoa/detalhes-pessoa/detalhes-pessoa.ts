@@ -40,18 +40,7 @@ export class DetalhesPessoa implements OnInit {
   ngOnInit() {
     const id = this.pessoaId();
     if (id && !isNaN(Number(id))) {
-      this.pessoaService.buscarPessoa(Number(id)).subscribe(data => {
-        this.pessoa = data;
-        this.convertDatesToBr();
-      });
-      this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
-        data.sort((a,b) => (a.dataAdmissao ?? '') < (b.dataAdmissao ?? '') ? 1 : -1);
-        this.vagasPessoa.set(data);
-      })
-      this.recursoService.getRecursoCelularByPessoaId(+id).subscribe(data => {
-        this.celularesList.set(data);
-        console.log(data);
-      });
+      this.updateComponent();
     } else {
       this.errorMessage = 'Id inválido.'
     }
@@ -97,10 +86,18 @@ export class DetalhesPessoa implements OnInit {
   
   updateComponent() {
     const id = this.pessoaId();
-    this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
-      data.sort((a,b) => (a.dataAdmissao ?? '') < (b.dataAdmissao ?? '') ? 1 : -1);
-      this.vagasPessoa.set(data);
-    })
+    this.pessoaService.buscarPessoa(Number(id)).subscribe(data => {
+        this.pessoa = data;
+        this.convertDatesToBr();
+      });
+      this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
+        data.sort((a,b) => (a.dataAdmissao ?? '') > (b.dataAdmissao ?? '') ? 1 : -1);
+        this.vagasPessoa.set(data);
+      })
+      this.recursoService.getRecursoCelularByPessoaId(Number(id)).subscribe(data => {
+        data.sort((a,b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
+        this.celularesList.set(data);
+      });
   }
 
   handleOnlyClose() {
