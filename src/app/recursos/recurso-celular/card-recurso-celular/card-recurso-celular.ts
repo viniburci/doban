@@ -1,10 +1,11 @@
 import { Component, computed, input, output, signal } from '@angular/core';
 import { RecursoCelularResponseDTO } from '../../../entities/recursoCelularResponseDTO.model';
 import { DateDisplayPipe } from "../../../pipes/date-display-pipe";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-card-recurso-celular',
-  imports: [DateDisplayPipe],
+  imports: [DateDisplayPipe, RouterLink],
   templateUrl: './card-recurso-celular.html',
   styleUrl: './card-recurso-celular.css'
 })
