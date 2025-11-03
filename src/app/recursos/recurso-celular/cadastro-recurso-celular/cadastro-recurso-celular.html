@@ -10,41 +10,26 @@
                     <form [formGroup]="form" (submit)="onSubmit()" novalidate>
                         <div class="row g-3">
 
-                            <div class="col-md-6">
-                                <label class="form-label">Cliente</label>
-                                <input name="cliente" type="text" class="form-control" placeholder=""
-                                    formControlName="cliente">
+                            <div class="form-floating">
+                                <select class="form-select" formControlName="celularId"
+                                    aria-label="Floating label select example">
+                                    @for(celular of listaCelulares() || []; track celular.id) {
+                                        <option [value]="celular.id">{{celular.modelo}} - {{celular.imei}}</option>
+                                    }
+                                </select>
+                                <label for="floatingSelect">Celular</label>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Setor</label>
-                                <input name="setor" type="text" class="form-control" placeholder=""
-                                    formControlName="setor">
+                                <label class="form-label">Data Entrega</label>
+                                <input name="cargo" type="text" class="form-control" placeholder="DD/MM/AAAA"
+                                    formControlName="dataEntrega" mask="00/00/0000">
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Cargo</label>
-                                <input name="cargo" type="text" class="form-control" placeholder=""
-                                    formControlName="cargo">
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Cidade</label>
-                                <input name="cidade" type="text" class="form-control" placeholder=""
-                                    formControlName="cidade">
-                            </div>
-
-
-                            <div class="col-md-6">
-                                <label class="form-label">Data Admissão</label>
-                                <input name="dataAdmissao" type="text" class="form-control"
-                                    placeholder="dd/mm/aaaa     " mask="00/00/0000" formControlName="dataAdmissao">
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Data Demissão</label>
-                                <input name="dataDemissao" type="text" class="form-control" placeholder="dd/mm/aaaa"
-                                    mask="00/00/0000" formControlName="dataDemissao">
+                                <label class="form-label">Data Devolução</label>
+                                <input name="cidade" type="text" class="form-control" placeholder="DD/MM/AAAA"
+                                    formControlName="dataDevolucao" mask="00/00/0000">
                             </div>
 
                         </div>
