@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CelularService } from '../../../services/celular-service';
 import { RecursoCelularRequestDTO } from '../../../entities/recursoCelularRequestDTO.model';
@@ -6,6 +6,7 @@ import { RecursoCelularResponseDTO } from '../../../entities/recursoCelularRespo
 import { CelularFormData } from '../../../entities/celularFormData.model';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { DataService } from '../../../services/data-service';
+import { RecursoService } from '../../../services/recurso-service';
 
 @Component({
   selector: 'app-cadastro-recurso-celular',
@@ -14,15 +15,16 @@ import { DataService } from '../../../services/data-service';
   templateUrl: './cadastro-recurso-celular.html',
   styleUrl: './cadastro-recurso-celular.css'
 })
-export class CadastroRecursoCelular implements OnInit, AfterViewInit {
+export class CadastroRecursoCelular implements OnInit {
 
   private fb = inject(FormBuilder);
   private cdRef = inject(ChangeDetectorRef);
+  private recursoService = inject(RecursoService);
   private celularService = inject(CelularService);
   private dataService = inject(DataService);
 
-  editMode = signal<boolean>(false);
   pessoaId = input<string | null>(null);
+  editMode = input<boolean>(false);
   listaCelulares = signal<CelularFormData[] | null>(null);
   closeForm = output<void>();
 
@@ -39,19 +41,28 @@ export class CadastroRecursoCelular implements OnInit, AfterViewInit {
   }
 
   onSubmit() {
-    console.log({...this.form.value,
-        pessoaId: this.pessoaId(), 
-        dataEntrega: this.dataService.convertDateToISO(this.form.value.dataEntrega!),
-        dataDevolucao: this.dataService.convertDateToISO(this.form.value.dataDevolucao!)
-      } as RecursoCelularRequestDTO);
+    const cleaned = ({
+      ...this.form.value,
+      pessoaId: this.pessoaId(),
+      dataEntrega: this.dataService.convertDateToISO(this.form.value.dataEntrega!),
+      dataDevolucao: this.dataService.convertDateToISO(this.form.value.dataDevolucao!)
+    } as RecursoCelularRequestDTO);
+
+    const request$ = this.recursoService.createRecursoCelular(cleaned);
+
+    request$.subscribe({
+      next: (response: RecursoCelularResponseDTO) => {
+        console.log('Recurso celular criado com sucesso:', response);
+        this.onCloseForm();
+      },
+      error: (error) => {
+        console.error('Erro ao criar recurso celular:', error);
+      }
+    });
 
   }
 
   onCloseForm() {
     this.closeForm.emit();
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => this.cdRef.detectChanges());
   }
 }
