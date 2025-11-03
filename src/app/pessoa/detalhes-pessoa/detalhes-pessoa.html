@@ -77,7 +77,7 @@
         <!-- Cada card ocupará 4 colunas em telas médias (col-md-4) para caber 3 cards na mesma linha -->
         <div class="col-md-4 mb-4">
             @for(recursoCelular of celularesList(); track recursoCelular.id) {
-            <app-card-recurso-celular [recurso]="recursoCelular"></app-card-recurso-celular>
+                <app-card-recurso-celular [recurso]="recursoCelular" (updated)="updateComponent()"></app-card-recurso-celular>
             }
             <button class="btn btn-primary" (click)="toggleRegistrarCelular()">Registrar Celular</button>
         </div>

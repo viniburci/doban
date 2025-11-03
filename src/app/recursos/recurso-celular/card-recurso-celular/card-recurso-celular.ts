@@ -1,7 +1,8 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { RecursoCelularResponseDTO } from '../../../entities/recursoCelularResponseDTO.model';
 import { DateDisplayPipe } from "../../../pipes/date-display-pipe";
 import { RouterLink } from "@angular/router";
+import { RecursoService } from '../../../services/recurso-service';
 
 @Component({
   selector: 'app-card-recurso-celular',
@@ -12,7 +13,10 @@ import { RouterLink } from "@angular/router";
 export class CardRecursoCelular {
   recurso = input<RecursoCelularResponseDTO | null>(null);
 
+  private recursoService = inject(RecursoService);
+
   editarRecurso = output<string>();
+  updated = output<void>();
 
   isCollapsed = signal(true);
 
@@ -66,6 +70,21 @@ export class CardRecursoCelular {
 
     if (recursoId) {
       this.editarRecurso.emit(recursoId.toString());
+    }
+  }
+
+  onDeletarRecurso() {
+    const recursoId = this.recurso()?.id;
+    if (recursoId) {
+      this.recursoService.deleteRecursoCelular(+recursoId).subscribe({
+        next: () => {
+          console.log('Recurso celular deletado com sucesso:', recursoId);
+          this.updated.emit();
+        },
+        error: (error) => {
+          console.error('Erro ao deletar recurso celular:', error);
+        }
+      });
     }
   }
 }
