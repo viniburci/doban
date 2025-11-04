@@ -91,6 +91,8 @@ export class CadastroVaga implements OnInit {
   }
 
   onCloseForm() {
+    this.editMode.set(false);
+    this.form.reset();
     this.closeForm.emit();
   }
 

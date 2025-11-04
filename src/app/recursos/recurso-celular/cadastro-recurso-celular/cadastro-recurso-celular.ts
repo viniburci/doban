@@ -28,6 +28,7 @@ export class CadastroRecursoCelular implements OnInit {
   updated = output<void>();
   listaCelulares = signal<CelularFormData[] | null>(null);
   closeForm = output<void>();
+  errorMessage = signal<string | null>(null);
 
   form!: FormGroup<{ [K in keyof RecursoCelularRequestDTO]: FormControl<RecursoCelularRequestDTO[K]> }>;
 
@@ -66,19 +67,17 @@ export class CadastroRecursoCelular implements OnInit {
 
     request$.subscribe({
       next: (response: RecursoCelularResponseDTO) => {
-        console.log('Response', response);
         this.updated.emit();
         this.onCloseForm();
       },
       error: (error) => {
-        console.error('Erro ao criar recurso celular:', error);
+        this.errorMessage.set('Erro ao salvar recurso de celular: ' + (error.error?.message || error.message || 'Erro desconhecido.'));
       }
     });
   }
 
   patchForm() {
     this.editMode.set(!!this.editRecurso());
-    console.log('Edit mode:', this.editMode());
     if (this.editRecurso() == null) {
       this.form.reset();
       return;
@@ -92,7 +91,6 @@ export class CadastroRecursoCelular implements OnInit {
       } as RecursoCelularResponseDTO;
       this.form.patchValue(recursoFormatado || {});
     }
-    console.log('Form patched with:', this.form.value);
   }
 
   onCloseForm() {

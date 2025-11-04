@@ -66,7 +66,7 @@ export class DetalhesPessoa implements OnInit {
   }
 
   toggleRegistrarCelular() {
-    this.editVaga.set(null);
+    this.editRecursoCelular.set(null);
     this.showRegistrarRecursoCelular.set(!this.showRegistrarRecursoCelular());
     this.cdr.detectChanges();
   }
