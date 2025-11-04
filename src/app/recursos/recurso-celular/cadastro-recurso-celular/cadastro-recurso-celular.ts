@@ -50,6 +50,7 @@ export class CadastroRecursoCelular implements OnInit {
   }
 
   onSubmit() {
+    this.form.enable();
     const cleaned = ({
       ...this.form.value,
       pessoaId: this.pessoaId(),
@@ -91,9 +92,16 @@ export class CadastroRecursoCelular implements OnInit {
       } as RecursoCelularResponseDTO;
       this.form.patchValue(recursoFormatado || {});
     }
+    this.form.get('id')!.disable();
+    this.form.get('celularId')!.disable();
+    this.form.get('pessoaId')!.disable();
+    this.form.get('dataEntrega')!.disable();
   }
 
   onCloseForm() {
+    this.editMode.set(false);
+    this.form.reset();
+    this.form.enable();
     this.closeForm.emit();
   }
 }
