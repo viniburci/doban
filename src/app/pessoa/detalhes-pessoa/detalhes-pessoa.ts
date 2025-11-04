@@ -33,6 +33,7 @@ export class DetalhesPessoa implements OnInit {
   pessoa: PessoaFormData | null = null;
   vagasPessoa = signal<VagaFormData[] | null>(null);
   editVaga = signal<VagaFormData | null>(null);
+  editRecursoCelular = signal<RecursoCelularResponseDTO | null>(null);
   showRegistrarVaga = signal<boolean>(false);
   showRegistrarRecursoCelular = signal<boolean>(false);
   celularesList = signal<RecursoCelularResponseDTO[] | null>(null);
@@ -78,26 +79,34 @@ export class DetalhesPessoa implements OnInit {
     }
   }
 
+  editarRecursoCelular(event: any) {
+    this.toggleRegistrarCelular();
+    let recurso = this.celularesList()?.find(r => Number(r.id) === +event);
+    if (recurso) {
+      this.editRecursoCelular.set(recurso);
+    }
+  }
+
   handleUpdateAndClose() {
     this.updateComponent();
 
     this.handleOnlyClose();
   }
-  
+
   updateComponent() {
     const id = this.pessoaId();
     this.pessoaService.buscarPessoa(Number(id)).subscribe(data => {
-        this.pessoa = data;
-        this.convertDatesToBr();
-      });
-      this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
-        data.sort((a,b) => (a.dataAdmissao ?? '') > (b.dataAdmissao ?? '') ? 1 : -1);
-        this.vagasPessoa.set(data);
-      })
-      this.recursoService.getRecursoCelularByPessoaId(Number(id)).subscribe(data => {
-        data.sort((a,b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
-        this.celularesList.set(data);
-      });
+      this.pessoa = data;
+      this.convertDatesToBr();
+    });
+    this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
+      data.sort((a, b) => (a.dataAdmissao ?? '') > (b.dataAdmissao ?? '') ? 1 : -1);
+      this.vagasPessoa.set(data);
+    })
+    this.recursoService.getRecursoCelularByPessoaId(Number(id)).subscribe(data => {
+      data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
+      this.celularesList.set(data);
+    });
   }
 
   handleOnlyClose() {

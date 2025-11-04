@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, effect, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CelularService } from '../../../services/celular-service';
 import { RecursoCelularRequestDTO } from '../../../entities/recursoCelularRequestDTO.model';
@@ -18,21 +18,28 @@ import { RecursoService } from '../../../services/recurso-service';
 export class CadastroRecursoCelular implements OnInit {
 
   private fb = inject(FormBuilder);
-  private cdRef = inject(ChangeDetectorRef);
   private recursoService = inject(RecursoService);
   private celularService = inject(CelularService);
   private dataService = inject(DataService);
 
   pessoaId = input<string | null>(null);
-  editMode = input<boolean>(false);
+  editMode = signal<boolean>(false);
+  editRecurso = input<RecursoCelularResponseDTO | null>(null);
   updated = output<void>();
   listaCelulares = signal<CelularFormData[] | null>(null);
   closeForm = output<void>();
 
   form!: FormGroup<{ [K in keyof RecursoCelularRequestDTO]: FormControl<RecursoCelularRequestDTO[K]> }>;
 
+  constructor() {
+    effect(() => {
+      this.patchForm();
+    });
+  }
+
   ngOnInit() {
     this.form = this.fb.group({
+      id: new FormControl<string | null>(null),
       celularId: new FormControl<string | null>(null),
       pessoaId: new FormControl<string | null>(null),
       dataEntrega: new FormControl<string | null>(null),
@@ -49,11 +56,17 @@ export class CadastroRecursoCelular implements OnInit {
       dataDevolucao: this.dataService.convertDateToISO(this.form.value.dataDevolucao!)
     } as RecursoCelularRequestDTO);
 
-    const request$ = this.recursoService.createRecursoCelular(cleaned);
+    const devolucao = {
+      dataDevolucao: cleaned.dataDevolucao
+    }
+
+    const request$ = !this.editMode()
+      ? this.recursoService.createRecursoCelular(cleaned)
+      : this.recursoService.registrarDevolucaoCelular(Number(cleaned.id), devolucao);
 
     request$.subscribe({
       next: (response: RecursoCelularResponseDTO) => {
-        console.log('Recurso celular criado com sucesso:', response);
+        console.log('Response', response);
         this.updated.emit();
         this.onCloseForm();
       },
@@ -61,7 +74,25 @@ export class CadastroRecursoCelular implements OnInit {
         console.error('Erro ao criar recurso celular:', error);
       }
     });
+  }
 
+  patchForm() {
+    this.editMode.set(!!this.editRecurso());
+    console.log('Edit mode:', this.editMode());
+    if (this.editRecurso() == null) {
+      this.form.reset();
+      return;
+    }
+    if (this.editRecurso() != null) {
+      const recursoFormatado: RecursoCelularResponseDTO = {
+        ...this.editRecurso(),
+        id: this.editRecurso()?.id ?? null,
+        dataEntrega: this.editRecurso()?.dataEntrega ? this.dataService.convertISOToDateBR(this.editRecurso()!.dataEntrega) : null,
+        dataDevolucao: this.editRecurso()?.dataDevolucao ? this.dataService.convertISOToDateBR(this.editRecurso()!.dataDevolucao) : null,
+      } as RecursoCelularResponseDTO;
+      this.form.patchValue(recursoFormatado || {});
+    }
+    console.log('Form patched with:', this.form.value);
   }
 
   onCloseForm() {

@@ -5,6 +5,7 @@ import { RecursoCarroResponseDTO } from '../entities/recursoCarroResponseDTO.mod
 import { RecursoCarroRequestDTO } from '../entities/recursoCarroRequestDTO.model';
 import { RecursoCelularRequestDTO } from '../entities/recursoCelularRequestDTO.model';
 import { RecursoCelularResponseDTO } from '../entities/recursoCelularResponseDTO.model';
+import { DevolucaoDTO } from '../entities/devolucaoDTO.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,14 +33,13 @@ export class RecursoService {
     return this.http.get<RecursoCelularResponseDTO[]>(`${this.baseUrl}/celulares/pessoa/${pessoaId}`);
   }
 
-  registrarDevolucaoCelular(id: number, dto: any): Observable<RecursoCelularResponseDTO> {
-    return this.http.put<RecursoCelularResponseDTO>(`${this.baseUrl}/celulares/${id}/devolucao`, dto);
+  registrarDevolucaoCelular(recursoId: number, devolucaoDto: DevolucaoDTO): Observable<RecursoCelularResponseDTO> {
+    return this.http.put<RecursoCelularResponseDTO>(`${this.baseUrl}/celulares/${recursoId}/devolucao`, devolucaoDto);
   }
 
-  deleteRecursoCelular(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/celulares/${id}`);
+  deleteRecursoCelular(recursoId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/celulares/${recursoId}`);
   }
-
 
   getRecursosCarros(): Observable<RecursoCarroResponseDTO[]> {
     return this.http.get<RecursoCarroResponseDTO[]>(`${this.baseUrl}/carros`);
@@ -53,7 +53,7 @@ export class RecursoService {
     return this.http.get<RecursoCarroResponseDTO>(`${this.baseUrl}/carros/${id}`);
   }
 
-  registrarDevolucaoCarro(id: number, dto: any): Observable<RecursoCarroResponseDTO> {
+  registrarDevolucaoCarro(id: number, dto: DevolucaoDTO): Observable<RecursoCarroResponseDTO> {
     return this.http.put<RecursoCarroResponseDTO>(`${this.baseUrl}/carros/${id}/devolucao`, dto);
   }
 
