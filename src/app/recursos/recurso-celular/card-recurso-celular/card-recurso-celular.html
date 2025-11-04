@@ -59,9 +59,11 @@
             <button (click)="onEditarRecurso()" class="btn btn-primary mt-3 offset-6"> 
                 Editar
             </button>
-            <button (click)="onDeletarRecurso()" class="btn btn-danger mt-3 offset-1"> 
+            <button (click)="openDeleteConfirmation()" class="btn btn-danger mt-3 offset-1"> 
                 Deletar
             </button>
+
+            <app-confirm-dialog (confirmed)="onDeletarRecurso()"></app-confirm-dialog>
         </div>
     </div>
 </div>
