@@ -5,10 +5,11 @@ import { RouterLink } from "@angular/router";
 import { RecursoService } from '../../../services/recurso-service';
 import { Modal } from 'bootstrap';
 import { ConfirmDialog } from "../../../utils/confirm-dialog/confirm-dialog";
+import { ConfirmDeleteDirective } from '../../../directives/confirm-delete';
 
 @Component({
   selector: 'app-card-recurso-celular',
-  imports: [DateDisplayPipe, RouterLink, ConfirmDialog],
+  imports: [DateDisplayPipe, RouterLink, ConfirmDialog, ConfirmDeleteDirective],
   templateUrl: './card-recurso-celular.html',
   styleUrl: './card-recurso-celular.css'
 })
@@ -78,6 +79,14 @@ export class CardRecursoCelular {
   openDeleteConfirmation(): void {
     const modal = new Modal(document.getElementById('confirmModal')!);
     modal.show();
+  }
+
+  onConfirmDelete(event: boolean) {
+    if(event == true){
+      this.onDeletarRecurso()
+      console.log('onconfirmdelete true')
+    }
+    console.log('onconfirmdelete false')
   }
 
   onDeletarRecurso() {

@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -8,6 +8,7 @@ import { Component, output } from '@angular/core';
 })
 export class ConfirmDialog {
   
+  message = input("Você tem certeza?")
   confirmed = output<boolean>();
 
   close(confirmed: boolean): void {

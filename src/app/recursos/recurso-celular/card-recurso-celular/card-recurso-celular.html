@@ -59,7 +59,7 @@
             <button (click)="onEditarRecurso()" class="btn btn-primary mt-3 "> 
                 Editar Devolução
             </button>
-            <button (click)="openDeleteConfirmation()" class="btn btn-danger mt-3 offset-1"> 
+            <button appConfirmDelete (confirmedDelete)="onConfirmDelete($event)" class="btn btn-danger mt-3 offset-1"> 
                 Deletar
             </button>
 
