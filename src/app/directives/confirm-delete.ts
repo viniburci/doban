@@ -1,7 +1,5 @@
-import { ApplicationRef, ComponentFactoryResolver, ComponentRef, Directive, ElementRef, Injector, output, Renderer2, ViewContainerRef } from '@angular/core';
+import { ComponentRef, Directive, ElementRef, Injector, output, Renderer2, ViewContainerRef } from '@angular/core';
 import { ConfirmDialog } from '../utils/confirm-dialog/confirm-dialog';
-
-declare const bootstrap: any;
 
 @Directive({
   selector: 'button[appConfirmDelete]',
@@ -19,13 +17,11 @@ export class ConfirmDeleteDirective {
     private injector: Injector,
     private renderer: Renderer2,
     private elementRef: ElementRef // Embora não seja estritamente necessário para esta solução, pode ser útil
-  ) { console.log('diretiva aplicada') }
+  ) { }
 
   onConfirmDialog(event: MouseEvent): void {
     event.preventDefault(); // Impede o comportamento padrão do botão se houver algum
     event.stopImmediatePropagation();
-
-    console.log('diretiva ativada');
 
     // 1. Criação do componente de confirmação no DOM
     this.modalComponentRef = this.viewContainerRef.createComponent<ConfirmDialog>(
