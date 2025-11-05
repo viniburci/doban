@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, HostListener, ViewChild, signal } from '@angular/core';
 import { RouterOutlet, RouterLinkActive, RouterLink } from '@angular/router';
 
 @Component({
@@ -8,63 +8,64 @@ import { RouterOutlet, RouterLinkActive, RouterLink } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements AfterViewInit, OnDestroy { // Mantemos OnDestroy para limpeza
-
+export class App implements AfterViewInit, OnDestroy {
+  
   protected readonly title = signal('doban');
-  private bsDropdownInstance: any;
+  private bsDropdownInstance: any; 
 
-  // Removemos o @ViewChild
+  // Referência ao botão (toggle) e ao menu
+  @ViewChild('dropdownToggle') dropdownToggleRef!: ElementRef;
+  @ViewChild('dropdownMenu') dropdownMenuRef!: ElementRef;
+
+  // --- Lógica de Fechamento ao Clicar Fora (HostListener) ---
+  @HostListener('window:click', ['$event'])
+  onClick(event: MouseEvent): void {
+    // 1. Verifica se a instância do Dropdown existe (ou seja, se ele já foi inicializado)
+    if (!this.bsDropdownInstance) return;
+
+    const target = event.target as HTMLElement;
+
+    // 2. Verifica se o clique ocorreu FORA do botão de toggle E FORA do menu
+    const isClickOutsideToggle = !this.dropdownToggleRef.nativeElement.contains(target);
+    const isClickOutsideMenu = !this.dropdownMenuRef.nativeElement.contains(target);
+
+    // Se o clique não foi no botão de toggle E não foi no menu...
+    if (isClickOutsideToggle && isClickOutsideMenu) {
+      // 3. Chama o método hide() do Bootstrap para fechar o menu
+      this.bsDropdownInstance.hide();
+      console.log('Dropdown fechado via HostListener.');
+    }
+  }
+
+  // --- Lógica de Toggle e Inicialização ---
 
   ngAfterViewInit(): void {
-    console.log("ngAfterViewInit disparado. Tentando inicializar Bootstrap.");
-
-    // Usamos setTimeout(0) para garantir a finalização do ciclo de renderização
     setTimeout(() => {
       this.initializeBootstrapDropdown();
     }, 0);
   }
-
+  
   ngOnDestroy(): void {
-    // Limpeza
     if (this.bsDropdownInstance && typeof this.bsDropdownInstance.dispose === 'function') {
       this.bsDropdownInstance.dispose();
     }
   }
 
+  initializeBootstrapDropdown(): void {
+    const toggleElement = document.getElementById('recursosDropdownToggle');
+    
+    if (toggleElement && typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+        // ... lógica de dispose ...
+        this.bsDropdownInstance = new (bootstrap as any).Dropdown(toggleElement);
+        console.log('Dropdown inicializado com controle total Angular.');
+    } 
+  }
+
+  // Novo método para o (click) do Angular
   toggleDropdown(): void {
     if (this.bsDropdownInstance && typeof this.bsDropdownInstance.toggle === 'function') {
       this.bsDropdownInstance.toggle();
-      console.log('Toggle manual forçado via Angular: Dropdown deve aparecer agora.');
-    } else {
-      // Caso o usuário clique antes do ngAfterViewInit, embora improvável
-      console.error('Instância do Dropdown ainda não está pronta.');
+      console.log('Toggle manual bem-sucedido.');
     }
-  }
-
-  initializeBootstrapDropdown(): void {
-    const toggleElement = document.getElementById('recursosDropdownToggle');
-
-    if (toggleElement && typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
-
-      // **********************************************
-      // CRÍTICO: Não precisamos do listener addEventListener('click')
-      // pois agora usamos (click)="toggleDropdown()" no HTML.
-      // **********************************************
-
-      const existingInstance = (bootstrap as any).Dropdown.getInstance(toggleElement);
-      if (existingInstance) {
-        existingInstance.dispose();
-      }
-
-      // 2. Cria a nova instância
-      this.bsDropdownInstance = new (bootstrap as any).Dropdown(toggleElement);
-      console.log('Dropdown de Recursos FINALMENTE inicializado.');
-
-      // Removemos o listener de debug antigo daqui!
-
-      return;
-    }
-
-    console.error('Falha na inicialização: Elemento "recursosDropdownToggle" não encontrado ou Bootstrap API indisponível.');
   }
 }
