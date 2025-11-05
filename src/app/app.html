@@ -17,7 +17,7 @@
           <a class="nav-link" [routerLink]="['/celulares', 'lista']" routerLinkActive="active">Celulares</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a #dropdownToggle id="recursosDropdownToggle" class="nav-link dropdown-toggle" role="button" (click)="toggleDropdown()" aria-expanded="false">
             Recursos
           </a>
           <ul class="dropdown-menu">

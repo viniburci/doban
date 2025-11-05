@@ -3,7 +3,7 @@ import { RecursoCelularResponseDTO } from '../../../entities/recursoCelularRespo
 import { DateDisplayPipe } from "../../../pipes/date-display-pipe";
 import { RouterLink } from "@angular/router";
 import { RecursoService } from '../../../services/recurso-service';
-import { Modal } from 'bootstrap';
+
 import { ConfirmDialog } from "../../../utils/confirm-dialog/confirm-dialog";
 import { ConfirmDeleteDirective } from '../../../directives/confirm-delete';
 
@@ -74,11 +74,6 @@ export class CardRecursoCelular {
     if (recursoId) {
       this.editarRecurso.emit(recursoId.toString());
     }
-  }
-
-  openDeleteConfirmation(): void {
-    const modal = new Modal(document.getElementById('confirmModal')!);
-    modal.show();
   }
 
   onConfirmDelete(event: boolean) {
