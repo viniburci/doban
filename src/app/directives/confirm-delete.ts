@@ -1,5 +1,7 @@
-import { ApplicationRef, ComponentFactoryResolver, ComponentRef, Directive, Injector, output, Renderer2, ViewContainerRef } from '@angular/core';
+import { ApplicationRef, ComponentFactoryResolver, ComponentRef, Directive, ElementRef, Injector, output, Renderer2, ViewContainerRef } from '@angular/core';
 import { ConfirmDialog } from '../utils/confirm-dialog/confirm-dialog';
+
+declare const bootstrap: any;
 
 @Directive({
   selector: 'button[appConfirmDelete]',
@@ -9,42 +11,69 @@ import { ConfirmDialog } from '../utils/confirm-dialog/confirm-dialog';
 })
 export class ConfirmDeleteDirective {
 
-  confirmedDelete = output<boolean>()
+  confirmedDelete = output<boolean>();
   private modalComponentRef: ComponentRef<ConfirmDialog> | null = null;
 
   constructor(
     private viewContainerRef: ViewContainerRef,
-    private componentFactoryResolver: ComponentFactoryResolver,
     private injector: Injector,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private elementRef: ElementRef // Embora não seja estritamente necessário para esta solução, pode ser útil
   ) { console.log('diretiva aplicada') }
 
   onConfirmDialog(event: MouseEvent): void {
-    event.stopImmediatePropagation(); // Impede a ação do clique
-    event.preventDefault();  // Impede o clique de ser processado como normalmente seria
+    event.preventDefault(); // Impede o comportamento padrão do botão se houver algum
+    event.stopImmediatePropagation();
 
-    console.log('Diretiva ativada')
+    console.log('diretiva ativada');
 
-    // Criação do componente modal
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ConfirmDialog);
+    // 1. Criação do componente de confirmação no DOM
+    this.modalComponentRef = this.viewContainerRef.createComponent<ConfirmDialog>(
+      ConfirmDialog,
+      { injector: this.injector } // Usar o injector local
+    );
 
-    // Insere o modal no ViewContainerRef
-    this.modalComponentRef = this.viewContainerRef.createComponent(componentFactory, 0, this.injector);
-
-    // Configura a mensagem do modal diretamente
-    //this.modalComponentRef.instance.message = 'Tem certeza que deseja deletar este item?';
-
-    // Quando a confirmação for recebida, emite o valor e remove o componente
+    // 2. Assina o evento de confirmação
     this.modalComponentRef.instance.confirmed.subscribe((confirmed: boolean) => {
       this.confirmedDelete.emit(confirmed);
       this.closeModal(); // Fecha o modal
     });
+
+    // 3. Obtém o elemento nativo do componente modal
+    const modalElement = this.modalComponentRef.location.nativeElement;
+
+    // 4. Inicializa e exibe o modal usando a API JS do Bootstrap
+    // Certifique-se de que o Bootstrap JS esteja carregado
+    // (Pode precisar de um 'declare const bootstrap: any;' se estiver usando o Bootstrap 5)
+
+    // O elemento raiz do ConfirmDialog deve ser o div.modal.
+    const bootstrapModalElement = modalElement.querySelector('.modal');
+
+    if (bootstrapModalElement && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      // Cria uma nova instância do Modal e a exibe
+      const modal = new bootstrap.Modal(bootstrapModalElement);
+      modal.show();
+      // Armazena a instância para poder fechá-lo programaticamente
+      (this.modalComponentRef.instance as any)._bsModalInstance = modal;
+    } else {
+      console.error('Bootstrap Modal JS não encontrado ou elemento .modal não está na raiz do componente injetado.');
+    }
   }
 
-  // Método para destruir o modal quando a ação for concluída
   closeModal(): void {
     if (this.modalComponentRef) {
-      this.modalComponentRef.destroy(); // Remove o componente modal da árvore DOM
+      // Tenta fechar usando a instância do Bootstrap Modal se ela foi armazenada
+      const modalInstance = (this.modalComponentRef.instance as any)._bsModalInstance;
+      if (modalInstance && typeof modalInstance.hide === 'function') {
+        modalInstance.hide();
+        // Adicione um pequeno timeout ou escute o evento 'hidden.bs.modal'
+        // para garantir que o modal feche antes de destruir o componente.
+        // No entanto, para simplicidade, vamos destruir logo após tentar o hide.
+      }
+
+      // Destrói o componente modal da árvore DOM
+      this.modalComponentRef.destroy();
+      this.modalComponentRef = null;
     }
   }
 }
