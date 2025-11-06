@@ -19,7 +19,6 @@ export class ListaPessoa implements OnInit{
   ngOnInit(): void {
     this.pessoaService.buscarTodasPessoas().subscribe(data => {
       this.listaPessoas = data;
-      console.log(this.listaPessoas);
     });
   }
 
