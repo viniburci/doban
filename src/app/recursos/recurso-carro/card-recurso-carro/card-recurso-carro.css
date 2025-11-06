@@ -1,0 +1,101 @@
+/* Estilo Básico do Card */
+.card {
+    margin: 10px;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+/* CABEÇALHO COLORIDO E CLICÁVEL */
+.card-header-styled {
+    padding: 1rem 1.25rem;
+    margin: 0;
+    cursor: pointer;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 1px solid #ddd; /* Linha de separação no cabeçalho */
+}
+
+/* ÁREA DE CONTEÚDO (Substitui .card-body) */
+.card-content-area {
+    padding-top: 0.5rem;
+    margin-top: 0 !important;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    padding-bottom: 1.25rem; /* Evita que o conteúdo se sobreponha à parte inferior */
+}
+
+/* ========================= */
+/* AJUSTE PARA REMOVER A FAIXA BRANCA */
+/* ========================= */
+
+/* Colapsa completamente a área quando oculto */
+.card-content-area .collapse {
+    display: none !important;   /* Esconde o conteúdo completamente */
+    visibility: hidden !important;  /* Não deixa o conteúdo invisível, mas sem espaço */
+    height: 0 !important;      /* Garante que a altura seja zero */
+    margin: 0 !important;      /* Zera a margem */
+    padding: 0 !important;     /* Zera o padding */
+    overflow: hidden !important; /* Impede que qualquer conteúdo "vaze" */
+    transition: height 0.3s ease, visibility 0s linear 0.3s, margin 0.3s ease, padding 0.3s ease; /* Transição suave */
+}
+
+/* Quando a área de conteúdo for expandida, mostra com altura ajustada */
+.card-content-area .collapse.show {
+    display: block !important; /* Exibe o conteúdo quando ele estiver expandido */
+    visibility: visible !important;  /* Torna o conteúdo visível */
+    height: auto !important;    /* Permite que o conteúdo tenha altura automática */
+    margin: 0 !important;      /* Garante que o conteúdo não adicione margens extras */
+    padding: 1.25rem !important;   /* Padding ajustado ao expandir */
+    overflow: visible !important;  /* Permite que o conteúdo ocupe o espaço necessário */
+    transition: height 0.3s ease, visibility 0s linear 0s, margin 0.3s ease, padding 0.3s ease; /* Transição suave */
+}
+
+/* Garante que a transição do ícone de abrir/fechar também seja suave */
+.card-header-styled .bi-chevron-down,
+.card-header-styled .bi-chevron-up {
+    font-size: 1.25rem;
+    transition: transform 0.3s ease;
+}
+
+.card-header-styled .bi-chevron-down {
+    transform: rotate(0deg);
+}
+
+.card-header-styled .bi-chevron-up {
+    transform: rotate(180deg);
+}
+
+/* ======================================================= */
+/* TIPOGRAFIA */
+.card-header-clickable {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    flex-grow: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.card-subtitle {
+    font-size: 0.875rem;
+    color: #6c757d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ======================================================= */
+/* REGRAS DE MARGEM E PADDING ADICIONAIS PARA O CONTEÚDO */
+.card-body, .card-content-area .collapse {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}

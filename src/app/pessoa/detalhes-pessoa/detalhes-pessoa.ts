@@ -13,10 +13,12 @@ import { RecursoCelularResponseDTO } from '../../entities/recursoCelularResponse
 import { RecursoService } from '../../services/recurso-service';
 import { CardRecursoCelular } from "../../recursos/recurso-celular/card-recurso-celular/card-recurso-celular";
 import { CadastroRecursoCelular } from "../../recursos/recurso-celular/cadastro-recurso-celular/cadastro-recurso-celular";
+import { RecursoCarroResponseDTO } from '../../entities/recursoCarroResponseDTO.model';
+import { CardRecursoCarro } from "../../recursos/recurso-carro/card-recurso-carro/card-recurso-carro";
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular, CardRecursoCarro],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })
@@ -37,6 +39,7 @@ export class DetalhesPessoa implements OnInit {
   showRegistrarVaga = signal<boolean>(false);
   showRegistrarRecursoCelular = signal<boolean>(false);
   celularesList = signal<RecursoCelularResponseDTO[] | null>(null);
+  carrosList = signal<RecursoCarroResponseDTO[] | null>(null);
 
   ngOnInit() {
     const id = this.pessoaId();
@@ -71,6 +74,10 @@ export class DetalhesPessoa implements OnInit {
     this.cdr.detectChanges();
   }
 
+  toggleRegistrarCarro() {
+
+  }
+
   editarVaga(event: any) {
     this.toggleRegistrarVaga();
     let vaga = this.vagasPessoa()?.find(v => v.id === event);
@@ -85,6 +92,10 @@ export class DetalhesPessoa implements OnInit {
     if (recurso) {
       this.editRecursoCelular.set(recurso);
     }
+  }
+
+  editarRecursoCarro(event: any) {
+    
   }
 
   handleUpdateAndClose() {
@@ -107,6 +118,10 @@ export class DetalhesPessoa implements OnInit {
       data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
       this.celularesList.set(data);
     });
+    this.recursoService.getRecursoCarroByPessoaId(Number(id)).subscribe(data => {
+      data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
+      this.carrosList.set(data);
+    })
   }
 
   handleOnlyClose() {
