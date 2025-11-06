@@ -15,10 +15,11 @@ import { CardRecursoCelular } from "../../recursos/recurso-celular/card-recurso-
 import { CadastroRecursoCelular } from "../../recursos/recurso-celular/cadastro-recurso-celular/cadastro-recurso-celular";
 import { RecursoCarroResponseDTO } from '../../entities/recursoCarroResponseDTO.model';
 import { CardRecursoCarro } from "../../recursos/recurso-carro/card-recurso-carro/card-recurso-carro";
+import { CadastroRecursoCarro } from '../../recursos/recurso-carro/cadastro-recurso-carro/cadastro-recurso-carro';
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular, CardRecursoCarro],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular, CardRecursoCarro, CadastroRecursoCarro],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })
@@ -36,8 +37,10 @@ export class DetalhesPessoa implements OnInit {
   vagasPessoa = signal<VagaFormData[] | null>(null);
   editVaga = signal<VagaFormData | null>(null);
   editRecursoCelular = signal<RecursoCelularResponseDTO | null>(null);
+  editRecursoCarro = signal<RecursoCarroResponseDTO | null>(null);
   showRegistrarVaga = signal<boolean>(false);
   showRegistrarRecursoCelular = signal<boolean>(false);
+  showRegistrarRecursoCarro = signal<boolean>(false);
   celularesList = signal<RecursoCelularResponseDTO[] | null>(null);
   carrosList = signal<RecursoCarroResponseDTO[] | null>(null);
 
@@ -63,19 +66,24 @@ export class DetalhesPessoa implements OnInit {
   }
 
   toggleRegistrarVaga() {
+    this.handleOnlyClose();
     this.editVaga.set(null);
     this.showRegistrarVaga.set(!this.showRegistrarVaga());
     this.cdr.detectChanges();
   }
 
   toggleRegistrarCelular() {
+    this.handleOnlyClose();
     this.editRecursoCelular.set(null);
     this.showRegistrarRecursoCelular.set(!this.showRegistrarRecursoCelular());
     this.cdr.detectChanges();
   }
 
   toggleRegistrarCarro() {
-
+    this.handleOnlyClose();
+    this.editRecursoCarro.set(null);
+    this.showRegistrarRecursoCarro.set(!this.showRegistrarRecursoCarro());
+    this.cdr.detectChanges();
   }
 
   editarVaga(event: any) {
@@ -89,13 +97,17 @@ export class DetalhesPessoa implements OnInit {
   editarRecursoCelular(event: any) {
     this.toggleRegistrarCelular();
     let recurso = this.celularesList()?.find(r => Number(r.id) === +event);
-    if (recurso) {
+    if(recurso) {
       this.editRecursoCelular.set(recurso);
     }
   }
 
   editarRecursoCarro(event: any) {
-    
+    this.toggleRegistrarCarro();
+    let recurso = this.carrosList()?.find(r => Number(r.id) === +event);
+    if(recurso) {
+      this.editRecursoCarro.set(recurso);
+    }
   }
 
   handleUpdateAndClose() {
@@ -127,5 +139,6 @@ export class DetalhesPessoa implements OnInit {
   handleOnlyClose() {
     this.showRegistrarVaga.set(false);
     this.showRegistrarRecursoCelular.set(false);
+    this.showRegistrarRecursoCarro.set(false);
   }
 }

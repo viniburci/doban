@@ -84,7 +84,7 @@
         </div>
         <div class="col-md-4 mb-4">
             @for(recursoCarro of carrosList(); track recursoCarro.id) {
-            <app-card-recurso-carro [recurso]="recursoCarro" (editarRecurso)="editarRecursoCelular($event)"
+            <app-card-recurso-carro [recurso]="recursoCarro" (editarRecurso)="editarRecursoCarro($event)"
                 (updated)="updateComponent()"></app-card-recurso-carro>
             }
             <button class=" btn btn-primary" (click)="toggleRegistrarCarro()">Registrar Carro</button>
@@ -106,5 +106,13 @@
         (close)="handleOnlyClose()" (updated)="updateComponent()" [pessoaId]="pessoaId()"
         [editRecurso]="editRecursoCelular() ? editRecursoCelular() : null">
     </app-cadastro-recurso-celular>
+    }
+
+    @if (showRegistrarRecursoCarro()) {
+    <hr>
+    <app-cadastro-recurso-carro #recursoCarroForm appScrollOnRender (closeForm)="handleOnlyClose()"
+        (close)="handleOnlyClose()" (updated)="updateComponent()" [pessoaId]="pessoaId()"
+        [editRecurso]="editRecursoCarro() ? editRecursoCarro() : null">
+    </app-cadastro-recurso-carro>
     }
 </div>
