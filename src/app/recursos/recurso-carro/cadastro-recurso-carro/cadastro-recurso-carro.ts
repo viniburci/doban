@@ -78,6 +78,7 @@ export class CadastroRecursoCarro {
   patchForm() {
     this.editMode.set(!!this.editRecurso());
     if (this.editRecurso() == null) {
+      this.form.enable();
       this.form.reset();
       return;
     }
