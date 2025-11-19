@@ -13,10 +13,13 @@ import { RecursoCelularResponseDTO } from '../../entities/recursoCelularResponse
 import { RecursoService } from '../../services/recurso-service';
 import { CardRecursoCelular } from "../../recursos/recurso-celular/card-recurso-celular/card-recurso-celular";
 import { CadastroRecursoCelular } from "../../recursos/recurso-celular/cadastro-recurso-celular/cadastro-recurso-celular";
+import { RecursoCarroResponseDTO } from '../../entities/recursoCarroResponseDTO.model';
+import { CardRecursoCarro } from "../../recursos/recurso-carro/card-recurso-carro/card-recurso-carro";
+import { CadastroRecursoCarro } from '../../recursos/recurso-carro/cadastro-recurso-carro/cadastro-recurso-carro';
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular, CardRecursoCarro, CadastroRecursoCarro],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })
@@ -34,9 +37,12 @@ export class DetalhesPessoa implements OnInit {
   vagasPessoa = signal<VagaFormData[] | null>(null);
   editVaga = signal<VagaFormData | null>(null);
   editRecursoCelular = signal<RecursoCelularResponseDTO | null>(null);
+  editRecursoCarro = signal<RecursoCarroResponseDTO | null>(null);
   showRegistrarVaga = signal<boolean>(false);
   showRegistrarRecursoCelular = signal<boolean>(false);
+  showRegistrarRecursoCarro = signal<boolean>(false);
   celularesList = signal<RecursoCelularResponseDTO[] | null>(null);
+  carrosList = signal<RecursoCarroResponseDTO[] | null>(null);
 
   ngOnInit() {
     const id = this.pessoaId();
@@ -60,14 +66,23 @@ export class DetalhesPessoa implements OnInit {
   }
 
   toggleRegistrarVaga() {
+    this.handleOnlyClose();
     this.editVaga.set(null);
     this.showRegistrarVaga.set(!this.showRegistrarVaga());
     this.cdr.detectChanges();
   }
 
   toggleRegistrarCelular() {
+    this.handleOnlyClose();
     this.editRecursoCelular.set(null);
     this.showRegistrarRecursoCelular.set(!this.showRegistrarRecursoCelular());
+    this.cdr.detectChanges();
+  }
+
+  toggleRegistrarCarro() {
+    this.handleOnlyClose();
+    this.editRecursoCarro.set(null);
+    this.showRegistrarRecursoCarro.set(!this.showRegistrarRecursoCarro());
     this.cdr.detectChanges();
   }
 
@@ -82,8 +97,16 @@ export class DetalhesPessoa implements OnInit {
   editarRecursoCelular(event: any) {
     this.toggleRegistrarCelular();
     let recurso = this.celularesList()?.find(r => Number(r.id) === +event);
-    if (recurso) {
+    if(recurso) {
       this.editRecursoCelular.set(recurso);
+    }
+  }
+
+  editarRecursoCarro(event: any) {
+    this.toggleRegistrarCarro();
+    let recurso = this.carrosList()?.find(r => Number(r.id) === +event);
+    if(recurso) {
+      this.editRecursoCarro.set(recurso);
     }
   }
 
@@ -107,10 +130,15 @@ export class DetalhesPessoa implements OnInit {
       data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
       this.celularesList.set(data);
     });
+    this.recursoService.getRecursoCarroByPessoaId(Number(id)).subscribe(data => {
+      data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
+      this.carrosList.set(data);
+    })
   }
 
   handleOnlyClose() {
     this.showRegistrarVaga.set(false);
     this.showRegistrarRecursoCelular.set(false);
+    this.showRegistrarRecursoCarro.set(false);
   }
 }

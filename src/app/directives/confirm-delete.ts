@@ -29,6 +29,8 @@ export class ConfirmDeleteDirective {
       { injector: this.injector } // Usar o injector local
     );
 
+    this.modalComponentRef.setInput('message', 'Tem certeza que deseja DELETAR?')
+
     // 2. Assina o evento de confirmação
     this.modalComponentRef.instance.confirmed.subscribe((confirmed: boolean) => {
       this.confirmedDelete.emit(confirmed);

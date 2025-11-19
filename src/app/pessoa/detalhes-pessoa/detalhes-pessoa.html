@@ -55,7 +55,7 @@
         <!-- Coluna para as Vagas -->
         <div class="col-md-6">
             @for(vaga of vagasPessoa(); track vaga.id) {
-                <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
+            <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
             }
             <button class="btn btn-primary" (click)="toggleRegistrarVaga()">Registrar Vaga</button>
         </div>
@@ -77,13 +77,17 @@
         <!-- Cada card ocupará 4 colunas em telas médias (col-md-4) para caber 3 cards na mesma linha -->
         <div class="col-md-4 mb-4">
             @for(recursoCelular of celularesList(); track recursoCelular.id) {
-                <app-card-recurso-celular [recurso]="recursoCelular" (editarRecurso)="editarRecursoCelular($event)"
-                    (updated)="updateComponent()"></app-card-recurso-celular>
+            <app-card-recurso-celular [recurso]="recursoCelular" (editarRecurso)="editarRecursoCelular($event)"
+                (updated)="updateComponent()"></app-card-recurso-celular>
             }
             <button class="btn btn-primary" (click)="toggleRegistrarCelular()">Registrar Celular</button>
         </div>
         <div class="col-md-4 mb-4">
-            recurso carro
+            @for(recursoCarro of carrosList(); track recursoCarro.id) {
+            <app-card-recurso-carro [recurso]="recursoCarro" (editarRecurso)="editarRecursoCarro($event)"
+                (updated)="updateComponent()"></app-card-recurso-carro>
+            }
+            <button class=" btn btn-primary" (click)="toggleRegistrarCarro()">Registrar Carro</button>
         </div>
     </div>
 
@@ -102,5 +106,13 @@
         (close)="handleOnlyClose()" (updated)="updateComponent()" [pessoaId]="pessoaId()"
         [editRecurso]="editRecursoCelular() ? editRecursoCelular() : null">
     </app-cadastro-recurso-celular>
+    }
+
+    @if (showRegistrarRecursoCarro()) {
+    <hr>
+    <app-cadastro-recurso-carro #recursoCarroForm appScrollOnRender (closeForm)="handleOnlyClose()"
+        (close)="handleOnlyClose()" (updated)="updateComponent()" [pessoaId]="pessoaId()"
+        [editRecurso]="editRecursoCarro() ? editRecursoCarro() : null">
+    </app-cadastro-recurso-carro>
     }
 </div>

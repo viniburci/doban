@@ -53,6 +53,10 @@ export class RecursoService {
     return this.http.get<RecursoCarroResponseDTO>(`${this.baseUrl}/carros/${id}`);
   }
 
+  getRecursoCarroByPessoaId(pessoaId: number): Observable<RecursoCarroResponseDTO[]> {
+    return this.http.get<RecursoCarroResponseDTO[]>(`${this.baseUrl}/carros/pessoa/${pessoaId}`);
+  }
+
   registrarDevolucaoCarro(id: number, dto: DevolucaoDTO): Observable<RecursoCarroResponseDTO> {
     return this.http.put<RecursoCarroResponseDTO>(`${this.baseUrl}/carros/${id}/devolucao`, dto);
   }

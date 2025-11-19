@@ -1,36 +1,34 @@
-import { Component, effect, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CelularService } from '../../../services/celular-service';
-import { RecursoCelularRequestDTO } from '../../../entities/recursoCelularRequestDTO.model';
-import { RecursoCelularResponseDTO } from '../../../entities/recursoCelularResponseDTO.model';
-import { CelularFormData } from '../../../entities/celularFormData.model';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { DataService } from '../../../services/data-service';
+import { RecursoCarroRequestDTO } from '../../../entities/recursoCarroRequestDTO.model';
 import { RecursoService } from '../../../services/recurso-service';
+import { DataService } from '../../../services/data-service';
+import { CarroService } from '../../../services/carro-service';
+import { CarroFormData } from '../../../entities/carroFormData.model';
 
 @Component({
-  selector: 'app-cadastro-recurso-celular',
+  selector: 'app-cadastro-recurso-carro',
   imports: [ReactiveFormsModule, NgxMaskDirective],
   providers: [provideNgxMask()],
-  templateUrl: './cadastro-recurso-celular.html',
-  styleUrl: './cadastro-recurso-celular.css'
+  templateUrl: './cadastro-recurso-carro.html',
+  styleUrl: './cadastro-recurso-carro.css'
 })
-export class CadastroRecursoCelular implements OnInit {
-
+export class CadastroRecursoCarro {
   private fb = inject(FormBuilder);
   private recursoService = inject(RecursoService);
-  private celularService = inject(CelularService);
+  private carroService = inject(CarroService);
   private dataService = inject(DataService);
-
+  
   pessoaId = input<string | null>(null);
   editMode = signal<boolean>(false);
-  editRecurso = input<RecursoCelularResponseDTO | null>(null);
+  editRecurso = input<RecursoCarroRequestDTO | null>(null);
   updated = output<void>();
-  listaCelulares = signal<CelularFormData[] | null>(null);
+  listaCarros = signal<CarroFormData[] | null>(null);
   closeForm = output<void>();
   errorMessage = signal<string | null>(null);
 
-  form!: FormGroup<{ [K in keyof RecursoCelularRequestDTO]: FormControl<RecursoCelularRequestDTO[K]> }>;
+  form!: FormGroup<{ [K in keyof RecursoCarroRequestDTO]: FormControl<RecursoCarroRequestDTO[K]> }>;
 
   constructor() {
     effect(() => {
@@ -41,12 +39,12 @@ export class CadastroRecursoCelular implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       id: new FormControl<string | null>(null),
-      celularId: new FormControl<string | null>(null),
+      carroId: new FormControl<string | null>(null),
       pessoaId: new FormControl<string | null>(null),
       dataEntrega: new FormControl<string | null>(null),
       dataDevolucao: new FormControl<string | null>(null),
     });
-    this.celularService.listar().subscribe(data => this.listaCelulares.set(data));
+    this.carroService.listar().subscribe(data => this.listaCarros.set(data));
   }
 
   onSubmit() {
@@ -56,23 +54,23 @@ export class CadastroRecursoCelular implements OnInit {
       pessoaId: this.pessoaId(),
       dataEntrega: this.dataService.convertDateToISO(this.form.value.dataEntrega!),
       dataDevolucao: this.dataService.convertDateToISO(this.form.value.dataDevolucao!)
-    } as RecursoCelularRequestDTO);
+    } as RecursoCarroRequestDTO);
 
     const devolucao = {
       dataDevolucao: cleaned.dataDevolucao
     }
 
     const request$ = !this.editMode()
-      ? this.recursoService.createRecursoCelular(cleaned)
-      : this.recursoService.registrarDevolucaoCelular(Number(cleaned.id), devolucao);
+      ? this.recursoService.createRecursoCarro(cleaned)
+      : this.recursoService.registrarDevolucaoCarro(Number(cleaned.id), devolucao);
 
     request$.subscribe({
-      next: (response: RecursoCelularResponseDTO) => {
+      next: (response: RecursoCarroRequestDTO) => {
         this.updated.emit();
         this.onCloseForm();
       },
       error: (error) => {
-        this.errorMessage.set('Erro ao salvar recurso de celular: ' + (error.error?.message || error.message || 'Erro desconhecido.'));
+        this.errorMessage.set('Erro ao salvar recurso de carro: ' + (error.error?.message || error.message || 'Erro desconhecido.'));
       }
     });
   }
@@ -85,16 +83,16 @@ export class CadastroRecursoCelular implements OnInit {
       return;
     }
     if (this.editRecurso() != null) {
-      const recursoFormatado: RecursoCelularResponseDTO = {
+      const recursoFormatado: RecursoCarroRequestDTO = {
         ...this.editRecurso(),
         id: this.editRecurso()?.id ?? null,
         dataEntrega: this.editRecurso()?.dataEntrega ? this.dataService.convertISOToDateBR(this.editRecurso()!.dataEntrega) : null,
         dataDevolucao: this.editRecurso()?.dataDevolucao ? this.dataService.convertISOToDateBR(this.editRecurso()!.dataDevolucao) : null,
-      } as RecursoCelularResponseDTO;
+      } as RecursoCarroRequestDTO;
       this.form.patchValue(recursoFormatado || {});
     }
     this.form.get('id')!.disable();
-    this.form.get('celularId')!.disable();
+    this.form.get('carroId')!.disable();
     this.form.get('pessoaId')!.disable();
     this.form.get('dataEntrega')!.disable();
   }
