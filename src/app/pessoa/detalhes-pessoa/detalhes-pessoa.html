@@ -103,7 +103,7 @@
     @if (showRegistrarRecursoCelular()) {
     <hr>
     <app-cadastro-recurso-celular #recursoCelularForm appScrollOnRender (closeForm)="handleOnlyClose()"
-        (close)="handleOnlyClose()" (updated)="updateComponent()" [pessoaId]="pessoaId()"
+        (close)="handleOnlyClose()" (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
         [editRecurso]="editRecursoCelular() ? editRecursoCelular() : null">
     </app-cadastro-recurso-celular>
     }
@@ -111,7 +111,7 @@
     @if (showRegistrarRecursoCarro()) {
     <hr>
     <app-cadastro-recurso-carro #recursoCarroForm appScrollOnRender (closeForm)="handleOnlyClose()"
-        (close)="handleOnlyClose()" (updated)="updateComponent()" [pessoaId]="pessoaId()"
+        (close)="handleOnlyClose()" (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
         [editRecurso]="editRecursoCarro() ? editRecursoCarro() : null">
     </app-cadastro-recurso-carro>
     }
