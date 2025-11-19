@@ -4,12 +4,11 @@ import { DateDisplayPipe } from "../../../pipes/date-display-pipe";
 import { RouterLink } from "@angular/router";
 import { RecursoService } from '../../../services/recurso-service';
 
-import { ConfirmDialog } from "../../../utils/confirm-dialog/confirm-dialog";
 import { ConfirmDeleteDirective } from '../../../directives/confirm-delete';
 
 @Component({
   selector: 'app-card-recurso-celular',
-  imports: [DateDisplayPipe, RouterLink, ConfirmDialog, ConfirmDeleteDirective],
+  imports: [DateDisplayPipe, RouterLink, ConfirmDeleteDirective],
   templateUrl: './card-recurso-celular.html',
   styleUrl: './card-recurso-celular.css'
 })
@@ -76,15 +75,10 @@ export class CardRecursoCelular {
     }
   }
 
-  onConfirmDelete(event: boolean) {
-    if(event == true){
-      this.onDeletarRecurso()
-      console.log('onconfirmdelete true')
+  onDeletarRecurso(event: boolean) {
+    if(event == false){
+      return;
     }
-    console.log('onconfirmdelete false')
-  }
-
-  onDeletarRecurso() {
     const recursoId = this.recurso()?.id;
     if (recursoId) {
       this.recursoService.deleteRecursoCelular(+recursoId).subscribe({

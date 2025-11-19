@@ -59,11 +59,10 @@
             <button (click)="onEditarRecurso()" class="btn btn-primary mt-3 "> 
                 Editar Devolução
             </button>
-            <button appConfirmDelete (confirmedDelete)="onConfirmDelete($event)" class="btn btn-danger mt-3 offset-1"> 
+            <button appConfirmDelete (confirmedDelete)="onDeletarRecurso($event)" class="btn btn-danger mt-3 offset-1"> 
                 Deletar
             </button>
 
-            <app-confirm-dialog (confirmed)="onDeletarRecurso()"></app-confirm-dialog>
         </div>
     </div>
 </div>
