@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RecursoCarroResponseDTO } from '../entities/recursoCarroResponseDTO.model';
+import { DevolucaoDTO } from '../entities/devolucaoDTO.model';
 import { RecursoCarroRequestDTO } from '../entities/recursoCarroRequestDTO.model';
+import { RecursoCarroResponseDTO } from '../entities/recursoCarroResponseDTO.model';
 import { RecursoCelularRequestDTO } from '../entities/recursoCelularRequestDTO.model';
 import { RecursoCelularResponseDTO } from '../entities/recursoCelularResponseDTO.model';
-import { DevolucaoDTO } from '../entities/devolucaoDTO.model';
+import { RecursoRocadeiraRequestDTO } from '../entities/recursoRocadeiraRequestDTO.model';
+import { RecursoRocadeiraResponseDTO } from '../entities/recursoRocadeiraResponseDTO.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +43,7 @@ export class RecursoService {
     return this.http.delete<void>(`${this.baseUrl}/celulares/${recursoId}`);
   }
 
+  // Carro
   getRecursosCarros(): Observable<RecursoCarroResponseDTO[]> {
     return this.http.get<RecursoCarroResponseDTO[]>(`${this.baseUrl}/carros`);
   }
@@ -63,5 +66,30 @@ export class RecursoService {
 
   deleteRecursoCarro(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/carros/${id}`);
+  }
+
+  // Rocadeira 
+  getRecursosRocadeiras(): Observable<RecursoRocadeiraResponseDTO[]> {
+    return this.http.get<RecursoRocadeiraResponseDTO[]>(`${this.baseUrl}/rocadeiras`);
+  }
+
+  getRecursoRocadeiraById(id: number): Observable<RecursoRocadeiraResponseDTO> {
+    return this.http.get<RecursoRocadeiraResponseDTO>(`${this.baseUrl}/rocadeiras/${id}`);
+  }
+
+  getRecursoRocadeiraByPessoaId(pessoaId: number): Observable<RecursoRocadeiraResponseDTO[]> {
+    return this.http.get<RecursoRocadeiraResponseDTO[]>(`${this.baseUrl}/rocadeiras/pessoa/${pessoaId}`);
+  }
+
+  createRecursoRocadeira(request: RecursoRocadeiraRequestDTO): Observable<RecursoRocadeiraResponseDTO> {
+    return this.http.post<RecursoRocadeiraResponseDTO>(`${this.baseUrl}/rocadeiras`, request);
+  }
+
+  registrarDevolucaoRocadeira(id: number, dto: DevolucaoDTO): Observable<RecursoRocadeiraResponseDTO> {
+    return this.http.put<RecursoRocadeiraResponseDTO>(`${this.baseUrl}/rocadeiras/${id}/devolucao`, dto);
+  }
+
+  deleteRecursoRocadeira(id: number) : Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/rocadeiras/${id}`);
   }
 }
