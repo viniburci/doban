@@ -1,0 +1,12 @@
+@if (rocadeira != null) {
+<div class="card" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">{{ rocadeira.marca }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Número de série: {{ rocadeira.numeroSerie }}</h6>
+
+        <a [routerLink]="['/rocadeiras', rocadeira.id, 'editar']" class="btn btn-primary">
+            Editar
+        </a>
+    </div>
+</div>
+}

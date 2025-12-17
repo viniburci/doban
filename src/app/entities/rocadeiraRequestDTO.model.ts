@@ -1,4 +1,5 @@
 export interface RocadeiraRequestDTO {
+    id?: string | null;
     numeroSerie: string | null;
-    modelo: string | null;
+    marca: string | null;
 }

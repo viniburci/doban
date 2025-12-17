@@ -1,16 +1,18 @@
 import { Routes } from '@angular/router';
 import { CadastroPessoa } from './pessoa/cadastro-pessoa/cadastro-pessoa';
-import { ListaPessoa } from './pessoa/lista-pessoa/lista-pessoa';
 import { DetalhesPessoa } from './pessoa/detalhes-pessoa/detalhes-pessoa';
-import { RecursoCelular } from './recursos/recurso-celular/recurso-celular';
-import { RecursoCarro } from './recursos/recurso-carro/recurso-carro';
-import { CadastroCelular } from './recursos/celular/cadastro-celular/cadastro-celular';
+import { ListaPessoa } from './pessoa/lista-pessoa/lista-pessoa';
 import { CadastroCarro } from './recursos/carro/cadastro-carro/cadastro-carro';
-import { ListaCarro } from './recursos/carro/lista-carro/lista-carro';
 import { DetalhesCarro } from './recursos/carro/detalhes-carro/detalhes-carro';
-import { ListaCelular } from './recursos/celular/lista-celular/lista-celular';
+import { ListaCarro } from './recursos/carro/lista-carro/lista-carro';
+import { CadastroCelular } from './recursos/celular/cadastro-celular/cadastro-celular';
 import { DetalhesCelular } from './recursos/celular/detalhes-celular/detalhes-celular';
-import { CadastroVaga } from './vaga/cadastro-vaga/cadastro-vaga';
+import { ListaCelular } from './recursos/celular/lista-celular/lista-celular';
+import { RecursoCarro } from './recursos/recurso-carro/recurso-carro';
+import { RecursoCelular } from './recursos/recurso-celular/recurso-celular';
+import { CadastroRocadeira } from './recursos/rocadeira/cadastro-rocadeira/cadastro-rocadeira';
+import { DetalhesRocadeira } from './recursos/rocadeira/detalhes-rocadeira/detalhes-rocadeira';
+import { ListaRocadeira } from './recursos/rocadeira/lista-rocadeira/lista-rocadeira';
 
 export const routes: Routes = [
     {
@@ -88,6 +90,27 @@ export const routes: Routes = [
                 path: '',
                 pathMatch: 'full',
                 redirectTo: 'lista'
+            }
+        ]
+    },
+    {
+        path: 'rocadeiras',
+        children: [
+            {
+                path: 'lista',
+                component: ListaRocadeira
+            },
+            {
+                path: ':rocadeiraId/detalhes',
+                component: DetalhesRocadeira
+            },
+            {
+                path: 'novo',
+                component: CadastroRocadeira
+            },
+            {
+                path: ':rocadeiraId/editar',
+                component: CadastroRocadeira
             }
         ]
     },

@@ -8,31 +8,31 @@ import { RocadeiraResponseDTO } from '../entities/rocadeiraResponseDTO.model';
   providedIn: 'root'
 })
 export class RocadeiraService {
-  private baseUrl = 'http://localhost:8080/rocadeira';
+  private baseUrl = 'http://localhost:8080/api/v1/rocadeira';
 
   constructor(private http: HttpClient) { }
 
-  getRocadeiras(): Observable<RocadeiraResponseDTO[]> {
-    return this.http.get<RocadeiraResponseDTO[]>(`${this.baseUrl}/`);
+  listarRocadeiras(): Observable<RocadeiraResponseDTO[]> {
+    return this.http.get<RocadeiraResponseDTO[]>(`${this.baseUrl}`);
   }
 
-  getRocadeiraById(id: number): Observable<RocadeiraResponseDTO> {
+  buscarPorId(id: number): Observable<RocadeiraResponseDTO> {
     return this.http.get<RocadeiraResponseDTO>(`${this.baseUrl}/${id}`);
   }
 
-  getRocadeiraByNumeroSerie(numeroSerie: string): Observable<RocadeiraResponseDTO> {
+  buscarPorNumeroSerie(numeroSerie: string): Observable<RocadeiraResponseDTO> {
     return this.http.get<RocadeiraResponseDTO>  (`${this.baseUrl}/numero_serie/${numeroSerie}`);
   }
 
-  createRocadeira(data: RocadeiraRequestDTO): Observable<RocadeiraResponseDTO> {
-    return this.http.post<RocadeiraResponseDTO>(`${this.baseUrl}/`, data);
+  criarRocadeira(data: RocadeiraRequestDTO): Observable<RocadeiraResponseDTO> {
+    return this.http.post<RocadeiraResponseDTO>(`${this.baseUrl}`, data);
   }
 
-  updateRocadeira(id: number, data: RocadeiraRequestDTO): Observable<RocadeiraResponseDTO> {
+  atualizarRocadeira(id: number, data: RocadeiraRequestDTO): Observable<RocadeiraResponseDTO> {
     return this.http.put<RocadeiraResponseDTO>(`${this.baseUrl}/${id}`, data);
   }
 
-  deleteRocadeira(id: number): Observable<void> {
+  deletarRocadeira(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }

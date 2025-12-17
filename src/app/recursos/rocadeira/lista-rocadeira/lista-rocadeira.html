@@ -1,0 +1,10 @@
+<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+
+    <div class="list-group">
+
+        @for(rocadeira of listaRocadeiras; track rocadeira.id) {
+            <a [routerLink]="['/rocadeiras', rocadeira.id, 'detalhes']" class="list-group-item list-group-item-action list-group-item-success">{{rocadeira.marca}} - {{rocadeira.numeroSerie}}</a>
+        }
+
+    </div>
+</div>

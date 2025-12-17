@@ -1,0 +1,35 @@
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">{{editMode() ? 'Atualizar Rocadeira' : 'Cadastro de Rocadeira'}}</h4>
+                    <small class="text-white-50">Preencha os dados abaixo</small>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Marca</label>
+                                <input name="marca" type="text" class="form-control" placeholder="Xiaomi, Samsung..."
+                                    formControlName="marca">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Número de Série</label>
+                                <input name="numeroSerie" type="text" class="form-control" placeholder="000000000000000/00"
+                                    formControlName="numeroSerie">
+                    </div>
+
+                        </div>
+                        <div class="col-12 mt-3 d-flex justify-content-end">
+                            @if(!editMode()){
+                            <button type="reset" class="btn btn-outline-secondary me-2">Limpar</button>
+                            }
+                            <button type="submit" class="btn btn-primary">{{editMode() ? 'Atualizar' :
+                                'Salvar'}}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
