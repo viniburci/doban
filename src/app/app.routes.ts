@@ -78,7 +78,7 @@ export const routes: Routes = [
                 path: 'novo',
                 component: CadastroCarro
             },
-                        {
+            {
                 path: ':carroId/detalhes',
                 component: DetalhesCarro
             },
@@ -111,6 +111,11 @@ export const routes: Routes = [
             {
                 path: ':rocadeiraId/editar',
                 component: CadastroRocadeira
+            },
+            {
+                path: '',
+                pathMatch: 'full',
+                redirectTo: 'lista'
             }
         ]
     },
