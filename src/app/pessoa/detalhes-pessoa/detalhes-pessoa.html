@@ -89,6 +89,13 @@
             }
             <button class=" btn btn-primary" (click)="toggleRegistrarCarro()">Registrar Carro</button>
         </div>
+        <div class="col-md-4 mb-4">
+            @for(recursoRocadeira of rocadeirasList(); track recursoRocadeira.id) {
+            <app-card-recurso-rocadeira [recurso]="recursoRocadeira" (editarRecurso)="editarRecursoRocadeira($event)"
+                (updated)="updateComponent()"></app-card-recurso-rocadeira>
+            }
+            <button class=" btn btn-primary" (click)="toggleRegistrarRocadeira()">Registrar Rocadeira</button>
+        </div>
     </div>
 
     <!-- Formulário de Registro de Vaga -->
@@ -114,5 +121,12 @@
         (close)="handleOnlyClose()" (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
         [editRecurso]="editRecursoCarro() ? editRecursoCarro() : null">
     </app-cadastro-recurso-carro>
+    }
+    @if (showRegistrarRecursoRocadeira()) {
+    <hr>
+    <app-cadastro-recurso-rocadeira #recursoRocadeiraForm appScrollOnRender (closeForm)="handleOnlyClose()"
+        (close)="handleOnlyClose()" (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
+        [editRecurso]="editRecursoRocadeira() ? editRecursoRocadeira() : null">
+    </app-cadastro-recurso-rocadeira>
     }
 </div>

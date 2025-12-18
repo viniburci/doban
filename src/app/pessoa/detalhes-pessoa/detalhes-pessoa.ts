@@ -16,10 +16,12 @@ import { CadastroRecursoCelular } from "../../recursos/recurso-celular/cadastro-
 import { RecursoCarroResponseDTO } from '../../entities/recursoCarroResponseDTO.model';
 import { CardRecursoCarro } from "../../recursos/recurso-carro/card-recurso-carro/card-recurso-carro";
 import { CadastroRecursoCarro } from '../../recursos/recurso-carro/cadastro-recurso-carro/cadastro-recurso-carro';
+import { RecursoRocadeiraResponseDTO } from '../../entities/recursoRocadeiraResponseDTO.model';
+import { CardRecursoRocadeira } from "../../recursos/recurso-rocadeira/card-recurso-rocadeira/card-recurso-rocadeira";
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular, CardRecursoCarro, CadastroRecursoCarro],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular, CardRecursoCarro, CadastroRecursoCarro, CardRecursoRocadeira],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })
@@ -35,14 +37,20 @@ export class DetalhesPessoa implements OnInit {
   errorMessage: string | null = null;
   pessoa: PessoaFormData | null = null;
   vagasPessoa = signal<VagaFormData[] | null>(null);
+
   editVaga = signal<VagaFormData | null>(null);
   editRecursoCelular = signal<RecursoCelularResponseDTO | null>(null);
   editRecursoCarro = signal<RecursoCarroResponseDTO | null>(null);
+  editRecursoRocadeira = signal<RecursoRocadeiraResponseDTO | null>(null);
+
   showRegistrarVaga = signal<boolean>(false);
   showRegistrarRecursoCelular = signal<boolean>(false);
   showRegistrarRecursoCarro = signal<boolean>(false);
+  showRegistrarRecursoRocadeira = signal<boolean>(false);
+
   celularesList = signal<RecursoCelularResponseDTO[] | null>(null);
   carrosList = signal<RecursoCarroResponseDTO[] | null>(null);
+  rocadeirasList = signal<RecursoRocadeiraResponseDTO[] | null>(null);
 
   ngOnInit() {
     const id = this.pessoaId();
@@ -86,6 +94,13 @@ export class DetalhesPessoa implements OnInit {
     this.cdr.detectChanges();
   }
 
+  toggleRegistrarRocadeira() {
+    this.handleOnlyClose();
+    this.editRecursoRocadeira.set(null);
+    this.showRegistrarRecursoRocadeira.set(!this.showRegistrarRecursoRocadeira());
+    this.cdr.detectChanges();
+  }
+
   editarVaga(event: any) {
     this.toggleRegistrarVaga();
     let vaga = this.vagasPessoa()?.find(v => v.id === event);
@@ -107,6 +122,14 @@ export class DetalhesPessoa implements OnInit {
     let recurso = this.carrosList()?.find(r => Number(r.id) === +event);
     if(recurso) {
       this.editRecursoCarro.set(recurso);
+    }
+  }
+
+  editarRecursoRocadeira(event: any) {
+    this.toggleRegistrarRocadeira();
+    let recurso = this.rocadeirasList()?.find(r => Number(r.id) === +event);
+    if(recurso) {
+      this.editRecursoRocadeira.set(recurso);
     }
   }
 
@@ -134,6 +157,10 @@ export class DetalhesPessoa implements OnInit {
       data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
       this.carrosList.set(data);
     })
+    this.recursoService.getRecursoRocadeiraByPessoaId(Number(id)).subscribe(data => {
+      data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
+      this.rocadeirasList.set(data);
+    });
   }
 
   handleOnlyClose() {
