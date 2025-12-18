@@ -18,10 +18,11 @@ import { CardRecursoCarro } from "../../recursos/recurso-carro/card-recurso-carr
 import { CadastroRecursoCarro } from '../../recursos/recurso-carro/cadastro-recurso-carro/cadastro-recurso-carro';
 import { RecursoRocadeiraResponseDTO } from '../../entities/recursoRocadeiraResponseDTO.model';
 import { CardRecursoRocadeira } from "../../recursos/recurso-rocadeira/card-recurso-rocadeira/card-recurso-rocadeira";
+import { CadastroRecursoRocadeira } from '../../recursos/recurso-rocadeira/cadastro-recurso-rocadeira/cadastro-recurso-rocadeira';
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular, CardRecursoCarro, CadastroRecursoCarro, CardRecursoRocadeira],
+  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CadastroRecursoCelular, CardRecursoCarro, CadastroRecursoCarro, CardRecursoRocadeira, CadastroRecursoRocadeira],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css'
 })
@@ -167,5 +168,6 @@ export class DetalhesPessoa implements OnInit {
     this.showRegistrarVaga.set(false);
     this.showRegistrarRecursoCelular.set(false);
     this.showRegistrarRecursoCarro.set(false);
+    this.showRegistrarRecursoRocadeira.set(false);
   }
 }

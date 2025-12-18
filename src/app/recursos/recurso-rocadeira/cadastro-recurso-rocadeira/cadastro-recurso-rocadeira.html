@@ -1,1 +1,47 @@
-<p>cadastro-recurso-rocadeira works!</p>
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">{{editMode() ? 'Atualizar Recurso Roçadeira' : 'Cadastro de Recurso Roçadeira'}}</h4>
+                    <small class="text-white-50">Preencha os dados abaixo</small>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+                        <div class="row g-3">
+
+                            <div class="form-floating">
+                                <select class="form-select" formControlName="rocadeiraId"
+                                    aria-label="Floating label select example">
+                                    @for(rocadeira of listaRocadeiras() || []; track rocadeira.id) {
+                                        <option [value]="rocadeira.id">{{rocadeira.marca}} - {{rocadeira.numeroSerie}}</option>
+                                    }
+                                </select>
+                                <label for="floatingSelect">Rocadeira</label>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data Entrega</label>
+                                <input name="cargo" type="text" class="form-control" placeholder="DD/MM/AAAA"
+                                    formControlName="dataEntrega" mask="00/00/0000">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data Devolução</label>
+                                <input name="cidade" type="text" class="form-control" placeholder="DD/MM/AAAA"
+                                    formControlName="dataDevolucao" mask="00/00/0000">
+                            </div>
+
+                        </div>
+                        <div class="col-12 mt-3 d-flex justify-content-end">
+                            <button type="button" (click)="onCloseForm()" class="btn btn-danger me-2">Fechar</button>
+                            <button type="submit" class="btn btn-primary">
+                                {{ editMode() ? 'Atualizar' : 'Salvar' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
