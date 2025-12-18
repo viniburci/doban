@@ -13,6 +13,7 @@ import { RecursoCelular } from './recursos/recurso-celular/recurso-celular';
 import { CadastroRocadeira } from './recursos/rocadeira/cadastro-rocadeira/cadastro-rocadeira';
 import { DetalhesRocadeira } from './recursos/rocadeira/detalhes-rocadeira/detalhes-rocadeira';
 import { ListaRocadeira } from './recursos/rocadeira/lista-rocadeira/lista-rocadeira';
+import { RecursoRocadeira } from './recursos/recurso-rocadeira/recurso-rocadeira';
 
 export const routes: Routes = [
     {
@@ -128,6 +129,11 @@ export const routes: Routes = [
                     {
                         path: 'lista',
                         component: RecursoCelular
+                    },
+                    {
+                        path: '',
+                        pathMatch: 'full',
+                        redirectTo: 'lista'
                     }
                 ]
             },
@@ -137,6 +143,25 @@ export const routes: Routes = [
                     {
                         path: 'lista',
                         component: RecursoCarro
+                    },
+                    {
+                        path: '',
+                        pathMatch: 'full',
+                        redirectTo: 'lista'
+                    }
+                ]
+            },
+            {
+                path: 'rocadeira',
+                children: [
+                    {
+                        path: 'lista',
+                        component: RecursoRocadeira
+                    },
+                    {
+                        path: '',
+                        pathMatch: 'full',
+                        redirectTo: 'lista'
                     }
                 ]
             }

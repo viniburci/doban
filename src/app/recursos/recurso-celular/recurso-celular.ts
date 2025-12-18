@@ -22,7 +22,6 @@ export class RecursoCelular implements OnInit {
       error: error => {
         console.error('Erro ao carregar recursos celulares', error);
       }
-    }
-    );
+    });
   }
 }

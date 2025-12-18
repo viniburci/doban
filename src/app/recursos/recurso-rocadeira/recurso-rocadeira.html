@@ -1,1 +1,10 @@
-<p>recurso-rocadeira works!</p>
+<div class="list-group">
+    @for (recursoRocadeira of recursosRocadeiras; track recursoRocadeira.id) {
+    <div class="list-group-item">
+        <h5>{{ recursoRocadeira.nomePessoa }}</h5>
+        <p><strong>Marca Roçadeira:</strong> {{ recursoRocadeira.marca }}</p>
+        <p><strong>Data de Entrega:</strong> {{ recursoRocadeira.dataEntrega | date }}</p>
+        <p><strong>Data de Devolução:</strong> {{ recursoRocadeira.dataDevolucao | date }}</p>
+    </div>
+    }
+</div>
