@@ -19,6 +19,14 @@ export class PessoaService {
     return this.http.get<PessoaFormData>(`${this.baseUrl}/${pessoaId}`);
   }
 
+  buscarPessoasAtivas(): Observable<PessoaFormData[]> {
+    return this.http.get<PessoaFormData[]>(`${this.baseUrl}/ativas`);
+  }
+
+  buscarPessoasInativas(): Observable<PessoaFormData[]> {
+    return this.http.get<PessoaFormData[]>(`${this.baseUrl}/inativas`);
+  }
+
   criarPessoa(pessoa: PessoaFormData): Observable<PessoaFormData> {
     return this.http.post<PessoaFormData>(this.baseUrl, pessoa);
   }

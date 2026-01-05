@@ -1,0 +1,189 @@
+/* ===== ESTILO MINIMALISTA E CLEAN ===== */
+
+/* Container principal */
+.container-fluid {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* ===== HEADER COM BOTÃO ===== */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* ===== TABS PARA PESSOAS ===== */
+.pessoas-tabs {
+  margin-bottom: 2rem;
+}
+
+.nav-tabs {
+  border-bottom: 2px solid #e9ecef;
+  margin-bottom: 1.5rem;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #6c757d;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  border-bottom-color: #dee2e6;
+  color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+  color: #0d6efd;
+  border-bottom-color: #0d6efd;
+  background-color: transparent;
+}
+
+/* ===== CARDS DE PESSOA ===== */
+.pessoa-card {
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background-color: white;
+  border: 2px solid transparent;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pessoa-card:hover {
+  border-color: #0d6efd;
+}
+
+/* Bordas de Status */
+.pessoa-card.ativa {
+  border-left: 4px solid #198754;
+}
+
+.pessoa-card.inativa {
+  border-left: 4px solid #dc3545;
+}
+
+/* Conteúdo do Card */
+.pessoa-card-body {
+  padding: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pessoa-info {
+  flex-grow: 1;
+}
+
+.pessoa-nome {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+.pessoa-email {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 0;
+}
+
+/* Status Badge */
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-badge.ativa {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-badge.inativa {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+/* ===== BOTÕES MELHORADOS ===== */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+}
+
+/* ===== EMPTY STATES ===== */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 1rem;
+  }
+
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .pessoa-nome {
+    font-size: 1rem;
+  }
+
+  .pessoa-email {
+    font-size: 0.8rem;
+  }
+}

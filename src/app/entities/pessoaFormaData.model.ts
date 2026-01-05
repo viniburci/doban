@@ -29,4 +29,5 @@ export interface PessoaFormData {
   registroCnh: string | null;
   validadeCnh: string | null;
   chavePix: string | null;
+  ativo?: boolean | null;
 }
