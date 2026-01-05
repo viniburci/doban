@@ -1,24 +1,205 @@
+/* ===== ESTILO MINIMALISTA E CLEAN ===== */
+
+/* Container principal */
+.container-fluid {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* ===== CARDS BASE ===== */
 .card {
-  margin: 10px;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
 }
 
 .card-body {
-  padding: 20px;
+  padding: 1.75rem;
 }
 
+/* ===== TIPOGRAFIA HIERÁRQUICA ===== */
 .card-title {
-  font-size: 1.25rem;
-  font-weight: bold;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
 }
 
 .card-subtitle {
-  font-size: 1rem;
-  margin-bottom: 10px;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #6c757d;
+  margin-bottom: 1.25rem;
 }
 
-.card-text {
-  font-size: 0.9rem;
+/* ===== GRID DE INFORMAÇÕES (2 COLUNAS) ===== */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.875rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  color: #212529;
+  word-break: break-word;
+}
+
+/* ===== SEÇÕES DE GRUPOS ===== */
+.section-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #495057;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.section-header:first-child {
+  margin-top: 0;
+}
+
+/* ===== TABS PARA RECURSOS ===== */
+.recursos-tabs {
+  margin-top: 2rem;
+}
+
+.nav-tabs {
+  border-bottom: 2px solid #e9ecef;
+  margin-bottom: 1.5rem;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #6c757d;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  border-bottom-color: #dee2e6;
+  color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+  color: #0d6efd;
+  border-bottom-color: #0d6efd;
+  background-color: transparent;
+}
+
+/* ===== BOTÕES MELHORADOS ===== */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+}
+
+.btn-success {
+  background-color: #198754;
+}
+
+.btn-success:hover {
+  background-color: #157347;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #bb2d3b;
+}
+
+/* ===== SEÇÃO DE IMPRESSÃO ===== */
+.print-section {
+  position: sticky;
+  top: 2rem;
+}
+
+.print-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 1rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===== ANIMAÇÕES SUAVES ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+/* ===== EMPTY STATES ===== */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
 }

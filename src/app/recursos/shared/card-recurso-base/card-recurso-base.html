@@ -5,24 +5,27 @@
         [class.bg-danger-subtle]="!isRecursoAtivo()" (click)="toggleCollapse()" [attr.aria-expanded]="!isCollapsed()"
         [attr.aria-controls]="'recursoDetalhes-' + recurso()?.id" tabindex="0" role="button">
 
-        <div class="d-flex justify-content-between align-items-center card-header-clickable">
+        <!-- Badge de Status -->
+        <span class="status-badge" [class.active]="isRecursoAtivo()" [class.inactive]="!isRecursoAtivo()">
+            {{ isRecursoAtivo() ? 'Ativo' : 'Devolvido' }}
+        </span>
 
-            <h5 class="card-title flex-grow-1 mb-0 me-3 text-truncate">
-                {{ getFieldValue(config().fieldConfig.titleField) || config().fieldConfig.titleFallback }}
-            </h5>
+        <div class="d-flex justify-content-between align-items-center card-header-clickable">
+            <div class="flex-grow-1">
+                <h5 class="card-title mb-0">
+                    {{ getFieldValue(config().fieldConfig.titleField) || config().fieldConfig.titleFallback }}
+                </h5>
+
+                <h6 class="card-subtitle mb-0">
+                    <span>{{ getFieldValue(config().fieldConfig.subtitleField) || config().fieldConfig.subtitleFallback }}</span>
+                    <span class="ms-3 text-muted" style="font-size: 0.8rem;">
+                        {{ recurso()?.dataEntrega | dateDisplayPipe }} → {{ recurso()?.dataDevolucao | dateDisplayPipe }}
+                    </span>
+                </h6>
+            </div>
 
             <i class="bi ms-3" [class]="isCollapsed() ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
         </div>
-
-        <h6 class="card-subtitle mb-0 text-muted mt-1 d-flex justify-content-between">
-            <span>
-                {{ getFieldValue(config().fieldConfig.subtitleField) || config().fieldConfig.subtitleFallback }}
-            </span>
-
-            <span>
-                {{ recurso()?.dataEntrega | dateDisplayPipe }} - {{recurso()?.dataDevolucao | dateDisplayPipe}}
-            </span>
-        </h6>
     </div>
 
     <div class="card-content-area">

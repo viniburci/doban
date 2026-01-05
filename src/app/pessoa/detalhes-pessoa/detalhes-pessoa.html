@@ -1,132 +1,364 @@
 <div class="container-fluid">
-    <!-- Início da linha -->
-    <div class="row">
-        <!-- Coluna para detalhes da pessoa -->
-        <div class="col-md-3">
-            <!-- Exibição de Pessoa (se existirem dados) -->
-            @if (pessoa != null && errorMessage == null) {
-            <div class="card w-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ pessoa.nome || 'Nome não disponível' }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Email: {{ pessoa.email || 'Email não disponível' }}</h6>
-                    <p class="card-text">
-                        <strong>Telefone:</strong> {{ pessoa.telefone || 'Telefone não disponível' }}<br>
-                        <strong>Data de Nascimento:</strong> {{ pessoa.dataNascimento || 'Data não disponível' }}<br>
-                        <strong>Endereço:</strong> {{ pessoa.endereco || 'Endereço não disponível' }}<br>
-                        <strong>Complemento:</strong> {{ pessoa.complemento || 'Complemento não disponível' }}<br>
-                        <strong>Bairro:</strong> {{ pessoa.bairro || 'Bairro não disponível' }}<br>
-                        <strong>Cidade:</strong> {{ pessoa.cidade || 'Cidade não disponível' }}<br>
-                        <strong>Estado:</strong> {{ pessoa.estado || 'Estado não disponível' }}<br>
-                        <strong>CEP:</strong> {{ pessoa.cep || 'CEP não disponível' }}<br>
-                        <strong>Número CTPS:</strong> {{ pessoa.numeroCtps || 'Número não disponível' }}<br>
-                        <strong>Série CTPS:</strong> {{ pessoa.serieCtps || 'Série não disponível' }}<br>
-                        <strong>Data Emissão CTPS:</strong> {{ pessoa.dataEmissaoCtps || 'Data não disponível' }}<br>
-                        <strong>Número RG:</strong> {{ pessoa.numeroRg || 'Número não disponível' }}<br>
-                        <strong>Data Emissão RG:</strong> {{ pessoa.dataEmissaoRg || 'Data não disponível' }}<br>
-                        <strong>UF RG:</strong> {{ pessoa.ufRg || 'UF não disponível' }}<br>
-                        <strong>CPF:</strong> {{ pessoa.cpf || 'CPF não disponível' }}<br>
-                        <strong>PIS:</strong> {{ pessoa.pis || 'PIS não disponível' }}<br>
-                        <strong>Data Emissão PIS:</strong> {{ pessoa.dataEmissaoPis || 'Data não disponível' }}<br>
-                        <strong>Título Eleitor:</strong> {{ pessoa.tituloEleitor || 'Título não disponível' }}<br>
-                        <strong>Local de Nascimento:</strong> {{ pessoa.localNascimento || 'Local não disponível' }}<br>
-                        <strong>Mãe:</strong> {{ pessoa.mae || 'Mãe não disponível' }}<br>
-                        <strong>Pai:</strong> {{ pessoa.pai || 'Pai não disponível' }}<br>
-                        <strong>Estado Civil:</strong> {{ pessoa.estadoCivil || 'Estado Civil não disponível' }}<br>
-                        <strong>Categoria CNH:</strong> {{ pessoa.categoriaCnh || 'Categoria não disponível' }}<br>
-                        <strong>Número CNH:</strong> {{ pessoa.numeroCnh || 'Número não disponível' }}<br>
-                        <strong>Registro CNH:</strong> {{ pessoa.registroCnh || 'Registro não disponível' }}<br>
-                        <strong>Validade CNH:</strong> {{ pessoa.validadeCnh || 'Validade não disponível' }}<br>
-                        <strong>Chave Pix:</strong> {{ pessoa.chavePix || 'Chave Pix não disponível' }}<br>
-                    </p>
-                    <a [routerLink]="['/pessoas', pessoa.id, 'editar']" class="btn btn-primary">
-                        Editar
-                    </a>
-                </div>
-            </div>
-            }
-            <!-- Exibição de erro -->
-            @else if (errorMessage != null) {
-            <div class="alert alert-danger" role="alert">
-                {{ errorMessage }}
-            </div>
-            }
-        </div>
+  <!-- Primeira Linha: Pessoa + Vagas + Impressão -->
+  <div class="row">
 
-        <!-- Coluna para as Vagas -->
-        <div class="col-md-6">
+    <!-- COLUNA 1: DETALHES DA PESSOA -->
+    <div class="col-lg-3 col-md-4">
+      @if (pessoa != null && errorMessage == null) {
+        <div class="card">
+          <div class="card-body">
+            <!-- Header do Card -->
+            <h5 class="card-title">{{ pessoa.nome || 'Nome não disponível' }}</h5>
+            <h6 class="card-subtitle">{{ pessoa.email || 'Email não disponível' }}</h6>
+
+            <!-- SEÇÃO: CONTATO -->
+            <div class="section-header">Contato</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Telefone</span>
+                <span class="info-value">{{ pessoa.telefone || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Chave Pix</span>
+                <span class="info-value">{{ pessoa.chavePix || '-' }}</span>
+              </div>
+            </div>
+
+            <!-- SEÇÃO: ENDEREÇO -->
+            <div class="section-header">Endereço</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Logradouro</span>
+                <span class="info-value">{{ pessoa.endereco || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Complemento</span>
+                <span class="info-value">{{ pessoa.complemento || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Bairro</span>
+                <span class="info-value">{{ pessoa.bairro || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Cidade/UF</span>
+                <span class="info-value">{{ pessoa.cidade || '-' }}/{{ pessoa.estado || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">CEP</span>
+                <span class="info-value">{{ pessoa.cep || '-' }}</span>
+              </div>
+            </div>
+
+            <!-- SEÇÃO: DOCUMENTOS -->
+            <div class="section-header">Documentos</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">CPF</span>
+                <span class="info-value">{{ pessoa.cpf || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">RG</span>
+                <span class="info-value">{{ pessoa.numeroRg || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Emissão RG</span>
+                <span class="info-value">{{ pessoa.dataEmissaoRg || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">UF RG</span>
+                <span class="info-value">{{ pessoa.ufRg || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">PIS</span>
+                <span class="info-value">{{ pessoa.pis || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Título Eleitor</span>
+                <span class="info-value">{{ pessoa.tituloEleitor || '-' }}</span>
+              </div>
+            </div>
+
+            <!-- SEÇÃO: CTPS -->
+            <div class="section-header">CTPS</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Número</span>
+                <span class="info-value">{{ pessoa.numeroCtps || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Série</span>
+                <span class="info-value">{{ pessoa.serieCtps || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Emissão</span>
+                <span class="info-value">{{ pessoa.dataEmissaoCtps || '-' }}</span>
+              </div>
+            </div>
+
+            <!-- SEÇÃO: CNH -->
+            <div class="section-header">CNH</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Número</span>
+                <span class="info-value">{{ pessoa.numeroCnh || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Categoria</span>
+                <span class="info-value">{{ pessoa.categoriaCnh || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Registro</span>
+                <span class="info-value">{{ pessoa.registroCnh || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Validade</span>
+                <span class="info-value">{{ pessoa.validadeCnh || '-' }}</span>
+              </div>
+            </div>
+
+            <!-- SEÇÃO: DADOS PESSOAIS -->
+            <div class="section-header">Dados Pessoais</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Nascimento</span>
+                <span class="info-value">{{ pessoa.dataNascimento || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Local Nasc.</span>
+                <span class="info-value">{{ pessoa.localNascimento || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Estado Civil</span>
+                <span class="info-value">{{ pessoa.estadoCivil || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Mãe</span>
+                <span class="info-value">{{ pessoa.mae || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Pai</span>
+                <span class="info-value">{{ pessoa.pai || '-' }}</span>
+              </div>
+            </div>
+
+            <!-- Botão Editar -->
+            <a [routerLink]="['/pessoas', pessoa.id, 'editar']" class="btn btn-primary w-100 mt-3">
+              Editar Informações
+            </a>
+          </div>
+        </div>
+      }
+      @else if (errorMessage != null) {
+        <div class="alert alert-danger" role="alert">
+          {{ errorMessage }}
+        </div>
+      }
+    </div>
+
+    <!-- COLUNA 2: VAGAS -->
+    <div class="col-lg-6 col-md-5">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Vagas</h5>
+
+          @if ((vagasPessoa()?.length || 0) > 0) {
             @for(vaga of vagasPessoa(); track vaga.id) {
-            <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
+              <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
             }
-            <button class="btn btn-primary" (click)="toggleRegistrarVaga()">Registrar Vaga</button>
-        </div>
-
-        <!-- Coluna para Botões de Impressão -->
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Imprimir</h5>
-                    <button class="btn btn-success">Imprimir Vaga</button>
-                    <button class="btn btn-danger mt-2">Imprimir Contrato</button>
-                </div>
+          } @else {
+            <div class="empty-state">
+              <div class="empty-state-icon">📋</div>
+              <p class="empty-state-text">Nenhuma vaga registrada</p>
             </div>
+          }
+
+          <button class="btn btn-primary w-100 mt-3" (click)="toggleRegistrarVaga()">
+            Registrar Nova Vaga
+          </button>
         </div>
+      </div>
     </div>
 
-    <!-- Coluna para os Recursos Celulares -->
-    <div class="row">
-        <!-- Cada card ocupará 4 colunas em telas médias (col-md-4) para caber 3 cards na mesma linha -->
-        <div class="col-md-4 mb-4">
-            @for(recursoCelular of celularesList(); track recursoCelular.id) {
-            <app-card-recurso-celular [recurso]="recursoCelular" (editarRecurso)="editarRecursoCelular($event)"
-                (updated)="updateComponent()"></app-card-recurso-celular>
-            }
-            <button class="btn btn-primary" (click)="toggleRegistrarCelular()">Registrar Celular</button>
+    <!-- COLUNA 3: IMPRESSÃO -->
+    <div class="col-lg-3 col-md-3">
+      <div class="card print-section">
+        <div class="card-body">
+          <h5 class="card-title">Documentos</h5>
+          <div class="print-buttons">
+            <button class="btn btn-success">
+              📄 Imprimir Vaga
+            </button>
+            <button class="btn btn-danger">
+              📋 Imprimir Contrato
+            </button>
+          </div>
         </div>
-        <div class="col-md-4 mb-4">
-            @for(recursoCarro of carrosList(); track recursoCarro.id) {
-            <app-card-recurso-carro [recurso]="recursoCarro" (editarRecurso)="editarRecursoCarro($event)"
-                (updated)="updateComponent()"></app-card-recurso-carro>
-            }
-            <button class=" btn btn-primary" (click)="toggleRegistrarCarro()">Registrar Carro</button>
-        </div>
-        <div class="col-md-4 mb-4">
-            @for(recursoRocadeira of rocadeirasList(); track recursoRocadeira.id) {
-            <app-card-recurso-rocadeira [recurso]="recursoRocadeira" (editarRecurso)="editarRecursoRocadeira($event)"
-                (updated)="updateComponent()"></app-card-recurso-rocadeira>
-            }
-            <button class=" btn btn-primary" (click)="toggleRegistrarRocadeira()">Registrar Rocadeira</button>
-        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Formulário de Registro de Vaga -->
-    @if(showRegistrarVaga()) {
-    <hr>
-    <app-cadastro-vaga #vagaForm appScrollOnRender (updated)="handleUpdateAndClose()"
-        [editVaga]="editVaga() ? editVaga() : null" (close)="handleOnlyClose()" (closeForm)="handleOnlyClose()"
-        [pessoaId]="pessoaId()">
-    </app-cadastro-vaga>
-    }
+  <!-- SEÇÃO DE RECURSOS COM TABS -->
+  <div class="recursos-tabs">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Recursos</h5>
 
-    @if (showRegistrarRecursoCelular()) {
-    <hr>
-    <app-cadastro-recurso-celular #recursoCelularForm appScrollOnRender (closeForm)="handleOnlyClose()"
-        (close)="handleOnlyClose()" (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
-        [editRecurso]="editRecursoCelular() ? editRecursoCelular() : null">
-    </app-cadastro-recurso-celular>
-    }
+        <!-- Nav Tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="celulares-tab" data-bs-toggle="tab"
+                    data-bs-target="#celulares" type="button" role="tab">
+              📱 Celulares ({{ celularesList()?.length || 0 }})
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="carros-tab" data-bs-toggle="tab"
+                    data-bs-target="#carros" type="button" role="tab">
+              🚗 Carros ({{ carrosList()?.length || 0 }})
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="rocadeiras-tab" data-bs-toggle="tab"
+                    data-bs-target="#rocadeiras" type="button" role="tab">
+              🔧 Roçadeiras ({{ rocadeirasList()?.length || 0 }})
+            </button>
+          </li>
+        </ul>
 
-    @if (showRegistrarRecursoCarro()) {
-    <hr>
-    <app-cadastro-recurso-carro #recursoCarroForm appScrollOnRender (closeForm)="handleOnlyClose()"
-        (close)="handleOnlyClose()" (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
-        [editRecurso]="editRecursoCarro() ? editRecursoCarro() : null">
-    </app-cadastro-recurso-carro>
-    }
-    @if (showRegistrarRecursoRocadeira()) {
-    <hr>
-    <app-cadastro-recurso-rocadeira #recursoRocadeiraForm appScrollOnRender (closeForm)="handleOnlyClose()"
-        (close)="handleOnlyClose()" (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
-        [editRecurso]="editRecursoRocadeira() ? editRecursoRocadeira() : null">
-    </app-cadastro-recurso-rocadeira>
-    }
+        <!-- Tab Content -->
+        <div class="tab-content mt-4">
+
+          <!-- TAB: CELULARES -->
+          <div class="tab-pane fade show active" id="celulares" role="tabpanel">
+            <div class="row">
+              @if ((celularesList()?.length || 0) > 0) {
+                @for(recursoCelular of celularesList(); track recursoCelular.id) {
+                  <div class="col-lg-4 col-md-6 mb-3">
+                    <app-card-recurso-celular
+                      [recurso]="recursoCelular"
+                      (editarRecurso)="editarRecursoCelular($event)"
+                      (updated)="updateComponent()">
+                    </app-card-recurso-celular>
+                  </div>
+                }
+              } @else {
+                <div class="col-12">
+                  <div class="empty-state">
+                    <div class="empty-state-icon">📱</div>
+                    <p class="empty-state-text">Nenhum celular registrado</p>
+                  </div>
+                </div>
+              }
+            </div>
+            <button class="btn btn-primary mt-3" (click)="toggleRegistrarCelular()">
+              Registrar Celular
+            </button>
+          </div>
+
+          <!-- TAB: CARROS -->
+          <div class="tab-pane fade" id="carros" role="tabpanel">
+            <div class="row">
+              @if ((carrosList()?.length || 0) > 0) {
+                @for(recursoCarro of carrosList(); track recursoCarro.id) {
+                  <div class="col-lg-4 col-md-6 mb-3">
+                    <app-card-recurso-carro
+                      [recurso]="recursoCarro"
+                      (editarRecurso)="editarRecursoCarro($event)"
+                      (updated)="updateComponent()">
+                    </app-card-recurso-carro>
+                  </div>
+                }
+              } @else {
+                <div class="col-12">
+                  <div class="empty-state">
+                    <div class="empty-state-icon">🚗</div>
+                    <p class="empty-state-text">Nenhum carro registrado</p>
+                  </div>
+                </div>
+              }
+            </div>
+            <button class="btn btn-primary mt-3" (click)="toggleRegistrarCarro()">
+              Registrar Carro
+            </button>
+          </div>
+
+          <!-- TAB: ROÇADEIRAS -->
+          <div class="tab-pane fade" id="rocadeiras" role="tabpanel">
+            <div class="row">
+              @if ((rocadeirasList()?.length || 0) > 0) {
+                @for(recursoRocadeira of rocadeirasList(); track recursoRocadeira.id) {
+                  <div class="col-lg-4 col-md-6 mb-3">
+                    <app-card-recurso-rocadeira
+                      [recurso]="recursoRocadeira"
+                      (editarRecurso)="editarRecursoRocadeira($event)"
+                      (updated)="updateComponent()">
+                    </app-card-recurso-rocadeira>
+                  </div>
+                }
+              } @else {
+                <div class="col-12">
+                  <div class="empty-state">
+                    <div class="empty-state-icon">🔧</div>
+                    <p class="empty-state-text">Nenhuma roçadeira registrada</p>
+                  </div>
+                </div>
+              }
+            </div>
+            <button class="btn btn-primary mt-3" (click)="toggleRegistrarRocadeira()">
+              Registrar Roçadeira
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMULÁRIOS DE REGISTRO -->
+  @if(showRegistrarVaga()) {
+    <div class="card mt-4 fade-in">
+      <div class="card-body">
+        <app-cadastro-vaga #vagaForm appScrollOnRender (updated)="handleUpdateAndClose()"
+          [editVaga]="editVaga() ? editVaga() : null" (close)="handleOnlyClose()"
+          (closeForm)="handleOnlyClose()" [pessoaId]="pessoaId()">
+        </app-cadastro-vaga>
+      </div>
+    </div>
+  }
+
+  @if (showRegistrarRecursoCelular()) {
+    <div class="card mt-4 fade-in">
+      <div class="card-body">
+        <app-cadastro-recurso-celular #recursoCelularForm appScrollOnRender
+          (closeForm)="handleOnlyClose()" (close)="handleOnlyClose()"
+          (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
+          [editRecurso]="editRecursoCelular() ? editRecursoCelular() : null">
+        </app-cadastro-recurso-celular>
+      </div>
+    </div>
+  }
+
+  @if (showRegistrarRecursoCarro()) {
+    <div class="card mt-4 fade-in">
+      <div class="card-body">
+        <app-cadastro-recurso-carro #recursoCarroForm appScrollOnRender
+          (closeForm)="handleOnlyClose()" (close)="handleOnlyClose()"
+          (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
+          [editRecurso]="editRecursoCarro() ? editRecursoCarro() : null">
+        </app-cadastro-recurso-carro>
+      </div>
+    </div>
+  }
+
+  @if (showRegistrarRecursoRocadeira()) {
+    <div class="card mt-4 fade-in">
+      <div class="card-body">
+        <app-cadastro-recurso-rocadeira #recursoRocadeiraForm appScrollOnRender
+          (closeForm)="handleOnlyClose()" (close)="handleOnlyClose()"
+          (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
+          [editRecurso]="editRecursoRocadeira() ? editRecursoRocadeira() : null">
+        </app-cadastro-recurso-rocadeira>
+      </div>
+    </div>
+  }
 </div>
