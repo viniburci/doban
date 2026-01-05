@@ -8,19 +8,21 @@
         <div class="d-flex justify-content-between align-items-center card-header-clickable">
 
             <h5 class="card-title flex-grow-1 mb-0 me-3 text-truncate">
-                {{ recurso()?.modeloCelular || 'Modelo não disponível' }}
+                {{ getFieldValue(config().fieldConfig.titleField) || config().fieldConfig.titleFallback }}
             </h5>
 
             <i class="bi ms-3" [class]="isCollapsed() ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
         </div>
 
         <h6 class="card-subtitle mb-0 text-muted mt-1 d-flex justify-content-between">
-            {{ recurso()?.imei || 'Modelo não disponível' }}
+            <span>
+                {{ getFieldValue(config().fieldConfig.subtitleField) || config().fieldConfig.subtitleFallback }}
+            </span>
 
-
-            <span>{{ recurso()?.dataEntrega | dateDisplayPipe }} - {{recurso()?.dataDevolucao | dateDisplayPipe}}</span>
+            <span>
+                {{ recurso()?.dataEntrega | dateDisplayPipe }} - {{recurso()?.dataDevolucao | dateDisplayPipe}}
+            </span>
         </h6>
-
     </div>
 
     <div class="card-content-area">
@@ -30,12 +32,17 @@
             <div class="row nowrap-details">
 
                 <div class="col-md-6 mb-2">
-                    <strong>Celular ID: </strong> <a [routerLink]="['/celulares', recurso()?.celularId, 'detalhes']">{{
-                        recurso()?.celularId || 'N/D' }}</a>
+                    <strong>{{ config().fieldConfig.resourceTypeLabel }} ID: </strong>
+                    <a [routerLink]="['/' + config().routeBase, getFieldValue(config().fieldConfig.resourceIdField), 'detalhes']">
+                        {{ getFieldValue(config().fieldConfig.resourceIdField) || 'N/D' }}
+                    </a>
                 </div>
-                <div class="col-md-6 mb-2">
-                    <strong>IMEI:</strong> {{ recurso()?.imei || 'N/D' }}
-                </div>
+
+                @for (field of config().fieldConfig.detailFields; track field.field) {
+                    <div class="col-md-6 mb-2">
+                        <strong>{{ field.label }}</strong> {{ getFieldValue(field.field) || field.fallback }}
+                    </div>
+                }
 
                 <div class="col-md-6 mb-2">
                     <strong>Data de Entrega:</strong> {{ recurso()?.dataEntrega | dateDisplayPipe }}
@@ -48,10 +55,9 @@
             <button (click)="onEditarRecurso()" class="btn btn-primary mt-3 ">
                 Editar Devolução
             </button>
-            <button appConfirmDelete (confirmedDelete)="onDeletarRecurso($event)" class="btn btn-danger mt-3 offset-1"> 
+            <button appConfirmDelete (confirmedDelete)="onConfirmDelete($event)" class="btn btn-danger mt-3 offset-1">
                 Deletar
             </button>
-
         </div>
     </div>
 </div>

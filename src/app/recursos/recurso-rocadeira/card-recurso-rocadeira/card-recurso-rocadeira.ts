@@ -1,95 +1,45 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { ConfirmDeleteDirective } from '../../../directives/confirm-delete';
-import { DateDisplayPipe } from '../../../pipes/date-display-pipe';
-import { ConfirmDialog } from '../../../utils/confirm-dialog/confirm-dialog';
-import { RecursoService } from '../../../services/recurso-service';
+import { Component, computed, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { RecursoRocadeiraResponseDTO } from '../../../entities/recursoRocadeiraResponseDTO.model';
+import { RecursoService } from '../../../services/recurso-service';
+import { CardRecursoBase } from '../../shared/card-recurso-base/card-recurso-base';
+import { RecursoCardConfig } from '../../shared/recurso-card-config.interface';
 
 @Component({
   selector: 'app-card-recurso-rocadeira',
-  imports: [DateDisplayPipe, ConfirmDialog, ConfirmDeleteDirective, RouterLink],
-  templateUrl: './card-recurso-rocadeira.html',
-  styleUrl: './card-recurso-rocadeira.css'
+  imports: [CardRecursoBase],
+  template: `
+    <app-card-recurso-base
+      [recurso]="recurso()"
+      [config]="cardConfig()"
+      (editarRecurso)="editarRecurso.emit($event)"
+      (updated)="updated.emit()">
+    </app-card-recurso-base>
+  `,
+  styles: [],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardRecursoRocadeira {
   recurso = input<RecursoRocadeiraResponseDTO | null>(null);
 
-private recursoService = inject(RecursoService);
+  private recursoService = inject(RecursoService);
 
   editarRecurso = output<string>();
   updated = output<void>();
 
-  isCollapsed = signal(true);
-
-  ngOnInit() { }
-
-  toggleCollapse() {
-    this.isCollapsed.update(value => !value);
-  }
-
-  isRecursoAtivo = computed<boolean>(() => {
-    const recursoData = this.recurso();
-    if (!recursoData) {
-      return false;
-    }
-
-    if (!recursoData.dataDevolucao) {
-      return true;
-    }
-
-    const dataDevolucao = this.parseDateString(recursoData.dataDevolucao);
-
-    if (!dataDevolucao) {
-      return false;
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return dataDevolucao.getTime() > today.getTime();
-  });
-
-  private parseDateString(dateString: string | null | undefined): Date | null {
-    if (!dateString) {
-      return null;
-    }
-    try {
-      const datePart = dateString.substring(0, 10);
-      return new Date(datePart);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  onEditarRecurso() {
-    const recursoId = this.recurso()?.id;
-
-    if (recursoId) {
-      this.editarRecurso.emit(recursoId.toString());
-    }
-  }
-
-  onConfirmDelete(event: boolean) {
-    if (event == true) {
-      this.onDeletarRecurso()
-      console.log('onconfirmdelete true')
-    }
-    console.log('onconfirmdelete false')
-  }
-
-  onDeletarRecurso() {
-    const recursoId = this.recurso()?.id;
-    if (recursoId) {
-      this.recursoService.deleteRecursoRocadeira(+recursoId).subscribe({
-        next: () => {
-          console.log('Recurso roçadeira deletado com sucesso:', recursoId);
-          this.updated.emit();
-        },
-        error: (error) => {
-          console.error('Erro ao deletar recurso roçadeira:', error);
-        }
-      });
-    }
-  }
+  cardConfig = computed<RecursoCardConfig<RecursoRocadeiraResponseDTO>>(() => ({
+    fieldConfig: {
+      titleField: 'marca',
+      subtitleField: 'numeroSerie',
+      titleFallback: 'Marca não disponível',
+      subtitleFallback: 'Número de série não disponível',
+      resourceTypeLabel: 'Roçadeira',
+      resourceIdField: 'rocadeiraId',
+      detailFields: [
+        { label: 'Marca:', field: 'marca', fallback: 'N/D' },
+        { label: 'Número de Série:', field: 'numeroSerie', fallback: 'N/D' }
+      ]
+    },
+    routeBase: 'rocadeiras',
+    deleteFn: (id: number) => this.recursoService.deleteRecursoRocadeira(id)
+  }));
 }
