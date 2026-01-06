@@ -7,7 +7,7 @@ export interface RecursoFormFieldConfig {
 }
 
 export interface RecursoListItem {
-  id: string | number;
+  id?: string | number | null;
   [key: string]: any;
 }
 

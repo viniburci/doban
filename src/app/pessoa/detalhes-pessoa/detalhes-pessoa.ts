@@ -21,6 +21,12 @@ import { RecursoFormConfig } from '../../recursos/shared/recurso-form-config.int
 import { CarroService } from '../../services/carro-service';
 import { CelularService } from '../../services/celular-service';
 import { RocadeiraService } from '../../services/rocadeira-service';
+import { RecursoCelularRequestDTO } from '../../entities/recursoCelularRequestDTO.model';
+import { RecursoCarroRequestDTO } from '../../entities/recursoCarroRequestDTO.model';
+import { RecursoRocadeiraRequestDTO } from '../../entities/recursoRocadeiraRequestDTO.model';
+import { CelularFormData } from '../../entities/celularFormData.model';
+import { CarroFormData } from '../../entities/carroFormData.model';
+import { RocadeiraResponseDTO } from '../../entities/rocadeiraResponseDTO.model';
 
 @Component({
   selector: 'app-detalhes-pessoa',
@@ -57,7 +63,7 @@ export class DetalhesPessoa implements OnInit {
   rocadeirasList = signal<RecursoRocadeiraResponseDTO[] | null>(null);
 
   // Configurações dos formulários
-  celularFormConfig: RecursoFormConfig<any, any, any> = {
+  celularFormConfig: RecursoFormConfig<RecursoCelularRequestDTO, RecursoCelularResponseDTO, CelularFormData> = {
     fieldConfig: {
       resourceTypeLabel: 'Celular',
       resourceIdField: 'celularId',
@@ -66,10 +72,10 @@ export class DetalhesPessoa implements OnInit {
     createFn: (req) => this.recursoService.createRecursoCelular(req),
     updateFn: (id, dto) => this.recursoService.registrarDevolucaoCelular(id, dto),
     listFn: () => this.celularService.listar(),
-    displayFn: (cel: any) => `${cel.modelo} - ${cel.imei}`
+    displayFn: (cel) => `${cel.modelo} - ${cel.imei}`
   };
 
-  carroFormConfig: RecursoFormConfig<any, any, any> = {
+  carroFormConfig: RecursoFormConfig<RecursoCarroRequestDTO, RecursoCarroResponseDTO, CarroFormData> = {
     fieldConfig: {
       resourceTypeLabel: 'Carro',
       resourceIdField: 'carroId',
@@ -78,10 +84,10 @@ export class DetalhesPessoa implements OnInit {
     createFn: (req) => this.recursoService.createRecursoCarro(req),
     updateFn: (id, dto) => this.recursoService.registrarDevolucaoCarro(id, dto),
     listFn: () => this.carroService.listar(),
-    displayFn: (car: any) => `${car.modelo} - ${car.placa}`
+    displayFn: (car) => `${car.modelo} - ${car.placa}`
   };
 
-  rocadeiraFormConfig: RecursoFormConfig<any, any, any> = {
+  rocadeiraFormConfig: RecursoFormConfig<RecursoRocadeiraRequestDTO, RecursoRocadeiraResponseDTO, RocadeiraResponseDTO> = {
     fieldConfig: {
       resourceTypeLabel: 'Roçadeira',
       resourceIdField: 'rocadeiraId',
@@ -90,7 +96,7 @@ export class DetalhesPessoa implements OnInit {
     createFn: (req) => this.recursoService.createRecursoRocadeira(req),
     updateFn: (id, dto) => this.recursoService.registrarDevolucaoRocadeira(id, dto),
     listFn: () => this.rocadeiraService.listarRocadeiras(),
-    displayFn: (roc: any) => `${roc.modelo} - ${roc.numeroSerie}`
+    displayFn: (roc) => `${roc.marca} - ${roc.numeroSerie}`
   };
 
   ngOnInit() {
@@ -158,7 +164,7 @@ export class DetalhesPessoa implements OnInit {
     }
   }
 
-  getActiveConfig(): RecursoFormConfig<any, any, any> {
+  getActiveConfig(): any {
     switch(this.activeResourceType()) {
       case 'celular': return this.celularFormConfig;
       case 'carro': return this.carroFormConfig;
