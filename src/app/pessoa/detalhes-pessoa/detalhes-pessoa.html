@@ -236,7 +236,7 @@
                   <div class="col-lg-4 col-md-6 mb-3">
                     <app-card-recurso-celular
                       [recurso]="recursoCelular"
-                      (editarRecurso)="editarRecursoCelular($event)"
+                      (editarRecurso)="editarRecurso('celular', $event)"
                       (updated)="updateComponent()">
                     </app-card-recurso-celular>
                   </div>
@@ -250,7 +250,7 @@
                 </div>
               }
             </div>
-            <button class="btn btn-primary mt-3" (click)="toggleRegistrarCelular()">
+            <button class="btn btn-primary mt-3" (click)="toggleRegistrarRecurso('celular')">
               Registrar Celular
             </button>
           </div>
@@ -263,7 +263,7 @@
                   <div class="col-lg-4 col-md-6 mb-3">
                     <app-card-recurso-carro
                       [recurso]="recursoCarro"
-                      (editarRecurso)="editarRecursoCarro($event)"
+                      (editarRecurso)="editarRecurso('carro', $event)"
                       (updated)="updateComponent()">
                     </app-card-recurso-carro>
                   </div>
@@ -277,7 +277,7 @@
                 </div>
               }
             </div>
-            <button class="btn btn-primary mt-3" (click)="toggleRegistrarCarro()">
+            <button class="btn btn-primary mt-3" (click)="toggleRegistrarRecurso('carro')">
               Registrar Carro
             </button>
           </div>
@@ -290,7 +290,7 @@
                   <div class="col-lg-4 col-md-6 mb-3">
                     <app-card-recurso-rocadeira
                       [recurso]="recursoRocadeira"
-                      (editarRecurso)="editarRecursoRocadeira($event)"
+                      (editarRecurso)="editarRecurso('rocadeira', $event)"
                       (updated)="updateComponent()">
                     </app-card-recurso-rocadeira>
                   </div>
@@ -304,7 +304,7 @@
                 </div>
               }
             </div>
-            <button class="btn btn-primary mt-3" (click)="toggleRegistrarRocadeira()">
+            <button class="btn btn-primary mt-3" (click)="toggleRegistrarRecurso('rocadeira')">
               Registrar Roçadeira
             </button>
           </div>
@@ -326,38 +326,16 @@
     </div>
   }
 
-  @if (showRegistrarRecursoCelular()) {
+  @if (showRegistrarRecurso()) {
     <div class="card mt-4 fade-in">
       <div class="card-body">
-        <app-cadastro-recurso-celular #recursoCelularForm appScrollOnRender
-          (closeForm)="handleOnlyClose()" (close)="handleOnlyClose()"
-          (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
-          [editRecurso]="editRecursoCelular() ? editRecursoCelular() : null">
-        </app-cadastro-recurso-celular>
-      </div>
-    </div>
-  }
-
-  @if (showRegistrarRecursoCarro()) {
-    <div class="card mt-4 fade-in">
-      <div class="card-body">
-        <app-cadastro-recurso-carro #recursoCarroForm appScrollOnRender
-          (closeForm)="handleOnlyClose()" (close)="handleOnlyClose()"
-          (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
-          [editRecurso]="editRecursoCarro() ? editRecursoCarro() : null">
-        </app-cadastro-recurso-carro>
-      </div>
-    </div>
-  }
-
-  @if (showRegistrarRecursoRocadeira()) {
-    <div class="card mt-4 fade-in">
-      <div class="card-body">
-        <app-cadastro-recurso-rocadeira #recursoRocadeiraForm appScrollOnRender
-          (closeForm)="handleOnlyClose()" (close)="handleOnlyClose()"
-          (updated)="handleUpdateAndClose()" [pessoaId]="pessoaId()"
-          [editRecurso]="editRecursoRocadeira() ? editRecursoRocadeira() : null">
-        </app-cadastro-recurso-rocadeira>
+        <app-cadastro-recurso-base #recursoForm appScrollOnRender
+          [config]="getActiveConfig()"
+          [pessoaId]="pessoaId()"
+          [editRecurso]="editRecurso()"
+          (updated)="handleUpdateAndClose()"
+          (closeForm)="handleOnlyClose()">
+        </app-cadastro-recurso-base>
       </div>
     </div>
   }

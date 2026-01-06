@@ -1,0 +1,60 @@
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        {{editMode() ? 'Registrar Devolução de ' + config().fieldConfig.resourceTypeLabel : 'Cadastro de Recurso ' + config().fieldConfig.resourceTypeLabel}}
+                    </h4>
+                    <small class="text-white-50">Preencha os dados abaixo</small>
+                </div>
+                <div class="card-body">
+                    @if (errorMessage()) {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ errorMessage() }}
+                            <button type="button" class="btn-close" (click)="errorMessage.set(null)"></button>
+                        </div>
+                    }
+
+                    <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+                        <div class="row g-3">
+
+                            @if (!editMode()) {
+                                <div class="form-floating">
+                                    <select class="form-select" formControlName="resourceId"
+                                        aria-label="Floating label select example">
+                                        <option value="" selected disabled>Selecione...</option>
+                                        @for(item of listaRecursos() || []; track item.id) {
+                                            <option [value]="item.id">{{ config().displayFn(item) }}</option>
+                                        }
+                                    </select>
+                                    <label for="floatingSelect">{{ config().fieldConfig.resourceIdLabel }}</label>
+                                </div>
+                            }
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data Entrega</label>
+                                <input type="text" class="form-control" placeholder="DD/MM/AAAA"
+                                    formControlName="dataEntrega" mask="00/00/0000"
+                                    [readonly]="editMode()">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Data Devolução</label>
+                                <input type="text" class="form-control" placeholder="DD/MM/AAAA"
+                                    formControlName="dataDevolucao" mask="00/00/0000">
+                            </div>
+
+                        </div>
+                        <div class="col-12 mt-3 d-flex justify-content-end">
+                            <button type="button" (click)="onCloseForm()" class="btn btn-danger me-2">Fechar</button>
+                            <button type="submit" class="btn btn-primary">
+                                {{ editMode() ? 'Atualizar' : 'Salvar' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
