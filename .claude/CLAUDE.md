@@ -45,3 +45,10 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## Git Commits
+
+- NEVER use Co-Authored-By in commit messages
+- Do NOT add "Generated with Claude Code" or similar footers
+- Keep commit messages clean and professional
+- Follow conventional commits format when appropriate
