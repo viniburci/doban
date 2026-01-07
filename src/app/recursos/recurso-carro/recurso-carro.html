@@ -1,5 +1,5 @@
 <div class="list-group">
-    @for (recursoCarro of recursosCarros; track recursoCarro.id) {
+    @for (recursoCarro of recursosCarros(); track recursoCarro.id) {
     <div class="list-group-item">
         <h5>{{ recursoCarro.nomePessoa }}</h5>
         <p><strong>Modelo Carro:</strong> {{ recursoCarro.modeloCarro }}</p>

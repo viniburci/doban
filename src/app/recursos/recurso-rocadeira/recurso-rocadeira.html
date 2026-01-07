@@ -1,5 +1,5 @@
 <div class="list-group">
-    @for (recursoRocadeira of recursosRocadeiras; track recursoRocadeira.id) {
+    @for (recursoRocadeira of recursosRocadeiras(); track recursoRocadeira.id) {
     <div class="list-group-item">
         <h5>{{ recursoRocadeira.nomePessoa }}</h5>
         <p><strong>Marca Roçadeira:</strong> {{ recursoRocadeira.marca }}</p>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { CarroService } from '../../../services/carro-service';
 import { CarroFormData } from '../../../entities/carroFormData.model';
 import { Router, RouterLink } from '@angular/router';
@@ -13,14 +13,14 @@ export class ListaCarro implements OnInit{
 
   constructor(private carroService: CarroService, private router: Router) {}
 
-  listaCarros: CarroFormData[] = [];
+  listaCarros = signal<CarroFormData[]>([]);
 
-  ngOnInit(){
+  ngOnInit() {
     this.carroService.buscarTodos().subscribe(response => {
-      this.listaCarros = response;
-      console.log(response);
-    })
+      this.listaCarros.set(response);
+    });
   }
+
 
 
 }

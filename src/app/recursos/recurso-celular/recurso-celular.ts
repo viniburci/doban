@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RecursoCelularResponseDTO } from '../../entities/recursoCelularResponseDTO.model';
 import { RecursoService } from '../../services/recurso-service';
 import { CommonModule } from '@angular/common';
@@ -10,14 +10,15 @@ import { CommonModule } from '@angular/common';
   styleUrl: './recurso-celular.css'
 })
 export class RecursoCelular implements OnInit {
-  recursosCelulares: RecursoCelularResponseDTO[] = [];
+
+  recursosCelulares = signal<RecursoCelularResponseDTO[]>([]);
 
   constructor(private recursoService: RecursoService) { }
 
   ngOnInit(): void {
     this.recursoService.getRecursosCelulares().subscribe({
       next: data => {
-        this.recursosCelulares = data
+        this.recursosCelulares.set(data);
       },
       error: error => {
         console.error('Erro ao carregar recursos celulares', error);

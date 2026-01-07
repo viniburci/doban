@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { RocadeiraService } from '../../../services/rocadeira-service';
 import { RocadeiraResponseDTO } from '../../../entities/rocadeiraResponseDTO.model';
@@ -12,11 +12,11 @@ import { RocadeiraResponseDTO } from '../../../entities/rocadeiraResponseDTO.mod
 export class ListaRocadeira {
   constructor(private rocadeiraService: RocadeiraService, private router: Router) { }
 
-  listaRocadeiras: RocadeiraResponseDTO[] = [];
+  listaRocadeiras = signal<RocadeiraResponseDTO[]>([]);
 
   ngOnInit() {
     this.rocadeiraService.listarRocadeiras().subscribe(response => {
-      this.listaRocadeiras = response;
+      this.listaRocadeiras.set(response);
       console.log(response);
     })
   }

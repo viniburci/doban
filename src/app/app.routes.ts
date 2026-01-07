@@ -14,10 +14,22 @@ import { CadastroRocadeira } from './recursos/rocadeira/cadastro-rocadeira/cadas
 import { DetalhesRocadeira } from './recursos/rocadeira/detalhes-rocadeira/detalhes-rocadeira';
 import { ListaRocadeira } from './recursos/rocadeira/lista-rocadeira/lista-rocadeira';
 import { RecursoRocadeira } from './recursos/recurso-rocadeira/recurso-rocadeira';
+import { LoginComponent } from './auth/login.component';
+import { CallbackComponent } from './auth/callback.component';
+import { authGuard } from './services/auth.guard';
 
 export const routes: Routes = [
     {
+        path: 'login',
+        component: LoginComponent
+    },
+    {
+        path: 'auth/callback',
+        component: CallbackComponent
+    },
+    {
         path: 'pessoas',
+        canActivate: [authGuard],
         children: [
             {
                 path: '',
@@ -44,6 +56,7 @@ export const routes: Routes = [
     },
     {
         path: 'celulares',
+        canActivate: [authGuard],
         children: [
             {
                 path: 'lista',
@@ -70,6 +83,7 @@ export const routes: Routes = [
     },
     {
         path: 'carros',
+        canActivate: [authGuard],
         children: [
             {
                 path: 'lista',
@@ -96,6 +110,7 @@ export const routes: Routes = [
     },
     {
         path: 'rocadeiras',
+        canActivate: [authGuard],
         children: [
             {
                 path: 'lista',
@@ -122,6 +137,7 @@ export const routes: Routes = [
     },
     {
         path: 'recursos',
+        canActivate: [authGuard],
         children: [
             {
                 path: 'celular',
@@ -170,6 +186,6 @@ export const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'pessoas'
+        redirectTo: 'login'
     }
 ];

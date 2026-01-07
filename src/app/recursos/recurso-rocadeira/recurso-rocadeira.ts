@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RecursoService } from '../../services/recurso-service';
 import { RecursoRocadeiraResponseDTO } from '../../entities/recursoRocadeiraResponseDTO.model';
 import { CommonModule } from '@angular/common';
@@ -11,14 +11,14 @@ import { CommonModule } from '@angular/common';
 })
 export class RecursoRocadeira implements  OnInit {
 
-  recursosRocadeiras: RecursoRocadeiraResponseDTO[] = [];
+  recursosRocadeiras = signal<RecursoRocadeiraResponseDTO[]>([]);
 
   constructor(private recursoService: RecursoService) { }
 
   ngOnInit(): void {
     this.recursoService.getRecursosRocadeiras().subscribe({
       next: data => {
-        this.recursosRocadeiras = data
+        this.recursosRocadeiras.set(data);
       },
       error: error => {
         console.error('Erro ao carregar recursos roçadeiras', error);
