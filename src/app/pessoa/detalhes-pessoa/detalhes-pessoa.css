@@ -144,7 +144,8 @@
 /* ===== SEÇÃO DE IMPRESSÃO ===== */
 .print-section {
   position: sticky;
-  top: 2rem;
+  top: 100px; /* Altura da navbar (80px) + espaçamento (20px) */
+  z-index: 10;
 }
 
 .print-buttons {
