@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { CommonModule } from '@angular/common';
@@ -28,11 +28,15 @@ import { CelularFormData } from '../../entities/celularFormData.model';
 import { CarroFormData } from '../../entities/carroFormData.model';
 import { RocadeiraResponseDTO } from '../../entities/rocadeiraResponseDTO.model';
 
+type RecursoType = RecursoCelularResponseDTO | RecursoCarroResponseDTO | RecursoRocadeiraResponseDTO;
+type RecursoListType = 'celular' | 'carro' | 'rocadeira';
+
 @Component({
   selector: 'app-detalhes-pessoa',
   imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoCelular, CardRecursoCarro, CardRecursoRocadeira, CadastroRecursoBase],
   templateUrl: './detalhes-pessoa.html',
-  styleUrl: './detalhes-pessoa.css'
+  styleUrl: './detalhes-pessoa.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DetalhesPessoa implements OnInit {
 
@@ -43,7 +47,6 @@ export class DetalhesPessoa implements OnInit {
   private carroService = inject(CarroService);
   private celularService = inject(CelularService);
   private rocadeiraService = inject(RocadeiraService);
-  private cdr = inject(ChangeDetectorRef);
 
   pessoaId = input<string | null>(null);
   errorMessage: string | null = null;
@@ -54,13 +57,20 @@ export class DetalhesPessoa implements OnInit {
   showRegistrarVaga = signal<boolean>(false);
 
   // Recurso genérico
-  editRecurso = signal<any | null>(null);
-  activeResourceType = signal<'celular' | 'carro' | 'rocadeira' | null>(null);
+  editRecurso = signal<RecursoType | null>(null);
+  activeResourceType = signal<RecursoListType | null>(null);
   showRegistrarRecurso = signal<boolean>(false);
 
   celularesList = signal<RecursoCelularResponseDTO[] | null>(null);
   carrosList = signal<RecursoCarroResponseDTO[] | null>(null);
   rocadeirasList = signal<RecursoRocadeiraResponseDTO[] | null>(null);
+
+  // Maps para acesso eficiente
+  private readonly recursoListMap = computed(() => new Map<RecursoListType, RecursoType[] | null>([
+    ['celular', this.celularesList()],
+    ['carro', this.carrosList()],
+    ['rocadeira', this.rocadeirasList()]
+  ]));
 
   // Configurações dos formulários
   celularFormConfig: RecursoFormConfig<RecursoCelularRequestDTO, RecursoCelularResponseDTO, CelularFormData> = {
@@ -99,6 +109,12 @@ export class DetalhesPessoa implements OnInit {
     displayFn: (roc) => `${roc.marca} - ${roc.numeroSerie}`
   };
 
+  private readonly recursoConfigMap = new Map<RecursoListType, RecursoFormConfig<any, any, any>>([
+    ['celular', this.celularFormConfig],
+    ['carro', this.carroFormConfig],
+    ['rocadeira', this.rocadeiraFormConfig]
+  ]);
+
   ngOnInit() {
     const id = this.pessoaId();
     if (id && !isNaN(Number(id))) {
@@ -125,7 +141,6 @@ export class DetalhesPessoa implements OnInit {
     this.handleOnlyClose();
     this.editVaga.set(null);
     this.showRegistrarVaga.set(!this.showRegistrarVaga());
-    this.cdr.detectChanges();
   }
 
   toggleRegistrarRecurso(type: 'celular' | 'carro' | 'rocadeira') {
@@ -139,7 +154,6 @@ export class DetalhesPessoa implements OnInit {
     this.toggleRegistrarRecurso(type);
   }
 
-
   editarVaga(event: any) {
     this.toggleRegistrarVaga();
     let vaga = this.vagasPessoa()?.find(v => v.id === event);
@@ -148,21 +162,9 @@ export class DetalhesPessoa implements OnInit {
     }
   }
 
-  editarRecurso(type: 'celular' | 'carro' | 'rocadeira', id: string) {
-    this.toggleRegistrarRecurso(type);
-
-    let recurso: any;
-    switch(type) {
-      case 'celular':
-        recurso = this.celularesList()?.find(r => Number(r.id) === +id);
-        break;
-      case 'carro':
-        recurso = this.carrosList()?.find(r => Number(r.id) === +id);
-        break;
-      case 'rocadeira':
-        recurso = this.rocadeirasList()?.find(r => Number(r.id) === +id);
-        break;
-    }
+  editarRecurso(type: RecursoListType, id: string) {
+    const lista = this.recursoListMap().get(type);
+    const recurso = lista?.find(r => Number(r.id) === +id);
 
     if (!recurso) return;
 
@@ -170,42 +172,44 @@ export class DetalhesPessoa implements OnInit {
     this.toggleRegistrarRecurso(type);
   }
 
-  getActiveConfig(): any {
-    switch(this.activeResourceType()) {
-      case 'celular': return this.celularFormConfig;
-      case 'carro': return this.carroFormConfig;
-      case 'rocadeira': return this.rocadeiraFormConfig;
-      default: return this.celularFormConfig;
-    }
+  getActiveConfig(): RecursoFormConfig<any, any, any> {
+    const type = this.activeResourceType();
+    return this.recursoConfigMap.get(type ?? 'celular') ?? this.celularFormConfig;
   }
 
   handleUpdateAndClose() {
     this.updateComponent();
-
     this.handleOnlyClose();
   }
 
+  private sortByDate<T extends { dataAdmissao?: string | null; dataEntrega?: string | null }>(a: T, b: T): number {
+    const dateA = a.dataAdmissao ?? a.dataEntrega ?? '';
+    const dateB = b.dataAdmissao ?? b.dataEntrega ?? '';
+    return dateA > dateB ? 1 : -1;
+  }
+
   updateComponent() {
-    const id = this.pessoaId();
-    this.pessoaService.buscarPessoa(Number(id)).subscribe(data => {
+    const id = Number(this.pessoaId());
+
+    this.pessoaService.buscarPessoa(id).subscribe(data => {
       this.pessoa.set(data);
       this.convertDatesToBr();
     });
-    this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {
-      data.sort((a, b) => (a.dataAdmissao ?? '') > (b.dataAdmissao ?? '') ? 1 : -1);
-      this.vagasPessoa.set(data);
-    })
-    this.recursoService.getRecursoCelularByPessoaId(Number(id)).subscribe(data => {
-      data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
-      this.celularesList.set(data);
+
+    this.vagaService.getVagaPorPessoa(id).subscribe(data => {
+      this.vagasPessoa.set(data.sort(this.sortByDate));
     });
-    this.recursoService.getRecursoCarroByPessoaId(Number(id)).subscribe(data => {
-      data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
-      this.carrosList.set(data);
-    })
-    this.recursoService.getRecursoRocadeiraByPessoaId(Number(id)).subscribe(data => {
-      data.sort((a, b) => (a.dataEntrega ?? '') > (b.dataEntrega ?? '') ? 1 : -1);
-      this.rocadeirasList.set(data);
+
+    this.recursoService.getRecursoCelularByPessoaId(id).subscribe(data => {
+      this.celularesList.set(data.sort(this.sortByDate));
+    });
+
+    this.recursoService.getRecursoCarroByPessoaId(id).subscribe(data => {
+      this.carrosList.set(data.sort(this.sortByDate));
+    });
+
+    this.recursoService.getRecursoRocadeiraByPessoaId(id).subscribe(data => {
+      this.rocadeirasList.set(data.sort(this.sortByDate));
     });
   }
 
