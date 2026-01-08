@@ -1,4 +1,4 @@
-import { afterNextRender, ChangeDetectorRef, Component, EnvironmentInjector, inject, input, OnInit, runInInjectionContext, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit, signal } from '@angular/core';
 import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { CommonModule } from '@angular/common';
@@ -128,16 +128,10 @@ export class DetalhesPessoa implements OnInit {
     this.cdr.detectChanges();
   }
 
-  private envInjector = inject(EnvironmentInjector);
   toggleRegistrarRecurso(type: 'celular' | 'carro' | 'rocadeira') {
     this.handleOnlyClose();
-
-    runInInjectionContext(this.envInjector, () => {
-      afterNextRender(() => {
-        this.activeResourceType.set(type);
-        this.showRegistrarRecurso.set(true);
-      });
-    });
+    this.activeResourceType.set(type);
+    this.showRegistrarRecurso.set(true);
   }
 
   novoRecurso(type: 'celular' | 'carro' | 'rocadeira') {
