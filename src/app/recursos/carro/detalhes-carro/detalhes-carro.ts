@@ -1,4 +1,4 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import { CarroService } from '../../../services/carro-service';
 import { CarroFormData } from '../../../entities/carroFormData.model';
 import { RouterLink } from '@angular/router';
@@ -14,12 +14,12 @@ export class DetalhesCarro implements OnInit {
   constructor(private carroService: CarroService) { }
 
   carroId = input<string | null>(null);
-  carro: CarroFormData | null = null;
+  carro = signal<CarroFormData | null>(null);
 
   ngOnInit() {
     if (this.carroId() != null) {
       this.carroService.buscarPorId(Number(this.carroId())).subscribe(response => {
-        this.carro = response;
+        this.carro.set(response);
         console.log(response);
       });
     }

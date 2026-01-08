@@ -1,4 +1,4 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import { RocadeiraService } from '../../../services/rocadeira-service';
 import { RocadeiraResponseDTO } from '../../../entities/rocadeiraResponseDTO.model';
 import { RouterLink } from '@angular/router';
@@ -12,14 +12,14 @@ import { RouterLink } from '@angular/router';
 export class DetalhesRocadeira implements OnInit {
 
   constructor(private rocadeiraService: RocadeiraService) { }
-  
+
   rocadeiraId = input<string | null>(null);
-  rocadeira: RocadeiraResponseDTO | null = null;
+  rocadeira = signal<RocadeiraResponseDTO | null>(null);
 
   ngOnInit() {
     if (this.rocadeiraId() != null) {
       this.rocadeiraService.buscarPorId(Number(this.rocadeiraId())).subscribe(response => {
-        this.rocadeira = response;
+        this.rocadeira.set(response);
         console.log(response);
       });
     }

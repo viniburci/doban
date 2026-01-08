@@ -1,11 +1,31 @@
-<button type="button" class="btn btn-primary" [routerLink]="['/rocadeiras/novo']" >Registrar</button>
-<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">Rocadeiras</h1>
+    <button type="button" class="btn btn-primary" [routerLink]="['/rocadeiras/novo']">
+      Registrar Rocadeira
+    </button>
+  </div>
 
-    <div class="list-group">
-
-        @for(rocadeira of listaRocadeiras(); track rocadeira.id) {
-            <a [routerLink]="['/rocadeiras', rocadeira.id, 'detalhes']" class="list-group-item list-group-item-action list-group-item-success">{{rocadeira.marca}} - {{rocadeira.numeroSerie}}</a>
-        }
-
-    </div>
+  <div class="recursos-list">
+    @if (listaRocadeiras().length > 0) {
+      @for(rocadeira of listaRocadeiras(); track rocadeira.id) {
+        <div class="recurso-card" [routerLink]="['/rocadeiras', rocadeira.id, 'detalhes']">
+          <div class="recurso-card-body">
+            <div class="recurso-info">
+              <h5 class="recurso-nome">{{ rocadeira.marca }}</h5>
+              <p class="recurso-detalhes">Número de série: {{ rocadeira.numeroSerie }}</p>
+            </div>
+            <div class="recurso-badge">
+              Rocadeira
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="empty-state">
+        <div class="empty-state-icon">🌿</div>
+        <p class="empty-state-text">Nenhuma rocadeira registrada</p>
+      </div>
+    }
+  </div>
 </div>

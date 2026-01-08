@@ -46,9 +46,16 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
 
+## Communication Style
+
+- NEVER use emojis in any responses, code, comments, or documentation
+- Keep all communication professional and concise
+- Use clear, technical language without decorative elements
+
 ## Git Commits
 
 - NEVER use Co-Authored-By in commit messages
 - Do NOT add "Generated with Claude Code" or similar footers
 - Keep commit messages clean and professional
 - Follow conventional commits format when appropriate
+- NEVER use emojis in commit messages

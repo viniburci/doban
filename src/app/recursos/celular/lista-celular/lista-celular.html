@@ -1,10 +1,31 @@
-<button type="button" class="btn btn-primary" [routerLink]="['/celulares/novo']" >Registrar</button>
-<div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">Celulares</h1>
+    <button type="button" class="btn btn-primary" [routerLink]="['/celulares/novo']">
+      Registrar Celular
+    </button>
+  </div>
 
-    <div class="list-group">
-
-        @for(celular of listaCelulares(); track celular.id) {
-            <a [routerLink]="['/celulares', celular.id, 'detalhes']" class="list-group-item list-group-item-action list-group-item-success">{{celular.modelo}} - {{celular.imei}}</a>
-        }
-    </div>
+  <div class="recursos-list">
+    @if (listaCelulares().length > 0) {
+      @for(celular of listaCelulares(); track celular.id) {
+        <div class="recurso-card" [routerLink]="['/celulares', celular.id, 'detalhes']">
+          <div class="recurso-card-body">
+            <div class="recurso-info">
+              <h5 class="recurso-nome">{{ celular.modelo }}</h5>
+              <p class="recurso-detalhes">IMEI: {{ celular.imei }}</p>
+            </div>
+            <div class="recurso-badge">
+              {{ celular.marca }}
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="empty-state">
+        <div class="empty-state-icon">📱</div>
+        <p class="empty-state-text">Nenhum celular registrado</p>
+      </div>
+    }
+  </div>
 </div>

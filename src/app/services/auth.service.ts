@@ -1,7 +1,6 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Observable, tap, catchError, of } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 export interface User {
   id: number;
@@ -28,20 +27,83 @@ export class AuthService {
   public isAuthenticated = this.isAuthenticatedSignal.asReadonly();
   public isAdmin = computed(() => this.currentUserSignal()?.role === 'ADMIN');
 
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {
+  private http = inject(HttpClient);
+
+  constructor() {
     this.checkStoredToken();
+    this.setupStorageListener();
+  }
+
+  /**
+   * Monitora mudanças no localStorage para sincronizar estado
+   */
+  private setupStorageListener(): void {
+    window.addEventListener('storage', (event) => {
+      if (event.key === this.TOKEN_KEY && !event.newValue) {
+        // Token foi removido
+        this.currentUserSignal.set(null);
+        this.isAuthenticatedSignal.set(false);
+      }
+    });
   }
 
   /**
    * Verifica se existe token armazenado e valida
+   * Implementação profissional: valida o token antes de marcar como autenticado
    */
   private checkStoredToken(): void {
     const token = this.getToken();
-    if (token) {
-      this.validateToken().subscribe();
+    if (!token) {
+      return;
+    }
+
+    // Verifica se o token parece válido (formato JWT básico)
+    if (!this.isValidJwtFormat(token)) {
+      this.removeToken();
+      return;
+    }
+
+    // Verifica se o token está expirado (sem chamar backend)
+    if (this.isTokenExpired(token)) {
+      this.removeToken();
+      return;
+    }
+
+    // Token parece válido localmente, marca como autenticado temporariamente
+    this.isAuthenticatedSignal.set(true);
+
+    // Carrega dados do usuário do backend
+    // Se falhar (401), o interceptor removerá o token e redirecionará
+    this.loadCurrentUser().subscribe({
+      error: () => {
+        // Limpa estado local se houver erro
+        this.currentUserSignal.set(null);
+        this.isAuthenticatedSignal.set(false);
+      }
+    });
+  }
+
+  /**
+   * Verifica se o token tem formato JWT válido
+   */
+  private isValidJwtFormat(token: string): boolean {
+    const parts = token.split('.');
+    return parts.length === 3;
+  }
+
+  /**
+   * Verifica se o token JWT está expirado
+   */
+  private isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (!payload.exp) {
+        return false; // Token sem expiração
+      }
+      const expirationDate = new Date(payload.exp * 1000);
+      return expirationDate < new Date();
+    } catch {
+      return true; // Se não conseguir decodificar, considera expirado
     }
   }
 
@@ -68,33 +130,10 @@ export class AuthService {
       tap(user => {
         this.currentUserSignal.set(user);
         this.isAuthenticatedSignal.set(true);
-      }),
-      catchError(error => {
-        console.error('Erro ao carregar usuário:', error);
-        this.logout();
-        return of(null as any);
       })
     );
   }
 
-  /**
-   * Valida o token JWT atual
-   */
-  validateToken(): Observable<{valid: boolean, email: string}> {
-    return this.http.get<{valid: boolean, email: string}>(`${this.API_URL}/api/v1/auth/validate`).pipe(
-      tap(response => {
-        if (response.valid) {
-          this.loadCurrentUser().subscribe();
-        } else {
-          this.logout();
-        }
-      }),
-      catchError(() => {
-        this.logout();
-        return of({valid: false, email: ''});
-      })
-    );
-  }
 
   /**
    * Logout do usuário
@@ -103,7 +142,6 @@ export class AuthService {
     this.removeToken();
     this.currentUserSignal.set(null);
     this.isAuthenticatedSignal.set(false);
-    this.router.navigate(['/login']);
   }
 
   /**

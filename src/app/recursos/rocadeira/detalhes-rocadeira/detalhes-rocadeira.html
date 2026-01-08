@@ -1,12 +1,27 @@
-@if (rocadeira != null) {
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-        <h5 class="card-title">{{ rocadeira.marca }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Número de série: {{ rocadeira.numeroSerie }}</h6>
+@if (rocadeira() != null) {
+<div class="details-container">
+    <div class="details-card">
+        <div class="details-header">
+            <h1 class="details-title">{{ rocadeira()?.marca }}</h1>
+            <span class="details-badge">Número de série: {{ rocadeira()?.numeroSerie }}</span>
+        </div>
 
-        <a [routerLink]="['/rocadeiras', rocadeira.id, 'editar']" class="btn btn-primary">
-            Editar
-        </a>
+        <div class="details-body">
+            <div class="detail-row">
+                <span class="detail-label">Marca</span>
+                <span class="detail-value">{{ rocadeira()?.marca }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Número de Série</span>
+                <span class="detail-value">{{ rocadeira()?.numeroSerie }}</span>
+            </div>
+        </div>
+
+        <div class="details-footer">
+            <a [routerLink]="['/rocadeiras', rocadeira()?.id, 'editar']" class="btn-edit">
+                Editar
+            </a>
+        </div>
     </div>
 </div>
 }

@@ -1,16 +1,27 @@
-@if (celular != null) {
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-        <h5 class="card-title">{{ celular.modelo }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">IMEI: {{ celular.imei }}</h6>
-        <p class="card-text">
-            <strong>Marca:</strong> {{ celular.marca }}<br>
-            <strong>Chip:</strong> {{ celular.chip }}<br>
+@if (celular() != null) {
+<div class="details-container">
+    <div class="details-card">
+        <div class="details-header">
+            <h1 class="details-title">{{ celular()?.modelo }}</h1>
+            <span class="details-badge">IMEI: {{ celular()?.imei }}</span>
+        </div>
 
-        </p>
-        <a [routerLink]="['/celulares', celular.id, 'editar']" class="btn btn-primary">
-            Editar
-        </a>
+        <div class="details-body">
+            <div class="detail-row">
+                <span class="detail-label">Marca</span>
+                <span class="detail-value">{{ celular()?.marca }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Chip</span>
+                <span class="detail-value">{{ celular()?.chip }}</span>
+            </div>
+        </div>
+
+        <div class="details-footer">
+            <a [routerLink]="['/celulares', celular()?.id, 'editar']" class="btn-edit">
+                Editar
+            </a>
+        </div>
     </div>
 </div>
 }

@@ -1,26 +1,26 @@
 <div class="container-fluid">
-  <!-- Primeira Linha: Pessoa + Vagas + Impressão -->
+  <!-- Primeira Linha: pessoa()? + Vagas + Impressão -->
   <div class="row">
 
-    <!-- COLUNA 1: DETALHES DA PESSOA -->
+    <!-- COLUNA 1: DETALHES DA pessoa()? -->
     <div class="col-lg-3 col-md-4">
-      @if (pessoa != null && errorMessage == null) {
+      @if (pessoa() != null && errorMessage == null) {
         <div class="card">
           <div class="card-body">
             <!-- Header do Card -->
-            <h5 class="card-title">{{ pessoa.nome || 'Nome não disponível' }}</h5>
-            <h6 class="card-subtitle">{{ pessoa.email || 'Email não disponível' }}</h6>
+            <h5 class="card-title">{{ pessoa()?.nome || 'Nome não disponível' }}</h5>
+            <h6 class="card-subtitle">{{ pessoa()?.email || 'Email não disponível' }}</h6>
 
             <!-- SEÇÃO: CONTATO -->
             <div class="section-header">Contato</div>
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">Telefone</span>
-                <span class="info-value">{{ pessoa.telefone || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.telefone || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Chave Pix</span>
-                <span class="info-value">{{ pessoa.chavePix || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.chavePix || '-' }}</span>
               </div>
             </div>
 
@@ -29,23 +29,23 @@
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">Logradouro</span>
-                <span class="info-value">{{ pessoa.endereco || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.endereco || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Complemento</span>
-                <span class="info-value">{{ pessoa.complemento || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.complemento || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Bairro</span>
-                <span class="info-value">{{ pessoa.bairro || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.bairro || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Cidade/UF</span>
-                <span class="info-value">{{ pessoa.cidade || '-' }}/{{ pessoa.estado || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.cidade || '-' }}/{{ pessoa()?.estado || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">CEP</span>
-                <span class="info-value">{{ pessoa.cep || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.cep || '-' }}</span>
               </div>
             </div>
 
@@ -54,27 +54,27 @@
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">CPF</span>
-                <span class="info-value">{{ pessoa.cpf || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.cpf || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">RG</span>
-                <span class="info-value">{{ pessoa.numeroRg || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.numeroRg || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Emissão RG</span>
-                <span class="info-value">{{ pessoa.dataEmissaoRg || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.dataEmissaoRg || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">UF RG</span>
-                <span class="info-value">{{ pessoa.ufRg || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.ufRg || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">PIS</span>
-                <span class="info-value">{{ pessoa.pis || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.pis || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Título Eleitor</span>
-                <span class="info-value">{{ pessoa.tituloEleitor || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.tituloEleitor || '-' }}</span>
               </div>
             </div>
 
@@ -83,15 +83,15 @@
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">Número</span>
-                <span class="info-value">{{ pessoa.numeroCtps || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.numeroCtps || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Série</span>
-                <span class="info-value">{{ pessoa.serieCtps || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.serieCtps || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Emissão</span>
-                <span class="info-value">{{ pessoa.dataEmissaoCtps || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.dataEmissaoCtps || '-' }}</span>
               </div>
             </div>
 
@@ -100,19 +100,19 @@
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">Número</span>
-                <span class="info-value">{{ pessoa.numeroCnh || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.numeroCnh || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Categoria</span>
-                <span class="info-value">{{ pessoa.categoriaCnh || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.categoriaCnh || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Registro</span>
-                <span class="info-value">{{ pessoa.registroCnh || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.registroCnh || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Validade</span>
-                <span class="info-value">{{ pessoa.validadeCnh || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.validadeCnh || '-' }}</span>
               </div>
             </div>
 
@@ -121,28 +121,28 @@
             <div class="info-grid">
               <div class="info-item">
                 <span class="info-label">Nascimento</span>
-                <span class="info-value">{{ pessoa.dataNascimento || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.dataNascimento || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Local Nasc.</span>
-                <span class="info-value">{{ pessoa.localNascimento || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.localNascimento || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Estado Civil</span>
-                <span class="info-value">{{ pessoa.estadoCivil || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.estadoCivil || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Mãe</span>
-                <span class="info-value">{{ pessoa.mae || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.mae || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Pai</span>
-                <span class="info-value">{{ pessoa.pai || '-' }}</span>
+                <span class="info-value">{{ pessoa()?.pai || '-' }}</span>
               </div>
             </div>
 
             <!-- Botão Editar -->
-            <a [routerLink]="['/pessoas', pessoa.id, 'editar']" class="btn btn-primary w-100 mt-3">
+            <a [routerLink]="['/pessoa()?s', pessoa()?.id, 'editar']" class="btn btn-primary w-100 mt-3">
               Editar Informações
             </a>
           </div>
@@ -250,7 +250,7 @@
                 </div>
               }
             </div>
-            <button class="btn btn-primary mt-3" (click)="toggleRegistrarRecurso('celular')">
+            <button class="btn btn-primary mt-3" (click)="novoRecurso('celular')">
               Registrar Celular
             </button>
           </div>
@@ -277,7 +277,7 @@
                 </div>
               }
             </div>
-            <button class="btn btn-primary mt-3" (click)="toggleRegistrarRecurso('carro')">
+            <button class="btn btn-primary mt-3" (click)="novoRecurso('carro')">
               Registrar Carro
             </button>
           </div>
@@ -304,7 +304,7 @@
                 </div>
               }
             </div>
-            <button class="btn btn-primary mt-3" (click)="toggleRegistrarRecurso('rocadeira')">
+            <button class="btn btn-primary mt-3" (click)="novoRecurso('rocadeira')">
               Registrar Roçadeira
             </button>
           </div>

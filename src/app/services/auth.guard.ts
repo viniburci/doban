@@ -28,21 +28,39 @@ export const authGuard: CanActivateFn = (route, state) => {
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  
+
   const isAuthenticated = authService.isAuthenticated();
   const isAdmin = authService.isAdmin();
-  
+
   if (!isAuthenticated) {
     router.navigate(['/login']);
     console.log('Usuário não autenticado. Redirecionando para a página de login.');
     return false;
   }
-  
+
   if (!isAdmin) {
     console.error('Acesso negado: apenas administradores podem acessar esta página');
     router.navigate(['/pessoas']);
     return false;
   }
-  
+
+  return true;
+};
+
+/**
+ * Guard funcional para bloquear acesso à tela de login quando já autenticado
+ */
+export const loginGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  const isAuthenticated = authService.isAuthenticated();
+
+  if (isAuthenticated) {
+    // Usuário já está autenticado, redireciona para a página principal
+    router.navigate(['/pessoas']);
+    return false;
+  }
+
   return true;
 };

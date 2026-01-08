@@ -23,7 +23,7 @@
                                 <div class="form-floating">
                                     <select class="form-select" formControlName="resourceId"
                                         aria-label="Floating label select example">
-                                        <option value="" selected disabled>Selecione...</option>
+                                        <option value="" disabled>Selecione...</option>
                                         @for(item of listaRecursos() || []; track item.id) {
                                             <option [value]="item.id">{{ config().displayFn(item) }}</option>
                                         }

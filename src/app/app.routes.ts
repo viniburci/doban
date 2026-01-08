@@ -16,12 +16,13 @@ import { ListaRocadeira } from './recursos/rocadeira/lista-rocadeira/lista-rocad
 import { RecursoRocadeira } from './recursos/recurso-rocadeira/recurso-rocadeira';
 import { LoginComponent } from './auth/login.component';
 import { CallbackComponent } from './auth/callback.component';
-import { authGuard } from './services/auth.guard';
+import { authGuard, loginGuard } from './services/auth.guard';
 
 export const routes: Routes = [
     {
         path: 'login',
-        component: LoginComponent
+        component: LoginComponent,
+        canActivate: [loginGuard]
     },
     {
         path: 'auth/callback',

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, input, OnInit, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectorRef, Component, EnvironmentInjector, inject, input, OnInit, runInInjectionContext, signal } from '@angular/core';
 import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { CommonModule } from '@angular/common';
@@ -47,7 +47,7 @@ export class DetalhesPessoa implements OnInit {
 
   pessoaId = input<string | null>(null);
   errorMessage: string | null = null;
-  pessoa: PessoaFormData | null = null;
+  pessoa = signal<PessoaFormData | null>(null);
   vagasPessoa = signal<VagaFormData[] | null>(null);
 
   editVaga = signal<VagaFormData | null>(null);
@@ -109,15 +109,16 @@ export class DetalhesPessoa implements OnInit {
   }
 
   convertDatesToBr() {
-    if (!this.pessoa) return;
+    const pessoa = this.pessoa();
+    if (!pessoa) return;
 
     const d = this.dataService;
 
-    this.pessoa.dataNascimento = d.convertISOToDateBR(this.pessoa.dataNascimento);
-    this.pessoa.dataEmissaoCtps = d.convertISOToDateBR(this.pessoa.dataEmissaoCtps);
-    this.pessoa.dataEmissaoRg = d.convertISOToDateBR(this.pessoa.dataEmissaoRg);
-    this.pessoa.dataEmissaoPis = d.convertISOToDateBR(this.pessoa.dataEmissaoPis);
-    this.pessoa.validadeCnh = d.convertISOToDateBR(this.pessoa.validadeCnh);
+    pessoa.dataNascimento = d.convertISOToDateBR(pessoa.dataNascimento);
+    pessoa.dataEmissaoCtps = d.convertISOToDateBR(pessoa.dataEmissaoCtps);
+    pessoa.dataEmissaoRg = d.convertISOToDateBR(pessoa.dataEmissaoRg);
+    pessoa.dataEmissaoPis = d.convertISOToDateBR(pessoa.dataEmissaoPis);
+    pessoa.validadeCnh = d.convertISOToDateBR(pessoa.validadeCnh);
   }
 
   toggleRegistrarVaga() {
@@ -127,13 +128,23 @@ export class DetalhesPessoa implements OnInit {
     this.cdr.detectChanges();
   }
 
+  private envInjector = inject(EnvironmentInjector);
   toggleRegistrarRecurso(type: 'celular' | 'carro' | 'rocadeira') {
     this.handleOnlyClose();
-    this.editRecurso.set(null);
-    this.activeResourceType.set(type);
-    this.showRegistrarRecurso.set(!this.showRegistrarRecurso());
-    this.cdr.detectChanges();
+
+    runInInjectionContext(this.envInjector, () => {
+      afterNextRender(() => {
+        this.activeResourceType.set(type);
+        this.showRegistrarRecurso.set(true);
+      });
+    });
   }
+
+  novoRecurso(type: 'celular' | 'carro' | 'rocadeira') {
+    this.editRecurso.set(null);
+    this.toggleRegistrarRecurso(type);
+  }
+
 
   editarVaga(event: any) {
     this.toggleRegistrarVaga();
@@ -159,9 +170,10 @@ export class DetalhesPessoa implements OnInit {
         break;
     }
 
-    if (recurso) {
-      this.editRecurso.set(recurso);
-    }
+    if (!recurso) return;
+
+    this.editRecurso.set(recurso);
+    this.toggleRegistrarRecurso(type);
   }
 
   getActiveConfig(): any {
@@ -182,7 +194,7 @@ export class DetalhesPessoa implements OnInit {
   updateComponent() {
     const id = this.pessoaId();
     this.pessoaService.buscarPessoa(Number(id)).subscribe(data => {
-      this.pessoa = data;
+      this.pessoa.set(data);
       this.convertDatesToBr();
     });
     this.vagaService.getVagaPorPessoa(Number(id)).subscribe(data => {

@@ -41,6 +41,7 @@ export class CadastroRecursoBase<TRequest, TResponse, TListItem extends RecursoL
     effect(() => {
       this.patchForm();
     });
+    console.log(this.editRecurso())
   }
 
   ngOnInit() {
@@ -57,7 +58,9 @@ export class CadastroRecursoBase<TRequest, TResponse, TListItem extends RecursoL
 
   patchForm() {
     this.editMode.set(!!this.editRecurso());
-
+console.group('patchForm');
+console.log('edit mode:', this.editMode());
+console.log('edit recurso:', this.editRecurso());
     if (this.editRecurso() == null) {
       this.form.enable();
       this.form.reset();

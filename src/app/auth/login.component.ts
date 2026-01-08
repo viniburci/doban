@@ -43,7 +43,7 @@ import { AuthService } from '../services/auth.service';
         
         <div class="text-center mt-3">
           <small class="text-muted">
-            © 2024 DOBAN Serviços. Todos os direitos reservados.
+            © 2026 DOBAN Serviços. Todos os direitos reservados.
           </small>
         </div>
       </div>
