@@ -1,0 +1,144 @@
+<div class="container mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">{{ editMode() ? 'Atualizar Item' : 'Novo Item' }}</h4>
+          <small class="text-white-50">Cadastre um novo equipamento ou recurso</small>
+        </div>
+        <div class="card-body">
+          @if (loading()) {
+            <div class="d-flex justify-content-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+              </div>
+            </div>
+          } @else {
+            <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+              <!-- Dados básicos -->
+              <div class="section-title">Dados Básicos</div>
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label">Tipo de Recurso *</label>
+                  <select class="form-select" formControlName="tipoRecursoCodigo"
+                    (change)="onTipoChange(form.controls['tipoRecursoCodigo'].value)"
+                    [class.is-invalid]="form.controls['tipoRecursoCodigo'].touched && form.controls['tipoRecursoCodigo'].invalid">
+                    <option value="">Selecione um tipo...</option>
+                    @for (tipo of tiposRecurso(); track tipo.id) {
+                      <option [value]="tipo.codigo">{{ tipo.nome }}</option>
+                    }
+                  </select>
+                  @if (form.controls['tipoRecursoCodigo'].touched && form.controls['tipoRecursoCodigo'].invalid) {
+                    <div class="invalid-feedback">Tipo de recurso é obrigatório</div>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Identificador *</label>
+                  <input type="text" class="form-control" formControlName="identificador"
+                    placeholder="Placa, IMEI, Número de série..."
+                    [class.is-invalid]="form.controls['identificador'].touched && form.controls['identificador'].invalid">
+                  @if (form.controls['identificador'].touched && form.controls['identificador'].invalid) {
+                    <div class="invalid-feedback">Identificador é obrigatório</div>
+                  }
+                </div>
+
+                @if (editMode()) {
+                  <div class="col-md-12">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" formControlName="ativo" id="ativoSwitch">
+                      <label class="form-check-label" for="ativoSwitch">
+                        {{ form.controls['ativo'].value ? 'Ativo' : 'Inativo' }}
+                      </label>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <!-- Campos Dinâmicos -->
+              @if (tipoSelecionado() && camposDinamicos().length > 0) {
+                <div class="section-title">
+                  Atributos de {{ tipoSelecionado()?.nome }}
+                </div>
+                <div class="row g-3 mb-4" [formGroup]="atributosForm">
+                  @for (campo of camposDinamicos(); track campo.nome) {
+                    <div class="col-md-6">
+                      <label class="form-label">
+                        {{ campo.rotulo }}
+                        @if (campo.obrigatorio) {
+                          <span class="text-danger">*</span>
+                        }
+                      </label>
+
+                      @switch (campo.tipo) {
+                        @case ('ENUM') {
+                          <select class="form-select" [formControlName]="campo.nome">
+                            <option value="">Selecione...</option>
+                            @for (opcao of campo.opcoes; track opcao) {
+                              <option [value]="opcao">{{ opcao }}</option>
+                            }
+                          </select>
+                        }
+                        @case ('BOOLEAN') {
+                          <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" [formControlName]="campo.nome"
+                              [id]="'campo_' + campo.nome">
+                            <label class="form-check-label" [for]="'campo_' + campo.nome">
+                              {{ atributosForm.controls[campo.nome]?.value ? 'Sim' : 'Não' }}
+                            </label>
+                          </div>
+                        }
+                        @case ('DATE') {
+                          <input type="date" class="form-control" [formControlName]="campo.nome">
+                        }
+                        @case ('DATETIME') {
+                          <input type="datetime-local" class="form-control" [formControlName]="campo.nome">
+                        }
+                        @case ('INTEGER') {
+                          <input type="number" class="form-control" [formControlName]="campo.nome"
+                            [attr.min]="campo.valorMinimo ?? null" [attr.max]="campo.valorMaximo ?? null" step="1"
+                            [placeholder]="campo.rotulo">
+                        }
+                        @case ('DECIMAL') {
+                          <input type="number" class="form-control" [formControlName]="campo.nome"
+                            [attr.min]="campo.valorMinimo ?? null" [attr.max]="campo.valorMaximo ?? null" step="0.01"
+                            [placeholder]="campo.rotulo">
+                        }
+                        @default {
+                          <input type="text" class="form-control" [formControlName]="campo.nome"
+                            [attr.maxlength]="campo.tamanhoMaximo ?? null"
+                            [placeholder]="campo.rotulo">
+                        }
+                      }
+
+                      @if (campo.mensagemErro && atributosForm.controls[campo.nome]?.invalid && atributosForm.controls[campo.nome]?.touched) {
+                        <div class="text-danger small mt-1">{{ campo.mensagemErro }}</div>
+                      }
+                    </div>
+                  }
+                </div>
+              } @else if (tipoSelecionado() && camposDinamicos().length === 0) {
+                <div class="alert alert-info">
+                  Este tipo de recurso não possui campos personalizados.
+                </div>
+              }
+
+              <div class="col-12 mt-4 d-flex justify-content-between">
+                <a [routerLink]="['/itens']" class="btn btn-outline-secondary">Voltar</a>
+                <div>
+                  @if (!editMode()) {
+                    <button type="reset" class="btn btn-outline-secondary me-2">Limpar</button>
+                  }
+                  <button type="submit" class="btn btn-primary"
+                    [disabled]="form.invalid || atributosForm.invalid || loading()">
+                    {{ editMode() ? 'Atualizar' : 'Salvar' }}
+                  </button>
+                </div>
+              </div>
+            </form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">Empréstimos de Recursos</h1>
+    <div class="header-actions">
+      <select class="form-select filter-select" [ngModel]="filtroTipo()" (ngModelChange)="onFiltroTipoChange($event)">
+        <option value="">Todos os tipos</option>
+        @for (tipo of tiposRecurso(); track tipo.id) {
+          <option [value]="tipo.codigo">{{ tipo.nome }}</option>
+        }
+      </select>
+      <select class="form-select filter-select" [ngModel]="filtroStatus()" (ngModelChange)="onFiltroStatusChange($event)">
+        <option value="">Todos os status</option>
+        <option value="emprestado">Emprestados</option>
+        <option value="devolvido">Devolvidos</option>
+      </select>
+      <button type="button" class="btn btn-primary" [routerLink]="['/emprestimos/novo']">
+        Novo Empréstimo
+      </button>
+    </div>
+  </div>
+
+  <div class="recursos-list">
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+    } @else if (recursos().length > 0) {
+      @for (recurso of recursos(); track recurso.id) {
+        <div class="recurso-card" [class.emprestado]="isEmprestado(recurso)" [class.devolvido]="!isEmprestado(recurso)">
+          <div class="recurso-card-body">
+            <div class="recurso-info">
+              <div class="recurso-header">
+                <h5 class="recurso-item">{{ recurso.item.identificador }}</h5>
+                <span class="recurso-tipo-badge">{{ recurso.item.tipoRecursoNome }}</span>
+              </div>
+              <p class="recurso-pessoa">
+                <strong>Pessoa:</strong> {{ recurso.pessoaNome }}
+              </p>
+              <div class="recurso-datas">
+                <span class="data-entrega">
+                  <strong>Entrega:</strong> {{ formatarData(recurso.dataEntrega) }}
+                </span>
+                @if (recurso.dataDevolucao) {
+                  <span class="data-devolucao">
+                    <strong>Devolução:</strong> {{ formatarData(recurso.dataDevolucao) }}
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="recurso-actions">
+              <span class="badge" [class.bg-warning]="isEmprestado(recurso)" [class.bg-success]="!isEmprestado(recurso)">
+                {{ isEmprestado(recurso) ? 'Emprestado' : 'Devolvido' }}
+              </span>
+              @if (isEmprestado(recurso)) {
+                <button type="button" class="btn btn-sm btn-outline-success" (click)="registrarDevolucao(recurso)">
+                  Devolver
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <p class="empty-state-text">Nenhum empréstimo encontrado</p>
+        <button type="button" class="btn btn-outline-primary" [routerLink]="['/emprestimos/novo']">
+          Registrar primeiro empréstimo
+        </button>
+      </div>
+    }
+  </div>
+</div>

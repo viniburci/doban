@@ -1,0 +1,173 @@
+<div class="container mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">{{ editMode() ? 'Atualizar Tipo de Recurso' : 'Novo Tipo de Recurso' }}</h4>
+          <small class="text-white-50">Defina os dados e campos personalizados</small>
+        </div>
+        <div class="card-body">
+          @if (loading()) {
+            <div class="d-flex justify-content-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+              </div>
+            </div>
+          } @else {
+            <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+              <!-- Dados básicos -->
+              <div class="section-title">Dados Básicos</div>
+              <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                  <label class="form-label">Código *</label>
+                  <input type="text" class="form-control" formControlName="codigo"
+                    placeholder="CARRO, CELULAR..."
+                    [class.is-invalid]="form.controls.codigo.touched && form.controls.codigo.invalid">
+                  @if (form.controls.codigo.touched && form.controls.codigo.invalid) {
+                    <div class="invalid-feedback">Código é obrigatório</div>
+                  }
+                </div>
+
+                <div class="col-md-5">
+                  <label class="form-label">Nome *</label>
+                  <input type="text" class="form-control" formControlName="nome"
+                    placeholder="Carro, Celular..."
+                    [class.is-invalid]="form.controls.nome.touched && form.controls.nome.invalid">
+                  @if (form.controls.nome.touched && form.controls.nome.invalid) {
+                    <div class="invalid-feedback">Nome é obrigatório</div>
+                  }
+                </div>
+
+                @if (editMode()) {
+                  <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <div class="form-check form-switch mt-2">
+                      <input class="form-check-input" type="checkbox" formControlName="ativo" id="ativoSwitch">
+                      <label class="form-check-label" for="ativoSwitch">
+                        {{ form.controls.ativo.value ? 'Ativo' : 'Inativo' }}
+                      </label>
+                    </div>
+                  </div>
+                }
+
+                <div class="col-12">
+                  <label class="form-label">Descrição</label>
+                  <textarea class="form-control" formControlName="descricao" rows="2"
+                    placeholder="Descrição do tipo de recurso..."></textarea>
+                </div>
+              </div>
+
+              <!-- Campos Personalizados -->
+              <div class="section-title d-flex justify-content-between align-items-center">
+                <span>Campos Personalizados</span>
+                <button type="button" class="btn btn-sm btn-outline-primary" (click)="addField()">
+                  + Adicionar Campo
+                </button>
+              </div>
+
+              @if (fields.length === 0) {
+                <div class="empty-fields">
+                  <p>Nenhum campo personalizado definido.</p>
+                  <small>Clique em "Adicionar Campo" para definir os atributos deste tipo de recurso.</small>
+                </div>
+              } @else {
+                <div class="fields-container">
+                  @for (field of fields.controls; track $index) {
+                    <div class="field-card">
+                      <div class="field-header">
+                        <span class="field-number">#{{ $index + 1 }}</span>
+                        <button type="button" class="btn-remove" (click)="removeField($index)" title="Remover campo">
+                          &times;
+                        </button>
+                      </div>
+                      <div class="field-body" [formGroup]="field">
+                        <div class="row g-2">
+                          <div class="col-md-4">
+                            <label class="form-label form-label-sm">Nome do campo *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="nome"
+                              placeholder="marca, modelo...">
+                          </div>
+                          <div class="col-md-4">
+                            <label class="form-label form-label-sm">Rótulo *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="rotulo"
+                              placeholder="Marca, Modelo...">
+                          </div>
+                          <div class="col-md-3">
+                            <label class="form-label form-label-sm">Tipo</label>
+                            <select class="form-select form-select-sm" formControlName="tipo">
+                              @for (tipo of fieldTypes; track tipo) {
+                                <option [value]="tipo">{{ tipo }}</option>
+                              }
+                            </select>
+                          </div>
+                          <div class="col-md-1 d-flex align-items-end justify-content-center">
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" formControlName="obrigatorio"
+                                [id]="'obrigatorio_' + $index">
+                              <label class="form-check-label form-label-sm" [for]="'obrigatorio_' + $index">Obr.</label>
+                            </div>
+                          </div>
+
+                          <!-- Opções para ENUM -->
+                          @if (isEnumType($index)) {
+                            <div class="col-12">
+                              <label class="form-label form-label-sm">Opções (separadas por vírgula)</label>
+                              <input type="text" class="form-control form-control-sm" formControlName="opcoes"
+                                placeholder="Branco, Preto, Prata, Vermelho...">
+                            </div>
+                          }
+
+                          <!-- Validações para STRING -->
+                          @if (isStringType($index)) {
+                            <div class="col-md-4">
+                              <label class="form-label form-label-sm">Tamanho máximo</label>
+                              <input type="number" class="form-control form-control-sm" formControlName="tamanhoMaximo">
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label form-label-sm">Regex</label>
+                              <input type="text" class="form-control form-control-sm" formControlName="regex"
+                                placeholder="^[A-Z]{3}[0-9]{4}$">
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label form-label-sm">Mensagem de erro</label>
+                              <input type="text" class="form-control form-control-sm" formControlName="mensagemErro"
+                                placeholder="Formato inválido">
+                            </div>
+                          }
+
+                          <!-- Validações numéricas -->
+                          @if (isNumericType($index)) {
+                            <div class="col-md-6">
+                              <label class="form-label form-label-sm">Valor mínimo</label>
+                              <input type="number" class="form-control form-control-sm" formControlName="valorMinimo">
+                            </div>
+                            <div class="col-md-6">
+                              <label class="form-label form-label-sm">Valor máximo</label>
+                              <input type="number" class="form-control form-control-sm" formControlName="valorMaximo">
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+              <div class="col-12 mt-4 d-flex justify-content-between">
+                <a [routerLink]="['/tipos-recurso']" class="btn btn-outline-secondary">Voltar</a>
+                <div>
+                  @if (!editMode()) {
+                    <button type="reset" class="btn btn-outline-secondary me-2">Limpar</button>
+                  }
+                  <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading()">
+                    {{ editMode() ? 'Atualizar' : 'Salvar' }}
+                  </button>
+                </div>
+              </div>
+            </form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

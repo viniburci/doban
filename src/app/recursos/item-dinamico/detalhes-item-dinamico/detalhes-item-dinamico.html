@@ -1,0 +1,68 @@
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+} @else if (item()) {
+  <div class="details-container">
+    <div class="details-card">
+      <div class="details-header">
+        <div class="header-content">
+          <h1 class="details-title">{{ item()?.identificador }}</h1>
+          <span class="details-badge">{{ item()?.tipoRecursoNome }}</span>
+        </div>
+        <div class="header-badges">
+          <span class="badge" [class.badge-success]="item()?.ativo" [class.badge-danger]="!item()?.ativo">
+            {{ item()?.ativo ? 'Ativo' : 'Inativo' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="details-body">
+        <!-- Atributos do Item -->
+        @if (getAtributos().length > 0) {
+          <div class="detail-section">
+            <span class="detail-label">Atributos</span>
+            <div class="atributos-grid">
+              @for (attr of getAtributos(); track attr.nome) {
+                <div class="atributo-item">
+                  <span class="atributo-label">{{ attr.rotulo }}</span>
+                  <span class="atributo-valor">{{ formatarValor(attr.valor) }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="detail-section">
+            <span class="detail-label">Atributos</span>
+            <p class="no-atributos">Nenhum atributo definido</p>
+          </div>
+        }
+
+        @if (item()?.createdAt) {
+          <div class="detail-row">
+            <span class="detail-label-inline">Criado em</span>
+            <span class="detail-value">{{ item()?.createdAt }}</span>
+          </div>
+        }
+
+        @if (item()?.updatedAt) {
+          <div class="detail-row">
+            <span class="detail-label-inline">Atualizado em</span>
+            <span class="detail-value">{{ item()?.updatedAt }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="details-footer">
+        <a [routerLink]="['/itens']" class="btn-back">
+          Voltar
+        </a>
+        <a [routerLink]="['/itens', item()?.id, 'editar']" class="btn-edit">
+          Editar
+        </a>
+      </div>
+    </div>
+  </div>
+}

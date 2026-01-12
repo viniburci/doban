@@ -1,0 +1,51 @@
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">Tipos de Recurso</h1>
+    <button type="button" class="btn btn-primary" [routerLink]="['/tipos-recurso/novo']">
+      Novo Tipo
+    </button>
+  </div>
+
+  <div class="recursos-list">
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+    } @else if (tiposRecurso().length > 0) {
+      @for (tipo of tiposRecurso(); track tipo.id) {
+        <div class="recurso-card" [routerLink]="['/tipos-recurso', tipo.id, 'detalhes']">
+          <div class="recurso-card-body">
+            <div class="recurso-info">
+              <h5 class="recurso-nome">{{ tipo.nome }}</h5>
+              <p class="recurso-detalhes">Código: {{ tipo.codigo }}</p>
+              @if (tipo.descricao) {
+                <p class="recurso-descricao">{{ tipo.descricao }}</p>
+              }
+            </div>
+            <div class="recurso-badges">
+              @if (tipo.legado) {
+                <span class="badge bg-secondary">Legado</span>
+              }
+              <span class="badge" [class.bg-success]="tipo.ativo" [class.bg-danger]="!tipo.ativo">
+                {{ tipo.ativo ? 'Ativo' : 'Inativo' }}
+              </span>
+              @if (tipo.schema?.fields?.length) {
+                <span class="badge bg-info">{{ tipo.schema!.fields!.length }} campos</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <p class="empty-state-text">Nenhum tipo de recurso cadastrado</p>
+        <button type="button" class="btn btn-outline-primary" [routerLink]="['/tipos-recurso/novo']">
+          Criar primeiro tipo
+        </button>
+      </div>
+    }
+  </div>
+</div>

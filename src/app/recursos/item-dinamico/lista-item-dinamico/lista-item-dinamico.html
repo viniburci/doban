@@ -1,0 +1,55 @@
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">Itens / Equipamentos</h1>
+    <div class="header-actions">
+      <select class="form-select filter-select" [ngModel]="filtroTipo()" (ngModelChange)="onFiltroChange($event)">
+        <option value="">Todos os tipos</option>
+        @for (tipo of tiposRecurso(); track tipo.id) {
+          <option [value]="tipo.codigo">{{ tipo.nome }}</option>
+        }
+      </select>
+      <button type="button" class="btn btn-primary" [routerLink]="['/itens/novo']">
+        Novo Item
+      </button>
+    </div>
+  </div>
+
+  <div class="itens-list">
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+    } @else if (itens().length > 0) {
+      @for (item of itens(); track item.id) {
+        <div class="item-card" [routerLink]="['/itens', item.id, 'detalhes']">
+          <div class="item-card-body">
+            <div class="item-info">
+              <div class="item-header">
+                <h5 class="item-identificador">{{ item.identificador }}</h5>
+                <span class="item-tipo-badge">{{ item.tipoRecursoNome }}</span>
+              </div>
+              @if (getAtributosResumo(item.atributos)) {
+                <p class="item-atributos">{{ getAtributosResumo(item.atributos) }}</p>
+              }
+            </div>
+            <div class="item-badges">
+              <span class="badge" [class.bg-success]="item.ativo" [class.bg-danger]="!item.ativo">
+                {{ item.ativo ? 'Ativo' : 'Inativo' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <p class="empty-state-text">Nenhum item encontrado</p>
+        <button type="button" class="btn btn-outline-primary" [routerLink]="['/itens/novo']">
+          Cadastrar primeiro item
+        </button>
+      </div>
+    }
+  </div>
+</div>

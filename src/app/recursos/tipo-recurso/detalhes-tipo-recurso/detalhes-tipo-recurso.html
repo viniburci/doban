@@ -1,0 +1,109 @@
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+} @else if (tipoRecurso()) {
+  <div class="details-container">
+    <div class="details-card">
+      <div class="details-header">
+        <div class="header-content">
+          <h1 class="details-title">{{ tipoRecurso()?.nome }}</h1>
+          <span class="details-badge">{{ tipoRecurso()?.codigo }}</span>
+        </div>
+        <div class="header-badges">
+          @if (tipoRecurso()?.legado) {
+            <span class="badge badge-secondary">Legado</span>
+          }
+          <span class="badge" [class.badge-success]="tipoRecurso()?.ativo" [class.badge-danger]="!tipoRecurso()?.ativo">
+            {{ tipoRecurso()?.ativo ? 'Ativo' : 'Inativo' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="details-body">
+        @if (tipoRecurso()?.descricao) {
+          <div class="detail-section">
+            <span class="detail-label">Descrição</span>
+            <p class="detail-description">{{ tipoRecurso()?.descricao }}</p>
+          </div>
+        }
+
+        @if (tipoRecurso()?.schema?.fields?.length) {
+          <div class="detail-section">
+            <span class="detail-label">Campos Personalizados ({{ tipoRecurso()?.schema?.fields?.length }})</span>
+            <div class="fields-grid">
+              @for (field of tipoRecurso()?.schema?.fields; track field.nome) {
+                <div class="field-item">
+                  <div class="field-header-info">
+                    <span class="field-name">{{ field.rotulo }}</span>
+                    @if (field.obrigatorio) {
+                      <span class="field-required">*</span>
+                    }
+                  </div>
+                  <div class="field-details">
+                    <span class="field-type">{{ getFieldTypeLabel(field.tipo) }}</span>
+                    <span class="field-code">({{ field.nome }})</span>
+                  </div>
+                  @if (field.tipo === 'ENUM' && field.opcoes?.length) {
+                    <div class="field-options">
+                      @for (opcao of field.opcoes; track opcao) {
+                        <span class="option-badge">{{ opcao }}</span>
+                      }
+                    </div>
+                  }
+                  @if (field.regex) {
+                    <div class="field-validation">
+                      <small>Regex: {{ field.regex }}</small>
+                    </div>
+                  }
+                  @if (field.valorMinimo !== undefined || field.valorMaximo !== undefined) {
+                    <div class="field-validation">
+                      <small>
+                        @if (field.valorMinimo !== undefined) {
+                          Min: {{ field.valorMinimo }}
+                        }
+                        @if (field.valorMaximo !== undefined) {
+                          Max: {{ field.valorMaximo }}
+                        }
+                      </small>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="detail-section">
+            <span class="detail-label">Campos Personalizados</span>
+            <p class="no-fields">Nenhum campo personalizado definido</p>
+          </div>
+        }
+
+        @if (tipoRecurso()?.createdAt) {
+          <div class="detail-row">
+            <span class="detail-label">Criado em</span>
+            <span class="detail-value">{{ tipoRecurso()?.createdAt }}</span>
+          </div>
+        }
+
+        @if (tipoRecurso()?.updatedAt) {
+          <div class="detail-row">
+            <span class="detail-label">Atualizado em</span>
+            <span class="detail-value">{{ tipoRecurso()?.updatedAt }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="details-footer">
+        <a [routerLink]="['/tipos-recurso']" class="btn-back">
+          Voltar
+        </a>
+        <a [routerLink]="['/tipos-recurso', tipoRecurso()?.id, 'editar']" class="btn-edit">
+          Editar
+        </a>
+      </div>
+    </div>
+  </div>
+}

@@ -31,11 +31,17 @@ export interface VagaFormData {
     salario: number | null;
     tipoContrato: TipoContrato | null;
     dataAdmissao: string | null;
-    dataDemissao: string | null;  
+    dataDemissao: string | null;
     acrescimoOuSubstituicao: TipoAcrescimoSubstituicao | null;
     aso: AtestadoSaudeOcupacional | null;
     optanteVT: boolean | null;
     horarioEntrada: string | null;
     horarioSaida: string | null;
     contratante: TipoContratante | null;
+
+    // Campos dinâmicos
+    tipoVagaId?: number | null;
+    tipoVagaCodigo?: string | null;
+    tipoVagaNome?: string | null;
+    atributosDinamicos?: Record<string, any> | null;
 }
