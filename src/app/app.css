@@ -64,39 +64,41 @@
 
 /* Navigation Items */
 .navbar-nav {
-  gap: 0.5rem;
+  gap: 0.25rem;
+  align-items: center;
 }
 
 /* Section Separators */
 .nav-item-separator {
   display: flex;
   align-items: center;
-  padding: 0 1rem;
-  margin: 0 0.5rem;
+  padding: 0 0.75rem;
+  margin: 0.25rem 0.5rem;
 }
 
 .separator-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.5);
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
 }
 
 /* Nav Links */
 .nav-link-modern {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   color: rgba(255, 255, 255, 0.85) !important;
   font-weight: 500;
-  font-size: 0.95rem;
-  padding: 0.65rem 1.25rem !important;
-  border-radius: 10px;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .nav-link-modern::before {
@@ -271,7 +273,13 @@
   }
 
   .nav-item-separator {
-    display: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 0.5rem 0;
+    padding-top: 0.75rem;
+  }
+
+  .separator-label {
+    padding-left: 1rem;
   }
 
   .navbar-nav {
@@ -286,6 +294,8 @@
   .navbar-user {
     margin-top: 1rem;
     margin-left: 0;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   .user-info {
