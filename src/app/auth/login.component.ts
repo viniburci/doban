@@ -145,6 +145,8 @@ export class LoginComponent {
   private authService = inject(AuthService);
 
   loginWithGoogle(): void {
+    console.log('LoginComponent: botão clicado, chamando authService.loginWithGoogle()');
     this.authService.loginWithGoogle();
+    console.log('LoginComponent: authService.loginWithGoogle() executado');
   }
 }

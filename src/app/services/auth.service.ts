@@ -111,7 +111,10 @@ export class AuthService {
    * Inicia o fluxo de login OAuth2 com Google
    */
   loginWithGoogle(): void {
-    window.location.href = `${this.API_URL}/oauth2/authorization/google`;
+    const url = `${this.API_URL}/oauth2/authorization/google`;
+    console.log('Redirecionando para:', url);
+    console.log('Tipo de redirecionamento: window.location.href (não é AJAX)');
+    window.location.href = url;
   }
 
   /**
