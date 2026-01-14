@@ -6,9 +6,10 @@ import { ItemDinamicoService } from '../../../services/item-dinamico.service';
 import { TipoRecursoService } from '../../../services/tipo-recurso.service';
 import { TipoRecursoDTO } from '../../../entities/tipo-recurso.model';
 import { ItemDinamicoDTO } from '../../../entities/item-dinamico.model';
+import { PessoaService } from '../../../services/pessoa-service';
 
 interface PessoaResumo {
-  id: number;
+  id: string;
   nome: string;
 }
 
@@ -32,6 +33,7 @@ export class CadastroRecursoDinamico implements OnInit {
     private recursoDinamicoService: RecursoDinamicoService,
     private itemDinamicoService: ItemDinamicoService,
     private tipoRecursoService: TipoRecursoService,
+    private pessoaService: PessoaService,
     private router: Router
   ) {}
 
@@ -61,13 +63,16 @@ export class CadastroRecursoDinamico implements OnInit {
   }
 
   carregarPessoas() {
-    // TODO: Implementar serviço de pessoas para buscar lista
-    // Por enquanto, simular algumas pessoas
-    this.pessoas.set([
-      { id: 1, nome: 'João Silva' },
-      { id: 2, nome: 'Maria Santos' },
-      { id: 3, nome: 'Pedro Oliveira' }
-    ]);
+    this.pessoaService.buscarTodasPessoas().subscribe({
+      next: (response) => {
+        const resumoPessoas = response.map(p => ({ id: p.id!, nome: p.nome! }));
+        this.pessoas.set(resumoPessoas);
+      },
+      error: (error) => {
+        console.error('Erro ao carregar pessoas', error);
+      }
+    });
+
   }
 
   onTipoChange(codigo: string) {

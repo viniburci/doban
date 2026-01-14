@@ -3,23 +3,25 @@
 
     <div class="card-header-styled" [class.bg-success-subtle]="isRecursoAtivo()"
         [class.bg-danger-subtle]="!isRecursoAtivo()" (click)="toggleCollapse()" [attr.aria-expanded]="!isCollapsed()"
-        [attr.aria-controls]="'recursoDetalhes-' + recurso()?.id" tabindex="0" role="button">
+        [attr.aria-controls]="'recursoDetalhes-' + recurso().id" tabindex="0" role="button">
 
-        <!-- Badge de Status -->
         <span class="status-badge" [class.active]="isRecursoAtivo()" [class.inactive]="!isRecursoAtivo()">
             {{ isRecursoAtivo() ? 'Ativo' : 'Devolvido' }}
         </span>
 
         <div class="d-flex justify-content-between align-items-center card-header-clickable">
             <div class="flex-grow-1">
+                <div class="tipo-badge">
+                    {{ recurso().item.tipoRecursoNome }}
+                </div>
+
                 <h5 class="card-title mb-0">
-                    {{ getFieldValue(config().fieldConfig.titleField) || config().fieldConfig.titleFallback }}
+                    {{ recurso().item.identificador || 'Identificador não disponível' }}
                 </h5>
 
                 <h6 class="card-subtitle mb-0">
-                    <span>{{ getFieldValue(config().fieldConfig.subtitleField) || config().fieldConfig.subtitleFallback }}</span>
-                    <span class="ms-3 text-muted" style="font-size: 0.8rem;">
-                        {{ recurso()?.dataEntrega | dateDisplayPipe }} → {{ recurso()?.dataDevolucao | dateDisplayPipe }}
+                    <span class="text-muted" style="font-size: 0.8rem;">
+                        {{ recurso().dataEntrega | dateDisplayPipe }} → {{ recurso().dataDevolucao | dateDisplayPipe }}
                     </span>
                 </h6>
             </div>
@@ -30,33 +32,33 @@
 
     <div class="card-content-area">
 
-        <div class="collapse" [class.show]="!isCollapsed()" id="recursoDetalhes-{{ recurso()?.id }}">
+        <div class="collapse" [class.show]="!isCollapsed()" id="recursoDetalhes-{{ recurso().id }}">
 
             <div class="row nowrap-details">
 
                 <div class="col-md-6 mb-2">
-                    <strong>{{ config().fieldConfig.resourceTypeLabel }} ID: </strong>
-                    <a [routerLink]="['/' + config().routeBase, getFieldValue(config().fieldConfig.resourceIdField), 'detalhes']">
-                        {{ getFieldValue(config().fieldConfig.resourceIdField) || 'N/D' }}
+                    <strong>Item ID: </strong>
+                    <a [routerLink]="['/itens', recurso().item.id, 'detalhes']">
+                        {{ recurso().item.id || 'N/D' }}
                     </a>
                 </div>
 
-                @for (field of config().fieldConfig.detailFields; track field.field) {
+                @for (attr of atributosFormatados(); track attr.key) {
                     <div class="col-md-6 mb-2">
-                        <strong>{{ field.label }}</strong> {{ getFieldValue(field.field) || field.fallback }}
+                        <strong>{{ attr.key }}:</strong> {{ attr.value }}
                     </div>
                 }
 
                 <div class="col-md-6 mb-2">
-                    <strong>Data de Entrega:</strong> {{ recurso()?.dataEntrega | dateDisplayPipe }}
+                    <strong>Data de Entrega:</strong> {{ recurso().dataEntrega | dateDisplayPipe }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Data de Devolução:</strong> {{ recurso()?.dataDevolucao | dateDisplayPipe }}
+                    <strong>Data de Devolução:</strong> {{ recurso().dataDevolucao | dateDisplayPipe }}
                 </div>
 
             </div>
             <button (click)="onEditarRecurso()" class="btn btn-primary mt-3 ">
-                Editar Devolução
+                Registrar Devolução
             </button>
             <button appConfirmDelete (confirmedDelete)="onConfirmDelete($event)" class="btn btn-danger mt-3 offset-1">
                 Deletar

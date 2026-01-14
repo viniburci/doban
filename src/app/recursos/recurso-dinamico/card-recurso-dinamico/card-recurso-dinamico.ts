@@ -1,22 +1,22 @@
-import { Component, computed, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, input, output, signal, ChangeDetectionStrategy, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DateDisplayPipe } from '../../../pipes/date-display-pipe';
 import { ConfirmDeleteDirective } from '../../../directives/confirm-delete';
-import { Recurso } from '../../../entities/recurso.model';
-import { RecursoCardConfig } from '../recurso-card-config.interface';
+import { RecursoDinamicoDTO } from '../../../entities/recurso-dinamico.model';
+import { RecursoDinamicoService } from '../../../services/recurso-dinamico.service';
 
 @Component({
-  selector: 'app-card-recurso-base',
+  selector: 'app-card-recurso-dinamico',
   imports: [DateDisplayPipe, ConfirmDeleteDirective, RouterLink],
-  templateUrl: './card-recurso-base.html',
-  styleUrl: './card-recurso-base.css',
+  templateUrl: './card-recurso-dinamico.html',
+  styleUrl: './card-recurso-dinamico.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardRecursoBase<T extends Recurso> {
-  recurso = input<T | null>(null);
-  config = input.required<RecursoCardConfig<T>>();
+export class CardRecursoDinamico {
+  private recursoDinamicoService = inject(RecursoDinamicoService);
 
-  editarRecurso = output<string>();
+  recurso = input.required<RecursoDinamicoDTO>();
+  editarRecurso = output<number>();
   updated = output<void>();
 
   isCollapsed = signal(true);
@@ -43,13 +43,25 @@ export class CardRecursoBase<T extends Recurso> {
     return dataDevolucao.getTime() > today.getTime();
   });
 
-  getFieldValue(fieldName: string): any {
-    const recursoData = this.recurso();
-    return recursoData ? (recursoData as any)[fieldName] : null;
-  }
+  atributosFormatados = computed(() => {
+    const recurso = this.recurso();
+    if (!recurso?.item?.atributos) return [];
+
+    return Object.entries(recurso.item.atributos).map(([key, value]) => ({
+      key: this.formatarNomeCampo(key),
+      value: value || 'N/D'
+    }));
+  });
 
   toggleCollapse() {
     this.isCollapsed.update(value => !value);
+  }
+
+  private formatarNomeCampo(nome: string): string {
+    return nome
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim();
   }
 
   private parseDateString(dateString: string | null | undefined): Date | null {
@@ -68,7 +80,7 @@ export class CardRecursoBase<T extends Recurso> {
     const recursoId = this.recurso()?.id;
 
     if (recursoId) {
-      this.editarRecurso.emit(recursoId.toString());
+      this.editarRecurso.emit(recursoId);
     }
   }
 
@@ -80,16 +92,15 @@ export class CardRecursoBase<T extends Recurso> {
 
   onDeletarRecurso() {
     const recursoId = this.recurso()?.id;
-    const cfg = this.config();
 
-    if (recursoId && cfg.deleteFn) {
-      cfg.deleteFn(+recursoId).subscribe({
+    if (recursoId) {
+      this.recursoDinamicoService.deletar(recursoId).subscribe({
         next: () => {
-          console.log(`Recurso ${cfg.fieldConfig.resourceTypeLabel} deletado com sucesso:`, recursoId);
+          console.log('Recurso dinamico deletado com sucesso:', recursoId);
           this.updated.emit();
         },
         error: (error) => {
-          console.error(`Erro ao deletar recurso ${cfg.fieldConfig.resourceTypeLabel}:`, error);
+          console.error('Erro ao deletar recurso dinamico:', error);
         }
       });
     }

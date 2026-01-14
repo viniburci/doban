@@ -197,119 +197,63 @@
     </div>
   </div>
 
-  <!-- SEÇÃO DE RECURSOS COM TABS -->
-  <div class="recursos-tabs">
+  <!-- SEÇÃO DE RECURSOS DINÂMICOS -->
+  <div class="recursos-section">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Recursos</h5>
+        <h5 class="card-title">Recursos Emprestados</h5>
 
-        <!-- Nav Tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="celulares-tab" data-bs-toggle="tab"
-                    data-bs-target="#celulares" type="button" role="tab">
-              Celulares ({{ celularesList()?.length || 0 }})
+        <!-- Filtros por tipo -->
+        <div class="tipo-filters mb-3">
+          <button
+            class="btn btn-sm"
+            [class.btn-primary]="tipoFiltroSelecionado() === null"
+            [class.btn-outline-primary]="tipoFiltroSelecionado() !== null"
+            (click)="filtrarPorTipo(null)">
+            Todos ({{ recursosDinamicos().length || 0 }})
+          </button>
+          @for(tipo of contadorPorTipo(); track tipo.codigo) {
+            <button
+              class="btn btn-sm"
+              [class.btn-primary]="tipoFiltroSelecionado() === tipo.codigo"
+              [class.btn-outline-primary]="tipoFiltroSelecionado() !== tipo.codigo"
+              (click)="filtrarPorTipo(tipo.codigo)">
+              {{ tipo.nome }} ({{ tipo.count }})
             </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="carros-tab" data-bs-toggle="tab"
-                    data-bs-target="#carros" type="button" role="tab">
-              Carros ({{ carrosList()?.length || 0 }})
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="rocadeiras-tab" data-bs-toggle="tab"
-                    data-bs-target="#rocadeiras" type="button" role="tab">
-              Roçadeiras ({{ rocadeirasList()?.length || 0 }})
-            </button>
-          </li>
-        </ul>
-
-        <!-- Tab Content -->
-        <div class="tab-content mt-4">
-
-          <!-- TAB: CELULARES -->
-          <div class="tab-pane fade show active" id="celulares" role="tabpanel">
-            <div class="row">
-              @if ((celularesList()?.length || 0) > 0) {
-                @for(recursoCelular of celularesList(); track recursoCelular.id) {
-                  <div class="col-lg-4 col-md-6 mb-3">
-                    <app-card-recurso-celular
-                      [recurso]="recursoCelular"
-                      (editarRecurso)="editarRecurso('celular', $event)"
-                      (updated)="updateComponent()">
-                    </app-card-recurso-celular>
-                  </div>
-                }
-              } @else {
-                <div class="col-12">
-                  <div class="empty-state">
-                    <div class="empty-state-icon"></div>
-                    <p class="empty-state-text">Nenhum celular registrado</p>
-                  </div>
-                </div>
-              }
-            </div>
-            <button class="btn btn-primary mt-3" (click)="novoRecurso('celular')">
-              Registrar Celular
-            </button>
-          </div>
-
-          <!-- TAB: CARROS -->
-          <div class="tab-pane fade" id="carros" role="tabpanel">
-            <div class="row">
-              @if ((carrosList()?.length || 0) > 0) {
-                @for(recursoCarro of carrosList(); track recursoCarro.id) {
-                  <div class="col-lg-4 col-md-6 mb-3">
-                    <app-card-recurso-carro
-                      [recurso]="recursoCarro"
-                      (editarRecurso)="editarRecurso('carro', $event)"
-                      (updated)="updateComponent()">
-                    </app-card-recurso-carro>
-                  </div>
-                }
-              } @else {
-                <div class="col-12">
-                  <div class="empty-state">
-                    <div class="empty-state-icon"></div>
-                    <p class="empty-state-text">Nenhum carro registrado</p>
-                  </div>
-                </div>
-              }
-            </div>
-            <button class="btn btn-primary mt-3" (click)="novoRecurso('carro')">
-              Registrar Carro
-            </button>
-          </div>
-
-          <!-- TAB: ROÇADEIRAS -->
-          <div class="tab-pane fade" id="rocadeiras" role="tabpanel">
-            <div class="row">
-              @if ((rocadeirasList()?.length || 0) > 0) {
-                @for(recursoRocadeira of rocadeirasList(); track recursoRocadeira.id) {
-                  <div class="col-lg-4 col-md-6 mb-3">
-                    <app-card-recurso-rocadeira
-                      [recurso]="recursoRocadeira"
-                      (editarRecurso)="editarRecurso('rocadeira', $event)"
-                      (updated)="updateComponent()">
-                    </app-card-recurso-rocadeira>
-                  </div>
-                }
-              } @else {
-                <div class="col-12">
-                  <div class="empty-state">
-                    <div class="empty-state-icon"></div>
-                    <p class="empty-state-text">Nenhuma roçadeira registrada</p>
-                  </div>
-                </div>
-              }
-            </div>
-            <button class="btn btn-primary mt-3" (click)="novoRecurso('rocadeira')">
-              Registrar Roçadeira
-            </button>
-          </div>
-
+          }
         </div>
+
+        <!-- Grid de cards -->
+        <div class="row">
+          @if ((recursosFiltrados().length || 0) > 0) {
+            @for(recurso of recursosFiltrados(); track recurso.id) {
+              <div class="col-lg-4 col-md-6 mb-3">
+                <app-card-recurso-dinamico
+                  [recurso]="recurso"
+                  (editarRecurso)="editarEmprestimo($event)"
+                  (updated)="updateComponent()">
+                </app-card-recurso-dinamico>
+              </div>
+            }
+          } @else {
+            <div class="col-12">
+              <div class="empty-state">
+                <div class="empty-state-icon"></div>
+                <p class="empty-state-text">
+                  @if(tipoFiltroSelecionado()) {
+                    Nenhum recurso deste tipo registrado
+                  } @else {
+                    Nenhum recurso emprestado
+                  }
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+
+        <button class="btn btn-primary mt-3" (click)="novoEmprestimo()">
+          Registrar Empréstimo
+        </button>
       </div>
     </div>
   </div>
@@ -326,16 +270,16 @@
     </div>
   }
 
-  @if (showRegistrarRecurso()) {
+  @if (showFormRecursoDinamico()) {
     <div class="card mt-4 fade-in">
       <div class="card-body">
-        <app-cadastro-recurso-base #recursoForm appScrollOnRender
-          [config]="getActiveConfig()"
+        <app-form-recurso-dinamico
+          appScrollOnRender
           [pessoaId]="pessoaId()"
-          [editRecurso]="editRecurso()"
+          [editRecurso]="editRecursoDinamico()"
           (updated)="handleUpdateAndClose()"
           (closeForm)="handleOnlyClose()">
-        </app-cadastro-recurso-base>
+        </app-form-recurso-dinamico>
       </div>
     </div>
   }

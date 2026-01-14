@@ -1,0 +1,95 @@
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <h5 class="mb-3">
+        @if (isEditMode()) {
+          Registrar Devolução
+        } @else {
+          Novo Empréstimo
+        }
+      </h5>
+
+      <form [formGroup]="form" (submit)="onSubmit()" novalidate>
+        <div class="row g-3">
+
+          @if (!isEditMode()) {
+            <div class="col-md-6">
+              <label class="form-label">Tipo de Recurso</label>
+              <select class="form-select" formControlName="tipoRecursoCodigo"
+                (change)="onTipoChange(form.controls['tipoRecursoCodigo'].value)">
+                <option value="">Filtrar por tipo...</option>
+                @for (tipo of tiposRecurso(); track tipo.id) {
+                  <option [value]="tipo.codigo">{{ tipo.nome }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Item *</label>
+              <select class="form-select" formControlName="itemId"
+                [class.is-invalid]="form.controls['itemId'].touched && form.controls['itemId'].invalid">
+                <option [ngValue]="null">Selecione um item...</option>
+                @for (item of itensDisponiveis(); track item.id) {
+                  <option [ngValue]="item.id">{{ item.identificador }} - {{ item.tipoRecursoNome }}</option>
+                }
+              </select>
+              @if (form.controls['itemId'].touched && form.controls['itemId'].invalid) {
+                <div class="invalid-feedback">Item é obrigatório</div>
+              }
+              @if (form.controls['tipoRecursoCodigo'].value && itensDisponiveis().length === 0) {
+                <small class="text-muted">Nenhum item disponível para este tipo</small>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Data de Entrega *</label>
+              <input type="date" class="form-control" formControlName="dataEntrega"
+                [class.is-invalid]="form.controls['dataEntrega'].touched && form.controls['dataEntrega'].invalid">
+              @if (form.controls['dataEntrega'].touched && form.controls['dataEntrega'].invalid) {
+                <div class="invalid-feedback">Data de entrega é obrigatória</div>
+              }
+            </div>
+          }
+
+          @if (isEditMode()) {
+            <div class="col-md-6">
+              <label class="form-label">Tipo de Recurso</label>
+              <input type="text" class="form-control" [value]="editRecurso()!.item.tipoRecursoNome" readonly>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Item</label>
+              <input type="text" class="form-control" [value]="editRecurso()!.item.identificador" readonly>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Data de Entrega</label>
+              <input type="date" class="form-control" formControlName="dataEntrega" readonly>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Data de Devolução *</label>
+              <input type="date" class="form-control" formControlName="dataDevolucao"
+                [class.is-invalid]="form.controls['dataDevolucao'].touched && form.controls['dataDevolucao'].invalid">
+              @if (form.controls['dataDevolucao'].touched && form.controls['dataDevolucao'].invalid) {
+                <div class="invalid-feedback">Data de devolução é obrigatória</div>
+              }
+            </div>
+          }
+
+        </div>
+
+        <div class="col-12 mt-4 d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading()">
+            @if (isEditMode()) {
+              Registrar Devolução
+            } @else {
+              Registrar Empréstimo
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

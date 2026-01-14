@@ -79,34 +79,33 @@
   margin-top: 0;
 }
 
-/* ===== TABS PARA RECURSOS ===== */
-.recursos-tabs {
+/* ===== SEÇÃO DE RECURSOS DINÂMICOS ===== */
+.recursos-section {
   margin-top: 2rem;
 }
 
-.nav-tabs {
-  border-bottom: 2px solid #e9ecef;
-  margin-bottom: 1.5rem;
+.tipo-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-.nav-tabs .nav-link {
-  border: none;
-  border-bottom: 3px solid transparent;
-  color: #6c757d;
+.tipo-filters .btn-sm {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 6px;
   font-weight: 500;
-  padding: 0.75rem 1.5rem;
-  transition: all 0.2s ease;
 }
 
-.nav-tabs .nav-link:hover {
-  border-bottom-color: #dee2e6;
-  color: #495057;
-}
-
-.nav-tabs .nav-link.active {
+.tipo-filters .btn-outline-primary {
+  border: 1px solid #0d6efd;
   color: #0d6efd;
-  border-bottom-color: #0d6efd;
-  background-color: transparent;
+}
+
+.tipo-filters .btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
 }
 
 /* ===== BOTÕES MELHORADOS ===== */
