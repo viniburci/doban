@@ -204,5 +204,6 @@ export class CadastroTipoRecurso implements OnInit {
         }
       });
     }
+    console.log('Form Value:', this.form.value);
   }
 }
