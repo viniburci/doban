@@ -19,6 +19,7 @@ export class ListaRecursoDinamico implements OnInit {
   loading = signal(true);
   filtroTipo = signal<string>('');
   filtroStatus = signal<string>('');
+  recursoExpandido = signal<number | null>(null);
 
   constructor(
     private recursoDinamicoService: RecursoDinamicoService,
@@ -114,5 +115,28 @@ export class ListaRecursoDinamico implements OnInit {
         console.error('Erro ao registrar devolução', error);
       }
     });
+  }
+
+  toggleExpand(id: number) {
+    if (this.recursoExpandido() === id) {
+      this.recursoExpandido.set(null);
+    } else {
+      this.recursoExpandido.set(id);
+    }
+  }
+
+  getAtributos(atributos: Record<string, any>): Array<{key: string, value: any}> {
+    if (!atributos) return [];
+    return Object.entries(atributos).map(([key, value]) => ({
+      key: this.formatarNomeCampo(key),
+      value: value || 'N/D'
+    }));
+  }
+
+  private formatarNomeCampo(nome: string): string {
+    return nome
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim();
   }
 }

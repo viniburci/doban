@@ -28,8 +28,8 @@
       </div>
     } @else if (recursos().length > 0) {
       @for (recurso of recursos(); track recurso.id) {
-        <div class="recurso-card" [class.emprestado]="isEmprestado(recurso)" [class.devolvido]="!isEmprestado(recurso)">
-          <div class="recurso-card-body">
+        <div class="recurso-card" [class.emprestado]="isEmprestado(recurso)" [class.devolvido]="!isEmprestado(recurso)" [class.expandido]="recurso.id === recursoExpandido()">
+          <div class="recurso-card-header" (click)="toggleExpand(recurso.id!)">
             <div class="recurso-info">
               <div class="recurso-header">
                 <h5 class="recurso-item">{{ recurso.item.identificador }}</h5>
@@ -49,17 +49,40 @@
                 }
               </div>
             </div>
-            <div class="recurso-actions">
+            <div class="recurso-actions-compact">
               <span class="badge" [class.bg-warning]="isEmprestado(recurso)" [class.bg-success]="!isEmprestado(recurso)">
                 {{ isEmprestado(recurso) ? 'Emprestado' : 'Devolvido' }}
               </span>
-              @if (isEmprestado(recurso)) {
-                <button type="button" class="btn btn-sm btn-outline-success" (click)="registrarDevolucao(recurso)">
-                  Devolver
-                </button>
-              }
+              <i class="bi" [class.bi-chevron-down]="recurso.id !== recursoExpandido()" [class.bi-chevron-up]="recurso.id === recursoExpandido()"></i>
             </div>
           </div>
+
+          @if (recurso.id === recursoExpandido()) {
+            <div class="recurso-detalhes">
+              <div class="detalhes-grid">
+                <div class="detalhe-item">
+                  <strong>Pessoa:</strong>
+                  <a [routerLink]="['/pessoas', recurso.pessoaId, 'detalhes']">{{ recurso.pessoaNome }}</a>
+                </div>
+                <div class="detalhe-item">
+                  <strong>Item:</strong>
+                  <a [routerLink]="['/itens', recurso.item.id, 'detalhes']">{{ recurso.item.identificador }}</a>
+                </div>
+                @for (attr of getAtributos(recurso.item.atributos); track attr.key) {
+                  <div class="detalhe-item">
+                    <strong>{{ attr.key }}:</strong> {{ attr.value }}
+                  </div>
+                }
+              </div>
+              <div class="recurso-actions">
+                @if (isEmprestado(recurso)) {
+                  <button type="button" class="btn btn-sm btn-success" (click)="registrarDevolucao(recurso); $event.stopPropagation()">
+                    Registrar Devolução
+                  </button>
+                }
+              </div>
+            </div>
+          }
         </div>
       }
     } @else {
