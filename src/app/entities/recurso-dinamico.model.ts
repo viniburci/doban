@@ -10,6 +10,7 @@ export interface RecursoDinamicoDTO {
   item: ItemDinamicoDTO;
   dataEntrega: string | null;
   dataDevolucao: string | null;
+  atributosSnapshot?: Record<string, any>;
   createdAt?: string;
   updatedAt?: string;
 }

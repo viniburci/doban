@@ -68,7 +68,7 @@
                   <strong>Item:</strong>
                   <a [routerLink]="['/itens', recurso.item.id, 'detalhes']">{{ recurso.item.identificador }}</a>
                 </div>
-                @for (attr of getAtributos(recurso.item.atributos); track attr.key) {
+                @for (attr of getAtributos(recurso.atributosSnapshot ?? recurso.item.atributos); track attr.key) {
                   <div class="detalhe-item">
                     <strong>{{ attr.key }}:</strong> {{ attr.value }}
                   </div>

@@ -45,9 +45,12 @@ export class CardRecursoDinamico {
 
   atributosFormatados = computed(() => {
     const recurso = this.recurso();
-    if (!recurso?.item?.atributos) return [];
+    // Usa atributosSnapshot (dados no momento do empréstimo) se disponível,
+    // senão fallback para atributos atuais do item
+    const atributos = recurso?.atributosSnapshot ?? recurso?.item?.atributos;
+    if (!atributos) return [];
 
-    return Object.entries(recurso.item.atributos).map(([key, value]) => ({
+    return Object.entries(atributos).map(([key, value]) => ({
       key: this.formatarNomeCampo(key),
       value: value || 'N/D'
     }));
