@@ -1,15 +1,17 @@
 import { Component, input, OnInit, signal, inject, output, effect } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AtestadoSaudeOcupacional, TipoAcrescimoSubstituicao, TipoContratante, TipoContrato, VagaFormData } from '../../entities/vagaFormData.model';
-import { TitleCasePipe } from '@angular/common';
+import { TitleCasePipe, CommonModule } from '@angular/common';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { VagaService } from '../../services/vaga-service';
 import { DataService } from '../../services/data-service';
+import { ClienteService } from '../../services/cliente.service';
+import { ClienteDTO } from '../../entities/cliente.model';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-cadastro-vaga',
-  imports: [ReactiveFormsModule, TitleCasePipe, NgxMaskDirective],
+  imports: [ReactiveFormsModule, TitleCasePipe, NgxMaskDirective, CommonModule],
   providers: [provideNgxMask()],
   standalone: true,
   templateUrl: './cadastro-vaga.html',
@@ -19,6 +21,7 @@ export class CadastroVaga implements OnInit {
   private fb = inject(FormBuilder);
   private vagaService = inject(VagaService);
   private dataService = inject(DataService);
+  private clienteService = inject(ClienteService);
   private destroy$ = new Subject<void>();
 
   pessoaId = input<string | null>(null);
@@ -26,6 +29,8 @@ export class CadastroVaga implements OnInit {
   editVaga = input<VagaFormData | null>(null);
   updated = output<boolean>();
   closeForm = output<void>();
+
+  clientes = signal<ClienteDTO[]>([]);
 
   form!: FormGroup<{ [K in keyof VagaFormData]: FormControl<VagaFormData[K]> }>;
 
@@ -47,9 +52,13 @@ export class CadastroVaga implements OnInit {
       this.editMode.set(true);
     }
 
+    this.carregarClientes();
+
     this.form = this.fb.group({
       id: new FormControl<string | null>(null),
       cliente: new FormControl<string | null>(null),
+      clienteId: new FormControl<number | null>(null),
+      clienteNome: new FormControl<string | null>(null),
       cidade: new FormControl<string | null>(null),
       uf: new FormControl<string | null>(null),
       cargo: new FormControl<string | null>(null),
@@ -84,6 +93,15 @@ export class CadastroVaga implements OnInit {
       } as VagaFormData;
       this.form.patchValue(vagaFormatada || {});
     }
+  }
+
+  carregarClientes() {
+    this.clienteService.listarAtivos()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (clientes) => this.clientes.set(clientes),
+        error: (error) => console.error('Erro ao carregar clientes:', error)
+      });
   }
 
   getEnumValues(enumObj: any): string[] {

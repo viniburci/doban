@@ -13,6 +13,7 @@ import { CadastroItemDinamico } from './recursos/item-dinamico/cadastro-item-din
 import { DetalhesItemDinamico } from './recursos/item-dinamico/detalhes-item-dinamico/detalhes-item-dinamico';
 import { ListaRecursoDinamico } from './recursos/recurso-dinamico/lista-recurso-dinamico/lista-recurso-dinamico';
 import { CadastroRecursoDinamico } from './recursos/recurso-dinamico/cadastro-recurso-dinamico/cadastro-recurso-dinamico';
+import { GestaoClientes } from './cliente/gestao-clientes';
 
 export const routes: Routes = [
     {
@@ -113,6 +114,12 @@ export const routes: Routes = [
                 component: CadastroRecursoDinamico
             }
         ]
+    },
+    // Gestão de Clientes
+    {
+        path: 'clientes',
+        canActivate: [authGuard],
+        component: GestaoClientes
     },
     {
         path: '',

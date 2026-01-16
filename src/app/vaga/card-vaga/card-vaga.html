@@ -41,7 +41,7 @@
             <div class="row nowrap-details"> 
                 
                 <div class="col-md-6 mb-2">
-                    <strong>Cliente:</strong> {{ vaga()?.cliente || 'N/D' }}
+                    <strong>Cliente:</strong> {{ vaga()?.clienteNome || vaga()?.cliente || 'N/D' }}
                 </div>
                 <div class="col-md-6 mb-2">
                     <strong>Cidade:</strong> {{ vaga()?.cidade || 'N/D' }}

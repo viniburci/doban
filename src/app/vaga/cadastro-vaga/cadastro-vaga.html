@@ -26,9 +26,13 @@
               </div>
 
               <div class="col-md-6">
-                <label class="form-label" for="cliente">Cliente</label>
-                <input id="cliente" name="cliente" type="text" class="form-control"
-                  placeholder="Nome do cliente" formControlName="cliente">
+                <label class="form-label" for="clienteId">Cliente</label>
+                <select id="clienteId" class="form-select" formControlName="clienteId">
+                  <option [ngValue]="null">Selecione...</option>
+                  @for (cliente of clientes(); track cliente.id) {
+                    <option [ngValue]="cliente.id">{{ cliente.nome }}</option>
+                  }
+                </select>
               </div>
 
               <div class="col-md-6">

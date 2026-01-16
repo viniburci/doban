@@ -23,7 +23,9 @@ export enum TipoContratante {
 
 export interface VagaFormData {
     id: string | null;
-    cliente: string | null;
+    cliente: string | null; // Campo legado
+    clienteId: number | null;
+    clienteNome: string | null;
     cidade: string | null;
     uf: string | null;
     cargo: string | null;

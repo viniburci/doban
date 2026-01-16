@@ -1,0 +1,8 @@
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+.btn-sm i {
+  font-size: 0.875rem;
+}
