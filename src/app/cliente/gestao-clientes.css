@@ -1,8 +1,265 @@
-.table th,
-.table td {
-  vertical-align: middle;
+.container-fluid {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Form Card */
+.form-card {
+  margin-bottom: 2rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  background-color: white;
+  border: 2px solid #e0e7ff;
+  overflow: hidden;
+}
+
+.form-card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1.5rem 2rem;
+  color: white;
+}
+
+.form-card-header h4 {
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.form-card-header small {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.form-card-body {
+  padding: 2rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-control,
+.form-select {
+  border-radius: 0.5rem;
+  border: 2px solid #e9ecef;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+.form-control::placeholder {
+  color: #adb5bd;
+}
+
+.form-check-input:checked {
+  background-color: #667eea;
+  border-color: #667eea;
+}
+
+/* Cliente Cards */
+.cliente-card {
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background-color: white;
+  border: 2px solid transparent;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.cliente-card:hover {
+  border-color: #667eea;
+}
+
+.cliente-card.ativo {
+  border-left: 4px solid #198754;
+}
+
+.cliente-card.inativo {
+  border-left: 4px solid #dc3545;
+}
+
+.cliente-card-body {
+  padding: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cliente-info {
+  flex-grow: 1;
+}
+
+.cliente-nome {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+.cliente-descricao {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 0;
+}
+
+.cliente-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Status Badge */
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-badge.ativo {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-badge.inativo {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+/* Botoes */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+}
+
+.btn-outline-secondary {
+  border: 2px solid #e9ecef;
+  color: #6c757d;
+  background: white;
+}
+
+.btn-outline-secondary:hover {
+  background: #f8f9fa;
+  border-color: #dee2e6;
+  color: #495057;
+}
+
+.btn-sm {
+  padding: 0.375rem 0.625rem;
+  font-size: 0.875rem;
 }
 
 .btn-sm i {
   font-size: 0.875rem;
+}
+
+.btn-sm:hover {
+  transform: translateY(-1px);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 1rem;
+  }
+
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .form-card-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .form-card-body {
+    padding: 1.5rem;
+  }
+
+  .cliente-card-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .cliente-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cliente-nome {
+    font-size: 1rem;
+  }
+
+  .cliente-descricao {
+    font-size: 0.8rem;
+  }
 }
