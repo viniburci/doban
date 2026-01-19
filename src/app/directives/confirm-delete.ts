@@ -40,18 +40,15 @@ export class ConfirmDeleteDirective {
     // 3. Obtém o elemento nativo do componente modal
     const modalElement = this.modalComponentRef.location.nativeElement;
 
-    // 4. Inicializa e exibe o modal usando a API JS do Bootstrap
-    // Certifique-se de que o Bootstrap JS esteja carregado
-    // (Pode precisar de um 'declare const bootstrap: any;' se estiver usando o Bootstrap 5)
+    // 4. Move o modal para o body para evitar problemas de z-index
+    this.renderer.appendChild(document.body, modalElement);
 
-    // O elemento raiz do ConfirmDialog deve ser o div.modal.
+    // 5. Inicializa e exibe o modal usando a API JS do Bootstrap
     const bootstrapModalElement = modalElement.querySelector('.modal');
 
     if (bootstrapModalElement && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-      // Cria uma nova instância do Modal e a exibe
       const modal = new bootstrap.Modal(bootstrapModalElement);
       modal.show();
-      // Armazena a instância para poder fechá-lo programaticamente
       (this.modalComponentRef.instance as any)._bsModalInstance = modal;
     } else {
       console.error('Bootstrap Modal JS não encontrado ou elemento .modal não está na raiz do componente injetado.');
