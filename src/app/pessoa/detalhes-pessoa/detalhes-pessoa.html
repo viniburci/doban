@@ -179,19 +179,73 @@
       </div>
     </div>
 
-    <!-- COLUNA 3: IMPRESSÃO -->
+    <!-- COLUNA 3: DOCUMENTOS -->
     <div class="col-lg-3 col-md-3">
-      <div class="card print-section">
+      <div class="card documentos-section">
         <div class="card-body">
-          <h5 class="card-title">Documentos</h5>
-          <div class="print-buttons">
-            <button class="btn btn-success">
-              Imprimir Vaga
-            </button>
-            <button class="btn btn-danger">
-              Imprimir Contrato
-            </button>
-          </div>
+          <h5 class="card-title">Gerar Documentos</h5>
+
+          <!-- Selecao de Vaga -->
+          @if ((vagasPessoa()?.length || 0) > 0) {
+            <div class="mb-3">
+              <label class="form-label">Selecione a Vaga</label>
+              <select class="form-select form-select-sm"
+                [value]="vagaSelecionadaParaDocumento() ?? ''"
+                (change)="selecionarVagaParaDocumento(+$any($event.target).value)">
+                <option value="" disabled>Escolha uma vaga...</option>
+                @for (vaga of vagasPessoa(); track vaga.id) {
+                  <option [value]="vaga.id">{{ vaga.clienteNome || vaga.cliente }} - {{ vaga.cargo }}</option>
+                }
+              </select>
+            </div>
+
+            @if (vagaSelecionadaParaDocumento()) {
+              <!-- Selecao de Documentos -->
+              <div class="documentos-lista">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="form-label mb-0">Tipos de Documento</span>
+                  <button type="button" class="btn btn-link btn-sm p-0"
+                    (click)="selecionarTodosDocumentos(!temDocumentoSelecionado())">
+                    {{ temDocumentoSelecionado() ? 'Limpar' : 'Selecionar todos' }}
+                  </button>
+                </div>
+
+                @for (tipo of tiposDocumentos(); track tipo.id) {
+                  <div class="form-check documento-item">
+                    <input class="form-check-input" type="checkbox"
+                      [id]="'doc-' + tipo.id"
+                      [checked]="tipo.selecionado"
+                      (change)="toggleDocumento(tipo.id)">
+                    <label class="form-check-label" [for]="'doc-' + tipo.id">
+                      {{ tipo.nome }}
+                    </label>
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-individual"
+                      (click)="gerarDocumentoIndividual(tipo.id)"
+                      [disabled]="gerandoDocumento()"
+                      title="Gerar apenas este documento">
+                      PDF
+                    </button>
+                  </div>
+                }
+              </div>
+
+              <!-- Botao Gerar Combinados -->
+              <button type="button" class="btn btn-primary w-100 mt-3"
+                [disabled]="!temDocumentoSelecionado() || gerandoDocumento()"
+                (click)="gerarDocumentosCombinados()">
+                @if (gerandoDocumento()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Gerando...
+                } @else {
+                  Gerar PDF Combinado ({{ quantidadeSelecionados() }})
+                }
+              </button>
+            }
+          } @else {
+            <div class="empty-state-small">
+              <p class="text-muted mb-0">Cadastre uma vaga para gerar documentos</p>
+            </div>
+          }
         </div>
       </div>
     </div>

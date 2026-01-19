@@ -140,17 +140,49 @@
   background-color: #bb2d3b;
 }
 
-/* ===== SEÇÃO DE IMPRESSÃO ===== */
-.print-section {
+/* ===== SEÇÃO DE DOCUMENTOS ===== */
+.documentos-section {
   position: sticky;
-  top: 100px; /* Altura da navbar (80px) + espaçamento (20px) */
+  top: 100px;
   z-index: 10;
 }
 
-.print-buttons {
+.documentos-lista {
+  margin-bottom: 0.5rem;
+}
+
+.documento-item {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.documento-item:last-child {
+  border-bottom: none;
+}
+
+.documento-item .form-check-label {
+  flex: 1;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.documento-item .btn-individual {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  margin-left: auto;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.documento-item:hover .btn-individual {
+  opacity: 1;
+}
+
+.empty-state-small {
+  text-align: center;
+  padding: 1.5rem 1rem;
 }
 
 /* ===== RESPONSIVIDADE ===== */

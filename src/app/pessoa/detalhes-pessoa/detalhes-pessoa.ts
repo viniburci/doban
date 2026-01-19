@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
-import { CommonModule } from '@angular/common';
 import { DataService } from '../../services/data-service';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CadastroVaga } from "../../vaga/cadastro-vaga/cadastro-vaga";
 import { ScrollOnRenderDirective } from '../../directives/scroll-on-render-directive';
 import { VagaFormData } from '../../entities/vagaFormData.model';
@@ -15,10 +14,11 @@ import { RecursoDinamicoService } from '../../services/recurso-dinamico.service'
 import { TipoRecursoService } from '../../services/tipo-recurso.service';
 import { CardRecursoDinamico } from "../../recursos/recurso-dinamico/card-recurso-dinamico/card-recurso-dinamico";
 import { FormRecursoDinamico } from "../../recursos/recurso-dinamico/form-recurso-dinamico/form-recurso-dinamico";
+import { DocumentoService, TipoDocumento, TIPOS_DOCUMENTOS } from '../../services/documento.service';
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [CommonModule, RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoDinamico, FormRecursoDinamico],
+  imports: [RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoDinamico, FormRecursoDinamico],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -30,6 +30,7 @@ export class DetalhesPessoa implements OnInit {
   private dataService = inject(DataService);
   private recursoDinamicoService = inject(RecursoDinamicoService);
   private tipoRecursoService = inject(TipoRecursoService);
+  private documentoService = inject(DocumentoService);
 
   pessoaId = input<string | null>(null);
   errorMessage: string | null = null;
@@ -43,7 +44,19 @@ export class DetalhesPessoa implements OnInit {
   tiposRecurso = signal<TipoRecursoDTO[]>([]);
   tipoFiltroSelecionado = signal<string | null>(null);
   editRecursoDinamico = signal<RecursoDinamicoDTO | null>(null);
-  showFormRecursoDinamico = signal<boolean>(false);
+  showFormRecursoDinamico = signal(false);
+
+  tiposDocumentos = signal<TipoDocumento[]>(TIPOS_DOCUMENTOS.map(t => ({ ...t })));
+  vagaSelecionadaParaDocumento = signal<number | null>(null);
+  gerandoDocumento = signal(false);
+
+  temDocumentoSelecionado = computed(() =>
+    this.tiposDocumentos().some(t => t.selecionado)
+  );
+
+  quantidadeSelecionados = computed(() =>
+    this.tiposDocumentos().filter(t => t.selecionado).length
+  );
 
   recursosFiltrados = computed(() => {
     const recursos = this.recursosDinamicos();
@@ -163,5 +176,65 @@ export class DetalhesPessoa implements OnInit {
   handleOnlyClose() {
     this.showRegistrarVaga.set(false);
     this.showFormRecursoDinamico.set(false);
+  }
+
+  toggleDocumento(id: string) {
+    this.tiposDocumentos.update(tipos =>
+      tipos.map(t => t.id === id ? { ...t, selecionado: !t.selecionado } : t)
+    );
+  }
+
+  selecionarTodosDocumentos(selecionado: boolean) {
+    this.tiposDocumentos.update(tipos =>
+      tipos.map(t => ({ ...t, selecionado }))
+    );
+  }
+
+  selecionarVagaParaDocumento(vagaId: number) {
+    this.vagaSelecionadaParaDocumento.set(vagaId);
+  }
+
+  gerarDocumentosCombinados() {
+    const vagaId = this.vagaSelecionadaParaDocumento();
+    if (!vagaId) return;
+
+    const tiposSelecionados = this.tiposDocumentos()
+      .filter(t => t.selecionado)
+      .map(t => t.id);
+
+    if (tiposSelecionados.length === 0) return;
+
+    this.gerandoDocumento.set(true);
+
+    this.documentoService.gerarDocumentosCombinados(vagaId, tiposSelecionados).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.gerandoDocumento.set(false);
+      },
+      error: (error) => {
+        console.error('Erro ao gerar documentos:', error);
+        this.gerandoDocumento.set(false);
+      }
+    });
+  }
+
+  gerarDocumentoIndividual(tipo: string) {
+    const vagaId = this.vagaSelecionadaParaDocumento();
+    if (!vagaId) return;
+
+    this.gerandoDocumento.set(true);
+
+    this.documentoService.gerarDocumento(vagaId, tipo).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.gerandoDocumento.set(false);
+      },
+      error: (error) => {
+        console.error('Erro ao gerar documento:', error);
+        this.gerandoDocumento.set(false);
+      }
+    });
   }
 }
