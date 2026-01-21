@@ -1,0 +1,111 @@
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">Detalhes do Template</h1>
+    <a [routerLink]="['/templates-documento']" class="btn btn-outline-secondary">
+      Voltar
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="d-flex justify-content-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else if (template()) {
+    <div class="details-card">
+      <!-- Header -->
+      <div class="details-header">
+        <div class="template-title">
+          <h2>{{ template()!.nome }}</h2>
+          <span class="template-codigo">{{ template()!.codigo }}</span>
+        </div>
+        <div class="header-actions">
+          <span class="status-badge" [class.ativo]="template()!.ativo" [class.inativo]="!template()!.ativo">
+            {{ template()!.ativo ? 'Ativo' : 'Inativo' }}
+          </span>
+          <a [routerLink]="['/templates-documento', template()!.id, 'editar']" class="btn btn-primary">
+            Editar
+          </a>
+        </div>
+      </div>
+
+      <!-- Descricao -->
+      @if (template()!.descricao) {
+        <div class="details-section">
+          <h5 class="section-title">Descricao</h5>
+          <p class="section-content">{{ template()!.descricao }}</p>
+        </div>
+      }
+
+      <!-- Tipos de Vaga Permitidos -->
+      @if (template()!.tiposVagaPermitidos && template()!.tiposVagaPermitidos!.length > 0) {
+        <div class="details-section">
+          <h5 class="section-title">Tipos de Vaga Permitidos</h5>
+          <div class="badges-list">
+            @for (tipo of template()!.tiposVagaPermitidos; track tipo.id) {
+              <span class="badge bg-primary">{{ tipo.nome }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Schema de Itens -->
+      @if (template()!.schemaItens?.fields && template()!.schemaItens!.fields.length > 0) {
+        <div class="details-section">
+          <h5 class="section-title">Schema de Itens</h5>
+          <div class="schema-table">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Rotulo</th>
+                  <th>Tipo</th>
+                  <th>Obrigatorio</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (field of template()!.schemaItens!.fields; track field.nome) {
+                  <tr>
+                    <td><code>{{ field.nome }}</code></td>
+                    <td>{{ field.rotulo }}</td>
+                    <td><span class="badge bg-secondary">{{ field.tipo }}</span></td>
+                    <td>{{ field.obrigatorio ? 'Sim' : 'Nao' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      <!-- Variaveis Disponiveis -->
+      @if (template()!.variaveisDisponiveis && template()!.variaveisDisponiveis!.length > 0) {
+        <div class="details-section">
+          <h5 class="section-title">Variaveis Disponiveis</h5>
+          <div class="variaveis-list">
+            @for (variavel of template()!.variaveisDisponiveis; track variavel) {
+              <code class="variavel-badge">{{ variavel }}</code>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Conteudo HTML -->
+      <div class="details-section">
+        <h5 class="section-title">Conteudo HTML</h5>
+        <pre class="code-preview">{{ template()!.conteudoHtml }}</pre>
+      </div>
+
+      <!-- Metadados -->
+      <div class="details-footer">
+        @if (template()!.createdAt) {
+          <span class="metadata">Criado em: {{ template()!.createdAt }}</span>
+        }
+        @if (template()!.updatedAt) {
+          <span class="metadata">Atualizado em: {{ template()!.updatedAt }}</span>
+        }
+      </div>
+    </div>
+  }
+</div>

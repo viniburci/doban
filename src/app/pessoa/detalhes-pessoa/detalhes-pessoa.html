@@ -240,6 +240,12 @@
                   Gerar PDF Combinado ({{ quantidadeSelecionados() }})
                 }
               </button>
+
+              <!-- Botao Documento Dinamico -->
+              <button type="button" class="btn btn-outline-secondary w-100 mt-2"
+                (click)="abrirGeradorDocumento()">
+                Documento Dinamico
+              </button>
             }
           } @else {
             <div class="empty-state-small">
@@ -334,6 +340,18 @@
           (updated)="handleUpdateAndClose()"
           (closeForm)="handleOnlyClose()">
         </app-form-recurso-dinamico>
+      </div>
+    </div>
+  }
+
+  @if (showGeradorDocumento() && vagaSelecionadaParaDocumento()) {
+    <div class="card mt-4 fade-in">
+      <div class="card-body">
+        <app-gerador-documento
+          appScrollOnRender
+          [vagaId]="vagaSelecionadaParaDocumento()!"
+          (closeForm)="handleOnlyClose()">
+        </app-gerador-documento>
       </div>
     </div>
   }

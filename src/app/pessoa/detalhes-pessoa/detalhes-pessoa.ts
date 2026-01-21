@@ -15,10 +15,11 @@ import { TipoRecursoService } from '../../services/tipo-recurso.service';
 import { CardRecursoDinamico } from "../../recursos/recurso-dinamico/card-recurso-dinamico/card-recurso-dinamico";
 import { FormRecursoDinamico } from "../../recursos/recurso-dinamico/form-recurso-dinamico/form-recurso-dinamico";
 import { DocumentoService, TipoDocumento, TIPOS_DOCUMENTOS } from '../../services/documento.service';
+import { GeradorDocumento } from "../../documentos/gerador-documento/gerador-documento";
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoDinamico, FormRecursoDinamico],
+  imports: [RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoDinamico, FormRecursoDinamico, GeradorDocumento],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -49,6 +50,7 @@ export class DetalhesPessoa implements OnInit {
   tiposDocumentos = signal<TipoDocumento[]>(TIPOS_DOCUMENTOS.map(t => ({ ...t })));
   vagaSelecionadaParaDocumento = signal<number | null>(null);
   gerandoDocumento = signal(false);
+  showGeradorDocumento = signal(false);
 
   temDocumentoSelecionado = computed(() =>
     this.tiposDocumentos().some(t => t.selecionado)
@@ -176,6 +178,12 @@ export class DetalhesPessoa implements OnInit {
   handleOnlyClose() {
     this.showRegistrarVaga.set(false);
     this.showFormRecursoDinamico.set(false);
+    this.showGeradorDocumento.set(false);
+  }
+
+  abrirGeradorDocumento() {
+    this.handleOnlyClose();
+    this.showGeradorDocumento.set(true);
   }
 
   toggleDocumento(id: string) {

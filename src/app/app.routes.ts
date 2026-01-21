@@ -14,6 +14,9 @@ import { DetalhesItemDinamico } from './recursos/item-dinamico/detalhes-item-din
 import { ListaRecursoDinamico } from './recursos/recurso-dinamico/lista-recurso-dinamico/lista-recurso-dinamico';
 import { CadastroRecursoDinamico } from './recursos/recurso-dinamico/cadastro-recurso-dinamico/cadastro-recurso-dinamico';
 import { GestaoClientes } from './cliente/gestao-clientes';
+import { GestaoTemplates } from './documentos/gestao-templates/gestao-templates';
+import { FormTemplate } from './documentos/form-template/form-template';
+import { DetalhesTemplate } from './documentos/detalhes-template/detalhes-template';
 
 export const routes: Routes = [
     {
@@ -120,6 +123,30 @@ export const routes: Routes = [
         path: 'clientes',
         canActivate: [authGuard],
         component: GestaoClientes
+    },
+    // Templates de Documentos
+    {
+        path: 'templates-documento',
+        canActivate: [authGuard],
+        children: [
+            {
+                path: '',
+                pathMatch: 'full',
+                component: GestaoTemplates
+            },
+            {
+                path: 'novo',
+                component: FormTemplate
+            },
+            {
+                path: ':templateId/detalhes',
+                component: DetalhesTemplate
+            },
+            {
+                path: ':templateId/editar',
+                component: FormTemplate
+            }
+        ]
     },
     {
         path: '',

@@ -1,0 +1,80 @@
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">Templates de Documentos</h1>
+    <a [routerLink]="['/templates-documento', 'novo']" class="btn btn-primary">
+      Novo Template
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="d-flex justify-content-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else {
+    @if (templates().length === 0) {
+      <div class="empty-state">
+        <div class="empty-state-icon">--</div>
+        <p class="empty-state-text">Nenhum template cadastrado</p>
+        <a [routerLink]="['/templates-documento', 'novo']" class="btn btn-primary">
+          Criar Primeiro Template
+        </a>
+      </div>
+    } @else {
+      <div class="templates-grid">
+        @for (template of templates(); track template.id) {
+          <div class="template-card" [class.inativo]="!template.ativo">
+            <div class="template-card-header">
+              <div class="template-info">
+                <h5 class="template-nome">{{ template.nome }}</h5>
+                <span class="template-codigo">{{ template.codigo }}</span>
+              </div>
+              <span class="status-badge" [class.ativo]="template.ativo" [class.inativo]="!template.ativo">
+                {{ template.ativo ? 'Ativo' : 'Inativo' }}
+              </span>
+            </div>
+
+            <div class="template-card-body">
+              @if (template.descricao) {
+                <p class="template-descricao">{{ template.descricao }}</p>
+              }
+
+              @if (template.tiposVagaPermitidos && template.tiposVagaPermitidos.length > 0) {
+                <div class="tipos-vaga-section">
+                  <span class="tipos-label">Tipos de Vaga:</span>
+                  <div class="tipos-badges">
+                    @for (tipo of template.tiposVagaPermitidos; track tipo.id) {
+                      <span class="badge bg-secondary">{{ tipo.nome }}</span>
+                    }
+                  </div>
+                </div>
+              }
+
+              @if (template.variaveisDisponiveis && template.variaveisDisponiveis.length > 0) {
+                <div class="variaveis-section">
+                  <span class="variaveis-label">Variaveis: {{ template.variaveisDisponiveis.length }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="template-card-actions">
+              <a [routerLink]="['/templates-documento', template.id, 'editar']" class="btn btn-sm btn-primary">
+                Editar
+              </a>
+              <a [routerLink]="['/templates-documento', template.id, 'detalhes']" class="btn btn-sm btn-outline-secondary">
+                Detalhes
+              </a>
+              @if (template.ativo) {
+                <button class="btn btn-sm btn-danger" appConfirmDelete
+                  (confirmedDelete)="desativarTemplate(template, $event)">
+                  Desativar
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

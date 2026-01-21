@@ -1,0 +1,193 @@
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">{{ editMode() ? 'Editar Template' : 'Novo Template' }}</h1>
+    <a [routerLink]="['/templates-documento']" class="btn btn-outline-secondary">
+      Voltar
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="d-flex justify-content-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-card">
+        <!-- Informacoes Basicas -->
+        <div class="form-section">
+          <h5 class="section-title">Informacoes Basicas</h5>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label" for="codigo">Codigo *</label>
+              <input id="codigo" type="text" class="form-control" formControlName="codigo"
+                placeholder="EX: TERMO_EPI" [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched">
+              <small class="text-muted">Use apenas letras maiusculas e underscore</small>
+              @if (form.get('codigo')?.invalid && form.get('codigo')?.touched) {
+                <div class="invalid-feedback">Codigo invalido (apenas A-Z e _)</div>
+              }
+            </div>
+
+            <div class="col-md-8">
+              <label class="form-label" for="nome">Nome *</label>
+              <input id="nome" type="text" class="form-control" formControlName="nome"
+                placeholder="Nome do template" [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched">
+              @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
+                <div class="invalid-feedback">Nome e obrigatorio (minimo 3 caracteres)</div>
+              }
+            </div>
+
+            <div class="col-12">
+              <label class="form-label" for="descricao">Descricao</label>
+              <textarea id="descricao" class="form-control" formControlName="descricao" rows="2"
+                placeholder="Descricao opcional do template"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tipos de Vaga Permitidos -->
+        <div class="form-section">
+          <h5 class="section-title">Tipos de Vaga Permitidos</h5>
+          <p class="section-description">Selecione quais tipos de vaga podem usar este template</p>
+
+          <div class="tipos-vaga-grid">
+            @for (tipo of tiposVaga(); track tipo.id) {
+              <div class="tipo-vaga-item" [class.selecionado]="isTipoVagaSelecionado(tipo.id!)"
+                (click)="toggleTipoVaga(tipo.id!)">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" [checked]="isTipoVagaSelecionado(tipo.id!)"
+                    (click)="$event.stopPropagation()">
+                  <label class="form-check-label">{{ tipo.nome }}</label>
+                </div>
+                <small class="text-muted">{{ tipo.codigo }}</small>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Schema de Itens -->
+        <div class="form-section">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5 class="section-title mb-0">Schema de Itens</h5>
+              <p class="section-description mb-0">Defina os campos que os itens do documento terao</p>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="adicionarCampoSchema()">
+              + Adicionar Campo
+            </button>
+          </div>
+
+          @if (schemaFields().length > 0) {
+            <div class="schema-fields">
+              @for (field of schemaFields(); track $index; let i = $index) {
+                <div class="schema-field-card">
+                  <div class="schema-field-header">
+                    <span class="field-numero">Campo {{ i + 1 }}</span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="removerCampoSchema(i)">
+                      Remover
+                    </button>
+                  </div>
+                  <div class="schema-field-body">
+                    <div class="row g-2">
+                      <div class="col-md-3">
+                        <label class="form-label">Nome</label>
+                        <input type="text" class="form-control form-control-sm" [value]="field.nome"
+                          (input)="atualizarCampoSchema(i, 'nome', $any($event.target).value)"
+                          placeholder="nome_campo">
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Rotulo</label>
+                        <input type="text" class="form-control form-control-sm" [value]="field.rotulo"
+                          (input)="atualizarCampoSchema(i, 'rotulo', $any($event.target).value)"
+                          placeholder="Rotulo exibido">
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-select form-select-sm" [value]="field.tipo"
+                          (change)="atualizarCampoSchema(i, 'tipo', $any($event.target).value)">
+                          @for (tipo of fieldTypes; track tipo) {
+                            <option [value]="tipo">{{ tipo }}</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Obrigatorio</label>
+                        <div class="form-check mt-1">
+                          <input class="form-check-input" type="checkbox" [checked]="field.obrigatorio"
+                            (change)="atualizarCampoSchema(i, 'obrigatorio', $any($event.target).checked)">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state-small">
+              <p class="text-muted mb-0">Nenhum campo definido</p>
+            </div>
+          }
+        </div>
+
+        <!-- Variaveis Disponiveis -->
+        <div class="form-section">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5 class="section-title mb-0">Variaveis Disponiveis</h5>
+              <p class="section-description mb-0">Liste as variaveis que podem ser usadas no template HTML</p>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="adicionarVariavel()">
+              + Adicionar
+            </button>
+          </div>
+
+          @if (variaveisDisponiveis().length > 0) {
+            <div class="variaveis-list">
+              @for (variavel of variaveisDisponiveis(); track $index; let i = $index) {
+                <div class="variavel-item">
+                  <input type="text" class="form-control form-control-sm" [value]="variavel"
+                    (input)="atualizarVariavel(i, $any($event.target).value)"
+                    placeholder="Ex: pessoa.nome">
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="removerVariavel(i)">
+                    X
+                  </button>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state-small">
+              <p class="text-muted mb-0">Nenhuma variavel definida</p>
+            </div>
+          }
+        </div>
+
+        <!-- Conteudo HTML -->
+        <div class="form-section">
+          <h5 class="section-title">Conteudo HTML *</h5>
+          <p class="section-description">Template HTML com Thymeleaf para geracao do documento</p>
+
+          <textarea id="conteudoHtml" class="form-control code-editor" formControlName="conteudoHtml" rows="15"
+            placeholder="<html>...</html>" [class.is-invalid]="form.get('conteudoHtml')?.invalid && form.get('conteudoHtml')?.touched"></textarea>
+          @if (form.get('conteudoHtml')?.invalid && form.get('conteudoHtml')?.touched) {
+            <div class="invalid-feedback">Conteudo HTML e obrigatorio</div>
+          }
+        </div>
+
+        <!-- Acoes -->
+        <div class="form-actions">
+          <a [routerLink]="['/templates-documento']" class="btn btn-outline-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid || salvando()">
+            @if (salvando()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              Salvando...
+            } @else {
+              {{ editMode() ? 'Atualizar' : 'Criar' }} Template
+            }
+          </button>
+        </div>
+      </div>
+    </form>
+  }
+</div>
