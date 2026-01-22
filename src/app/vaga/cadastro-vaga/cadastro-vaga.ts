@@ -6,14 +6,15 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { VagaService } from '../../services/vaga-service';
 import { DataService } from '../../services/data-service';
 import { ClienteService } from '../../services/cliente.service';
+import { TipoVagaService } from '../../services/tipo-vaga.service';
 import { ClienteDTO } from '../../entities/cliente.model';
+import { TipoVagaDTO } from '../../entities/tipo-vaga.model';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-cadastro-vaga',
   imports: [ReactiveFormsModule, TitleCasePipe, NgxMaskDirective, CommonModule],
   providers: [provideNgxMask()],
-  standalone: true,
   templateUrl: './cadastro-vaga.html',
   styleUrl: './cadastro-vaga.css'
 })
@@ -22,6 +23,7 @@ export class CadastroVaga implements OnInit {
   private vagaService = inject(VagaService);
   private dataService = inject(DataService);
   private clienteService = inject(ClienteService);
+  private tipoVagaService = inject(TipoVagaService);
   private destroy$ = new Subject<void>();
 
   pessoaId = input<string | null>(null);
@@ -31,8 +33,9 @@ export class CadastroVaga implements OnInit {
   closeForm = output<void>();
 
   clientes = signal<ClienteDTO[]>([]);
+  tiposVaga = signal<TipoVagaDTO[]>([]);
 
-  form!: FormGroup<{ [K in keyof VagaFormData]: FormControl<VagaFormData[K]> }>;
+  form!: FormGroup;
 
   TipoContrato = TipoContrato;
   TipoAcrescimoSubstituicao = TipoAcrescimoSubstituicao
@@ -53,12 +56,16 @@ export class CadastroVaga implements OnInit {
     }
 
     this.carregarClientes();
+    this.carregarTiposVaga();
 
     this.form = this.fb.group({
       id: new FormControl<string | null>(null),
       cliente: new FormControl<string | null>(null),
       clienteId: new FormControl<number | null>(null),
       clienteNome: new FormControl<string | null>(null),
+      tipoVagaId: new FormControl<number | null>(null),
+      tipoVagaCodigo: new FormControl<string | null>(null),
+      tipoVagaNome: new FormControl<string | null>(null),
       cidade: new FormControl<string | null>(null),
       uf: new FormControl<string | null>(null),
       cargo: new FormControl<string | null>(null),
@@ -101,6 +108,15 @@ export class CadastroVaga implements OnInit {
       .subscribe({
         next: (clientes) => this.clientes.set(clientes),
         error: (error) => console.error('Erro ao carregar clientes:', error)
+      });
+  }
+
+  carregarTiposVaga() {
+    this.tipoVagaService.listarAtivos()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (tipos) => this.tiposVaga.set(tipos),
+        error: (error) => console.error('Erro ao carregar tipos de vaga:', error)
       });
   }
 

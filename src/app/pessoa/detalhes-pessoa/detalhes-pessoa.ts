@@ -60,6 +60,14 @@ export class DetalhesPessoa implements OnInit {
     this.tiposDocumentos().filter(t => t.selecionado).length
   );
 
+  tipoVagaIdSelecionado = computed(() => {
+    const vagaId = this.vagaSelecionadaParaDocumento();
+    if (!vagaId) return null;
+
+    const vaga = this.vagasPessoa()?.find(v => v.id === String(vagaId));
+    return vaga?.tipoVagaId ?? null;
+  });
+
   recursosFiltrados = computed(() => {
     const recursos = this.recursosDinamicos();
     const filtro = this.tipoFiltroSelecionado();

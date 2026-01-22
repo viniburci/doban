@@ -1,0 +1,81 @@
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">Tipos de Vaga</h1>
+    <a [routerLink]="['/tipos-vaga', 'novo']" class="btn btn-primary">
+      Novo Tipo de Vaga
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="d-flex justify-content-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else {
+    @if (tiposVaga().length === 0) {
+      <div class="empty-state">
+        <div class="empty-state-icon">--</div>
+        <p class="empty-state-text">Nenhum tipo de vaga cadastrado</p>
+        <a [routerLink]="['/tipos-vaga', 'novo']" class="btn btn-primary">
+          Criar Primeiro Tipo
+        </a>
+      </div>
+    } @else {
+      <div class="tipos-grid">
+        @for (tipo of tiposVaga(); track tipo.id) {
+          <div class="tipo-card" [class.inativo]="!tipo.ativo">
+            <div class="tipo-card-header">
+              <div class="tipo-info">
+                <h5 class="tipo-nome">{{ tipo.nome }}</h5>
+                <span class="tipo-codigo">{{ tipo.codigo }}</span>
+              </div>
+              <span class="status-badge" [class.ativo]="tipo.ativo" [class.inativo]="!tipo.ativo">
+                {{ tipo.ativo ? 'Ativo' : 'Inativo' }}
+              </span>
+            </div>
+
+            <div class="tipo-card-body">
+              @if (tipo.descricao) {
+                <p class="tipo-descricao">{{ tipo.descricao }}</p>
+              }
+
+              <div class="tipo-stats">
+                @if (tipo.schema?.fields?.length) {
+                  <span class="stat-item">
+                    <strong>{{ tipo.schema?.fields?.length }}</strong> campos dinamicos
+                  </span>
+                }
+                @if (tipo.itensPadrao && tipo.itensPadrao.length > 0) {
+                  <span class="stat-item">
+                    <strong>{{ tipo.itensPadrao.length }}</strong> itens padrao
+                  </span>
+                }
+                @if (tipo.recursosPermitidos && tipo.recursosPermitidos.length > 0) {
+                  <span class="stat-item">
+                    <strong>{{ tipo.recursosPermitidos.length }}</strong> recursos permitidos
+                  </span>
+                }
+              </div>
+            </div>
+
+            <div class="tipo-card-actions">
+              <a [routerLink]="['/tipos-vaga', tipo.id, 'editar']" class="btn btn-sm btn-primary">
+                Editar
+              </a>
+              <a [routerLink]="['/tipos-vaga', tipo.id, 'detalhes']" class="btn btn-sm btn-outline-secondary">
+                Detalhes
+              </a>
+              @if (tipo.ativo) {
+                <button class="btn btn-sm btn-danger" appConfirmDelete
+                  (confirmedDelete)="desativarTipoVaga(tipo, $event)">
+                  Desativar
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,206 @@
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">{{ editMode() ? 'Editar Tipo de Vaga' : 'Novo Tipo de Vaga' }}</h1>
+    <a [routerLink]="['/tipos-vaga']" class="btn btn-outline-secondary">
+      Voltar
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="d-flex justify-content-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-card">
+        <!-- Informacoes Basicas -->
+        <div class="form-section">
+          <h5 class="section-title">Informacoes Basicas</h5>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label" for="codigo">Codigo *</label>
+              <input id="codigo" type="text" class="form-control" formControlName="codigo"
+                placeholder="EX: OPERADOR_PRODUCAO" [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched"
+                [readonly]="editMode()">
+              <small class="text-muted">Use apenas letras maiusculas e underscore</small>
+              @if (form.get('codigo')?.invalid && form.get('codigo')?.touched) {
+                <div class="invalid-feedback">Codigo invalido (apenas A-Z e _)</div>
+              }
+            </div>
+
+            <div class="col-md-8">
+              <label class="form-label" for="nome">Nome *</label>
+              <input id="nome" type="text" class="form-control" formControlName="nome"
+                placeholder="Nome do tipo de vaga" [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched">
+              @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
+                <div class="invalid-feedback">Nome e obrigatorio (minimo 3 caracteres)</div>
+              }
+            </div>
+
+            <div class="col-12">
+              <label class="form-label" for="descricao">Descricao</label>
+              <textarea id="descricao" class="form-control" formControlName="descricao" rows="2"
+                placeholder="Descricao opcional"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recursos Permitidos -->
+        <div class="form-section">
+          <h5 class="section-title">Recursos Permitidos</h5>
+          <p class="section-description">Selecione quais tipos de recursos podem ser emprestados para vagas deste tipo</p>
+
+          @if (tiposRecurso().length > 0) {
+            <div class="recursos-grid">
+              @for (recurso of tiposRecurso(); track recurso.id) {
+                @if (recurso.id !== null) {
+                  <div class="recurso-item" [class.selecionado]="isRecursoPermitido(recurso.id)"
+                    (click)="toggleRecursoPermitido(recurso.id)">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" [checked]="isRecursoPermitido(recurso.id)"
+                        (click)="$event.stopPropagation()">
+                      <label class="form-check-label">{{ recurso.nome }}</label>
+                    </div>
+                    <small class="text-muted">{{ recurso.codigo }}</small>
+                  </div>
+                }
+              }
+            </div>
+          } @else {
+            <div class="empty-state-small">
+              <p class="text-muted mb-0">Nenhum tipo de recurso cadastrado</p>
+            </div>
+          }
+        </div>
+
+        <!-- Schema de Campos Dinamicos -->
+        <div class="form-section">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5 class="section-title mb-0">Campos Dinamicos</h5>
+              <p class="section-description mb-0">Defina campos extras que vagas deste tipo terao</p>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="adicionarCampoSchema()">
+              + Adicionar Campo
+            </button>
+          </div>
+
+          @if (schemaFields().length > 0) {
+            <div class="schema-fields">
+              @for (field of schemaFields(); track $index; let i = $index) {
+                <div class="schema-field-card">
+                  <div class="schema-field-header">
+                    <span class="field-numero">Campo {{ i + 1 }}</span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="removerCampoSchema(i)">
+                      Remover
+                    </button>
+                  </div>
+                  <div class="schema-field-body">
+                    <div class="row g-2">
+                      <div class="col-md-3">
+                        <label class="form-label">Nome</label>
+                        <input type="text" class="form-control form-control-sm" [value]="field.nome"
+                          (input)="atualizarCampoSchema(i, 'nome', $any($event.target).value)"
+                          placeholder="nome_campo">
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Rotulo</label>
+                        <input type="text" class="form-control form-control-sm" [value]="field.rotulo"
+                          (input)="atualizarCampoSchema(i, 'rotulo', $any($event.target).value)"
+                          placeholder="Rotulo exibido">
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-select form-select-sm" [value]="field.tipo"
+                          (change)="atualizarCampoSchema(i, 'tipo', $any($event.target).value)">
+                          @for (tipo of fieldTypes; track tipo) {
+                            <option [value]="tipo">{{ tipo }}</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Obrigatorio</label>
+                        <div class="form-check mt-1">
+                          <input class="form-check-input" type="checkbox" [checked]="field.obrigatorio"
+                            (change)="atualizarCampoSchema(i, 'obrigatorio', $any($event.target).checked)">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state-small">
+              <p class="text-muted mb-0">Nenhum campo dinamico definido</p>
+            </div>
+          }
+        </div>
+
+        <!-- Itens Padrao -->
+        <div class="form-section">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h5 class="section-title mb-0">Itens Padrao</h5>
+              <p class="section-description mb-0">Itens pre-preenchidos para documentos (EPIs, beneficios, etc)</p>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="adicionarItemPadrao()">
+              + Adicionar Item
+            </button>
+          </div>
+
+          @if (itensPadrao().length > 0) {
+            <div class="itens-lista">
+              @for (item of itensPadrao(); track $index; let i = $index) {
+                <div class="item-card">
+                  <div class="item-header">
+                    <span class="item-numero">Item {{ i + 1 }}</span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="removerItemPadrao(i)">
+                      Remover
+                    </button>
+                  </div>
+                  <div class="item-fields">
+                    <div class="row g-2">
+                      <div class="col-md-8">
+                        <label class="form-label">Descricao</label>
+                        <input type="text" class="form-control form-control-sm" [value]="item.descricao"
+                          (input)="atualizarItemPadrao(i, 'descricao', $any($event.target).value)"
+                          placeholder="Descricao do item">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Quantidade</label>
+                        <input type="number" class="form-control form-control-sm" [value]="item.quantidade"
+                          (input)="atualizarItemPadrao(i, 'quantidade', +$any($event.target).value)"
+                          min="1">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state-small">
+              <p class="text-muted mb-0">Nenhum item padrao definido</p>
+            </div>
+          }
+        </div>
+
+        <!-- Acoes -->
+        <div class="form-actions">
+          <a [routerLink]="['/tipos-vaga']" class="btn btn-outline-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid || salvando()">
+            @if (salvando()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              Salvando...
+            } @else {
+              {{ editMode() ? 'Atualizar' : 'Criar' }} Tipo de Vaga
+            }
+          </button>
+        </div>
+      </div>
+    </form>
+  }
+</div>

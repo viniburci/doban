@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DocumentoDinamicoService } from '../../services/documento-dinamico.service';
 import { TemplateDocumentoService } from '../../services/template-documento.service';
@@ -17,6 +17,7 @@ export class GeradorDocumento {
   private templateDocumentoService = inject(TemplateDocumentoService);
 
   vagaId = input.required<number>();
+  tipoVagaId = input<number | null>(null);
   closeForm = output<void>();
 
   templates = signal<TemplateDocumento[]>([]);
@@ -37,12 +38,24 @@ export class GeradorDocumento {
   temItens = computed(() => this.itens().length > 0);
 
   constructor() {
-    this.carregarTemplates();
+    effect(() => {
+      const tipoId = this.tipoVagaId();
+      this.carregarTemplates(tipoId);
+    });
   }
 
-  carregarTemplates() {
-    this.templateDocumentoService.listarAtivos().subscribe({
-      next: (templates) => this.templates.set(templates),
+  carregarTemplates(tipoVagaId?: number | null) {
+    const observable = tipoVagaId
+      ? this.templateDocumentoService.listarPorTipoVaga(tipoVagaId)
+      : this.templateDocumentoService.listarAtivos();
+
+    observable.subscribe({
+      next: (templates) => {
+        this.templates.set(templates);
+        this.templateSelecionado.set(null);
+        this.dadosTemplate.set(null);
+        this.itens.set([]);
+      },
       error: (err) => console.error('Erro ao carregar templates:', err)
     });
   }

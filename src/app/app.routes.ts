@@ -17,6 +17,9 @@ import { GestaoClientes } from './cliente/gestao-clientes';
 import { GestaoTemplates } from './documentos/gestao-templates/gestao-templates';
 import { FormTemplate } from './documentos/form-template/form-template';
 import { DetalhesTemplate } from './documentos/detalhes-template/detalhes-template';
+import { GestaoTiposVaga } from './vaga/gestao-tipos-vaga/gestao-tipos-vaga';
+import { FormTipoVaga } from './vaga/form-tipo-vaga/form-tipo-vaga';
+import { DetalhesTipoVaga } from './vaga/detalhes-tipo-vaga/detalhes-tipo-vaga';
 
 export const routes: Routes = [
     {
@@ -123,6 +126,30 @@ export const routes: Routes = [
         path: 'clientes',
         canActivate: [authGuard],
         component: GestaoClientes
+    },
+    // Tipos de Vaga
+    {
+        path: 'tipos-vaga',
+        canActivate: [authGuard],
+        children: [
+            {
+                path: '',
+                pathMatch: 'full',
+                component: GestaoTiposVaga
+            },
+            {
+                path: 'novo',
+                component: FormTipoVaga
+            },
+            {
+                path: ':tipoVagaId/detalhes',
+                component: DetalhesTipoVaga
+            },
+            {
+                path: ':tipoVagaId/editar',
+                component: FormTipoVaga
+            }
+        ]
     },
     // Templates de Documentos
     {

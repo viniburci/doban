@@ -1,0 +1,118 @@
+<div class="container-fluid">
+  <div class="header-section">
+    <h1 class="page-title">Detalhes do Tipo de Vaga</h1>
+    <a [routerLink]="['/tipos-vaga']" class="btn btn-outline-secondary">
+      Voltar
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="d-flex justify-content-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else if (tipoVaga()) {
+    <div class="details-card">
+      <!-- Header -->
+      <div class="details-header">
+        <div class="tipo-title">
+          <h2>{{ tipoVaga()!.nome }}</h2>
+          <span class="tipo-codigo">{{ tipoVaga()!.codigo }}</span>
+        </div>
+        <div class="header-actions">
+          <span class="status-badge" [class.ativo]="tipoVaga()!.ativo" [class.inativo]="!tipoVaga()!.ativo">
+            {{ tipoVaga()!.ativo ? 'Ativo' : 'Inativo' }}
+          </span>
+          <a [routerLink]="['/tipos-vaga', tipoVaga()!.id, 'editar']" class="btn btn-primary">
+            Editar
+          </a>
+        </div>
+      </div>
+
+      <!-- Descricao -->
+      @if (tipoVaga()!.descricao) {
+        <div class="details-section">
+          <h5 class="section-title">Descricao</h5>
+          <p class="section-content">{{ tipoVaga()!.descricao }}</p>
+        </div>
+      }
+
+      <!-- Recursos Permitidos -->
+      @if (tipoVaga()!.recursosPermitidos && tipoVaga()!.recursosPermitidos!.length > 0) {
+        <div class="details-section">
+          <h5 class="section-title">Recursos Permitidos</h5>
+          <div class="badges-list">
+            @for (recurso of tipoVaga()!.recursosPermitidos; track recurso.id) {
+              <span class="badge bg-primary">{{ recurso.nome }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Schema de Campos -->
+      @if (tipoVaga()!.schema?.fields && tipoVaga()!.schema!.fields.length > 0) {
+        <div class="details-section">
+          <h5 class="section-title">Campos Dinamicos</h5>
+          <div class="schema-table">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Rotulo</th>
+                  <th>Tipo</th>
+                  <th>Obrigatorio</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (field of tipoVaga()!.schema!.fields; track field.nome) {
+                  <tr>
+                    <td><code>{{ field.nome }}</code></td>
+                    <td>{{ field.rotulo }}</td>
+                    <td><span class="badge bg-secondary">{{ field.tipo }}</span></td>
+                    <td>{{ field.obrigatorio ? 'Sim' : 'Nao' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      <!-- Itens Padrao -->
+      @if (tipoVaga()!.itensPadrao && tipoVaga()!.itensPadrao!.length > 0) {
+        <div class="details-section">
+          <h5 class="section-title">Itens Padrao</h5>
+          <div class="itens-table">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Descricao</th>
+                  <th>Quantidade</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of tipoVaga()!.itensPadrao; track item.descricao) {
+                  <tr>
+                    <td>{{ item.descricao }}</td>
+                    <td>{{ item.quantidade }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      <!-- Metadados -->
+      <div class="details-footer">
+        @if (tipoVaga()!.createdAt) {
+          <span class="metadata">Criado em: {{ tipoVaga()!.createdAt }}</span>
+        }
+        @if (tipoVaga()!.updatedAt) {
+          <span class="metadata">Atualizado em: {{ tipoVaga()!.updatedAt }}</span>
+        }
+      </div>
+    </div>
+  }
+</div>

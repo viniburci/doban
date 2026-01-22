@@ -36,6 +36,16 @@
               </div>
 
               <div class="col-md-6">
+                <label class="form-label" for="tipoVagaId">Tipo de Vaga</label>
+                <select id="tipoVagaId" class="form-select" formControlName="tipoVagaId">
+                  <option [ngValue]="null">Selecione...</option>
+                  @for (tipo of tiposVaga(); track tipo.id) {
+                    <option [ngValue]="tipo.id">{{ tipo.nome }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-md-6">
                 <label class="form-label" for="tipoContrato">Tipo de Contrato</label>
                 <select id="tipoContrato" class="form-select" formControlName="tipoContrato">
                   <option value="null">Selecione...</option>

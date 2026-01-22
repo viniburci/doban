@@ -30,6 +30,10 @@ export class TemplateDocumentoService {
     return this.http.get<TemplateDocumento>(`${this.apiUrl}/codigo/${codigo}`);
   }
 
+  listarPorTipoVaga(tipoVagaId: number): Observable<TemplateDocumento[]> {
+    return this.http.get<TemplateDocumento[]>(`${this.apiUrl}/tipo-vaga/${tipoVagaId}`);
+  }
+
   criar(dto: TemplateDocumentoCreate): Observable<TemplateDocumento> {
     return this.http.post<TemplateDocumento>(this.apiUrl, dto);
   }
