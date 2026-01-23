@@ -176,6 +176,7 @@ export class DetalhesPessoa implements OnInit {
 
     this.vagaService.getVagaPorPessoa(id).subscribe(data => {
       this.vagasPessoa.set(data.sort(this.sortByDate));
+      console.log('Vagas carregadas:', data);
     });
 
     this.recursoDinamicoService.listarPorPessoa(id).subscribe(data => {

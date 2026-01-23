@@ -13,10 +13,6 @@
          role="button">
 
         <div class="d-flex justify-content-between align-items-center card-header-clickable">
-            
-            <h5 class="card-title flex-grow-1 mb-0 me-3 text-truncate">
-                {{ vaga()?.cargo || 'Cargo não disponível' }}
-            </h5>
 
             <h6 class="card-subtitle text-muted text-end mb-0 d-none d-sm-block">
                 {{ vaga()?.dataAdmissao | dateDisplayPipe }} - {{vaga()?.dataDemissao | dateDisplayPipe}}
@@ -26,7 +22,7 @@
         </div>
         
         <h6 class="card-subtitle mb-0 text-muted mt-1">
-             {{ vaga()?.setor || 'Setor não disponível' }}
+             {{ vaga()?.tipoVagaNome || 'Nome de tipo de vaga não disponível' }}
              
              <span class="d-sm-none">
                 <br>{{ vaga()?.dataAdmissao | dateDisplayPipe }} - {{vaga()?.dataDemissao | dateDisplayPipe}}
@@ -41,7 +37,7 @@
             <div class="row nowrap-details"> 
                 
                 <div class="col-md-6 mb-2">
-                    <strong>Cliente:</strong> {{ vaga()?.clienteNome || vaga()?.cliente || 'N/D' }}
+                    <strong>Cliente:</strong> {{ vaga()?.clienteNome || 'N/D' }}
                 </div>
                 <div class="col-md-6 mb-2">
                     <strong>Cidade:</strong> {{ vaga()?.cidade || 'N/D' }}

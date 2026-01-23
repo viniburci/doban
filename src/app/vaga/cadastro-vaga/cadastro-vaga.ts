@@ -68,8 +68,6 @@ export class CadastroVaga implements OnInit {
       tipoVagaNome: new FormControl<string | null>(null),
       cidade: new FormControl<string | null>(null),
       uf: new FormControl<string | null>(null),
-      cargo: new FormControl<string | null>(null),
-      setor: new FormControl<string | null>(null),
       salario: new FormControl<number | null>(null),
       tipoContrato: new FormControl<TipoContrato | null>(null),
       dataAdmissao: new FormControl<string | null>(null),

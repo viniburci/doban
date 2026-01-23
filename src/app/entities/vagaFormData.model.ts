@@ -23,13 +23,10 @@ export enum TipoContratante {
 
 export interface VagaFormData {
     id: string | null;
-    cliente: string | null; // Campo legado
     clienteId: number | null;
     clienteNome: string | null;
     cidade: string | null;
     uf: string | null;
-    cargo: string | null;
-    setor: string | null;
     salario: number | null;
     tipoContrato: TipoContrato | null;
     dataAdmissao: string | null;
@@ -42,8 +39,8 @@ export interface VagaFormData {
     contratante: TipoContratante | null;
 
     // Campos dinâmicos
-    tipoVagaId?: number | null;
-    tipoVagaCodigo?: string | null;
-    tipoVagaNome?: string | null;
+    tipoVagaId: number | null;
+    tipoVagaCodigo: string | null;
+    tipoVagaNome: string | null;
     atributosDinamicos?: Record<string, any> | null;
 }

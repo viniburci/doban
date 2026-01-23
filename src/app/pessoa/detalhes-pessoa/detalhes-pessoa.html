@@ -194,7 +194,7 @@
                 (change)="selecionarVagaParaDocumento(+$any($event.target).value)">
                 <option value="" disabled>Escolha uma vaga...</option>
                 @for (vaga of vagasPessoa(); track vaga.id) {
-                  <option [value]="vaga.id">{{ vaga.clienteNome || vaga.cliente }} - {{ vaga.cargo }}</option>
+                  <option [value]="vaga.id">{{ vaga.clienteNome }} - {{ vaga.tipoVagaNome }}</option>
                 }
               </select>
             </div>
