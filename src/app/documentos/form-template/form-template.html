@@ -131,48 +131,161 @@
           }
         </div>
 
-        <!-- Variaveis Disponiveis -->
-        <div class="form-section">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-              <h5 class="section-title mb-0">Variaveis Disponiveis</h5>
-              <p class="section-description mb-0">Liste as variaveis que podem ser usadas no template HTML</p>
-            </div>
-            <button type="button" class="btn btn-sm btn-outline-primary" (click)="adicionarVariavel()">
-              + Adicionar
-            </button>
-          </div>
-
-          @if (variaveisDisponiveis().length > 0) {
-            <div class="variaveis-list">
-              @for (variavel of variaveisDisponiveis(); track $index; let i = $index) {
-                <div class="variavel-item">
-                  <input type="text" class="form-control form-control-sm" [value]="variavel"
-                    (input)="atualizarVariavel(i, $any($event.target).value)"
-                    placeholder="Ex: pessoa.nome">
-                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="removerVariavel(i)">
-                    X
-                  </button>
-                </div>
-              }
-            </div>
-          } @else {
-            <div class="empty-state-small">
-              <p class="text-muted mb-0">Nenhuma variavel definida</p>
-            </div>
-          }
-        </div>
-
-        <!-- Conteudo HTML -->
+        <!-- Editor HTML com Painel de Variaveis -->
         <div class="form-section">
           <h5 class="section-title">Conteudo HTML *</h5>
-          <p class="section-description">Template HTML com Thymeleaf para geracao do documento</p>
+          <p class="section-description">
+            Template HTML com Thymeleaf. Clique nas variaveis para inserir no editor.
+          </p>
 
-          <textarea id="conteudoHtml" class="form-control code-editor" formControlName="conteudoHtml" rows="15"
-            placeholder="<html>...</html>" [class.is-invalid]="form.get('conteudoHtml')?.invalid && form.get('conteudoHtml')?.touched"></textarea>
-          @if (form.get('conteudoHtml')?.invalid && form.get('conteudoHtml')?.touched) {
-            <div class="invalid-feedback">Conteudo HTML e obrigatorio</div>
+          <!-- Toast de feedback -->
+          @if (mensagemCopiado()) {
+            <div class="toast-inserido">
+              Inserido: {{ mensagemCopiado() }}
+            </div>
           }
+
+          <div class="editor-container">
+            <!-- Painel de Variaveis -->
+            <div class="variaveis-painel">
+              <div class="variaveis-painel-header">
+                <span>Variaveis</span>
+                <small class="text-muted">{{ variaveisSelecionadas().size }} selecionadas</small>
+              </div>
+
+              <div class="variaveis-lista-scroll">
+                @for (categoria of categoriasVariaveis; track categoria.categoria) {
+                  <div class="categoria-grupo">
+                    <div class="categoria-header" (click)="toggleCategoria(categoria.categoria)">
+                      <div class="categoria-titulo">
+                        <i class="bi" [class]="categoria.icone"></i>
+                        <span>{{ categoria.categoria }}</span>
+                        <span class="categoria-badge">{{ categoria.variaveis.length + (categoria.categoria === 'Itens' ? variaveisDoSchema().length : 0) }}</span>
+                      </div>
+                      <i class="bi" [class]="isCategoriaExpandida(categoria.categoria) ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                    </div>
+
+                    @if (isCategoriaExpandida(categoria.categoria)) {
+                      <div class="categoria-acoes">
+                        <button type="button" class="btn-link-small"
+                          (click)="selecionarTodosCategoria(categoria); $event.stopPropagation()">
+                          Selecionar todos
+                        </button>
+                        <span class="separator">|</span>
+                        <button type="button" class="btn-link-small"
+                          (click)="desmarcarTodosCategoria(categoria); $event.stopPropagation()">
+                          Limpar
+                        </button>
+                      </div>
+
+                      <div class="variaveis-items">
+                        @for (variavel of categoria.variaveis; track variavel.nome) {
+                          <div class="variavel-item"
+                               [class.selecionada]="isVariavelSelecionada(variavel.nome)"
+                               (click)="toggleVariavel(variavel.nome)">
+                            <div class="variavel-check">
+                              <input type="checkbox"
+                                     [checked]="isVariavelSelecionada(variavel.nome)"
+                                     (click)="$event.stopPropagation()">
+                            </div>
+                            <div class="variavel-info">
+                              <span class="variavel-rotulo">{{ variavel.rotulo }}</span>
+                              <code class="variavel-codigo">{{ variavel.nome }}</code>
+                            </div>
+                            <button type="button"
+                                    class="btn-inserir"
+                                    (click)="inserirNoHtml(variavel); $event.stopPropagation()"
+                                    title="Inserir no HTML">
+                              <i class="bi bi-plus"></i> Inserir
+                            </button>
+                          </div>
+                        }
+
+                        <!-- Variaveis derivadas do Schema (apenas na categoria Itens) -->
+                        @if (categoria.categoria === 'Itens' && variaveisDoSchema().length > 0) {
+                          <div class="schema-variaveis-divider">
+                            <span>Campos do Schema</span>
+                          </div>
+                          @for (variavel of variaveisDoSchema(); track variavel.nome) {
+                            <div class="variavel-item variavel-schema"
+                                 [class.selecionada]="isVariavelSelecionada(variavel.nome)"
+                                 (click)="toggleVariavel(variavel.nome)">
+                              <div class="variavel-check">
+                                <input type="checkbox"
+                                       [checked]="isVariavelSelecionada(variavel.nome)"
+                                       (click)="$event.stopPropagation()">
+                              </div>
+                              <div class="variavel-info">
+                                <span class="variavel-rotulo">{{ variavel.rotulo }}</span>
+                                <code class="variavel-codigo">{{ variavel.nome }}</code>
+                              </div>
+                              <button type="button"
+                                      class="btn-inserir"
+                                      (click)="inserirNoHtml(variavel); $event.stopPropagation()"
+                                      title="Inserir no HTML">
+                                <i class="bi bi-plus"></i> Inserir
+                              </button>
+                            </div>
+                          }
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Variaveis Customizadas -->
+                <div class="categoria-grupo">
+                  <div class="categoria-header" (click)="toggleCategoria('Customizadas')">
+                    <div class="categoria-titulo">
+                      <i class="bi bi-pencil"></i>
+                      <span>Customizadas</span>
+                      <span class="categoria-badge">{{ variaveisCustomizadas().length }}</span>
+                    </div>
+                    <i class="bi" [class]="isCategoriaExpandida('Customizadas') ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                  </div>
+
+                  @if (isCategoriaExpandida('Customizadas')) {
+                    <div class="variaveis-items">
+                      @for (variavel of variaveisCustomizadas(); track $index; let i = $index) {
+                        <div class="variavel-custom-item">
+                          <input type="text"
+                                 class="form-control form-control-sm"
+                                 [value]="variavel"
+                                 (input)="atualizarVariavelCustomizada(i, $any($event.target).value)"
+                                 placeholder="Ex: vaga.atributosDinamicos.campo">
+                          <button type="button"
+                                  class="btn btn-sm btn-outline-danger"
+                                  (click)="removerVariavelCustomizada(i)">
+                            <i class="bi bi-x"></i>
+                          </button>
+                        </div>
+                      }
+                      <button type="button"
+                              class="btn btn-sm btn-outline-secondary w-100 mt-2"
+                              (click)="adicionarVariavelCustomizada()">
+                        + Adicionar variavel customizada
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Editor HTML -->
+            <div class="editor-area">
+              <textarea #htmlEditor
+                        id="conteudoHtml"
+                        class="form-control code-editor"
+                        formControlName="conteudoHtml"
+                        rows="20"
+                        placeholder="<html>&#10;  <body>&#10;    <h1>Titulo</h1>&#10;    <p>Nome: <span th:text='${pessoa.nome}'></span></p>&#10;  </body>&#10;</html>"
+                        [class.is-invalid]="form.get('conteudoHtml')?.invalid && form.get('conteudoHtml')?.touched">
+              </textarea>
+              @if (form.get('conteudoHtml')?.invalid && form.get('conteudoHtml')?.touched) {
+                <div class="invalid-feedback">Conteudo HTML e obrigatorio</div>
+              }
+            </div>
+          </div>
         </div>
 
         <!-- Acoes -->

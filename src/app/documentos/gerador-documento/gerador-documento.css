@@ -21,6 +21,61 @@
   color: #495057;
 }
 
+/* Info do Schema */
+.schema-info {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #dee2e6;
+}
+
+.schema-info-header {
+  margin-bottom: 0.5rem;
+}
+
+.schema-info-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.schema-info-campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.schema-campo-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  color: #495057;
+}
+
+.schema-campo-tag.campo-fixo {
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.schema-campo-tag.campo-obrigatorio {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.obrigatorio-mark {
+  color: #dc3545;
+  font-weight: 700;
+}
+
 /* Secao de Itens */
 .itens-section {
   margin-top: 1.5rem;

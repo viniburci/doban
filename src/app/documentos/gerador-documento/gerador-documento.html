@@ -26,6 +26,27 @@
   }
 
   @if (templateSelecionado() && dadosTemplate() && !carregando()) {
+    <!-- Info do Schema -->
+    <div class="schema-info">
+      <div class="schema-info-header">
+        <span class="schema-info-label">Campos por item:</span>
+      </div>
+      <div class="schema-info-campos">
+        <span class="schema-campo-tag campo-fixo">Descricao</span>
+        <span class="schema-campo-tag campo-fixo">Quantidade</span>
+        @for (field of schemaFields(); track field.nome) {
+          @if (field.nome !== 'descricao' && field.nome !== 'quantidade') {
+            <span class="schema-campo-tag" [class.campo-obrigatorio]="field.obrigatorio">
+              {{ field.rotulo || field.nome }}
+              @if (field.obrigatorio) {
+                <span class="obrigatorio-mark">*</span>
+              }
+            </span>
+          }
+        }
+      </div>
+    </div>
+
     <!-- Edicao de Itens -->
     <div class="itens-section">
       <div class="d-flex justify-content-between align-items-center mb-2">

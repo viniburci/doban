@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, OnInit, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TemplateDocumentoService } from '../../services/template-documento.service';
 import { TipoVagaService } from '../../services/tipo-vaga.service';
-import { TemplateDocumento, TemplateDocumentoCreate } from '../../entities/template-documento.model';
+import { TemplateDocumentoCreate } from '../../entities/template-documento.model';
 import { TipoVagaDTO } from '../../entities/tipo-vaga.model';
 import { FieldDefinition, FieldType } from '../../entities/field-schema.model';
+import { VARIAVEIS_TEMPLATE, CategoriaVariaveis, VariavelTemplate } from './variaveis-template.const';
 
 @Component({
   selector: 'app-form-template',
@@ -20,17 +21,34 @@ export class FormTemplate implements OnInit {
   private templateService = inject(TemplateDocumentoService);
   private tipoVagaService = inject(TipoVagaService);
 
+  @ViewChild('htmlEditor') htmlEditor!: ElementRef<HTMLTextAreaElement>;
+
   templateId = input<string | null>(null);
 
   form!: FormGroup;
   tiposVaga = signal<TipoVagaDTO[]>([]);
   schemaFields = signal<FieldDefinition[]>([]);
-  variaveisDisponiveis = signal<string[]>([]);
+  variaveisSelecionadas = signal<Set<string>>(new Set());
+  variaveisCustomizadas = signal<string[]>([]);
+  categoriasExpandidas = signal<Set<string>>(new Set(['Pessoa', 'Vaga']));
   loading = signal(false);
   salvando = signal(false);
   editMode = signal(false);
+  mensagemCopiado = signal<string | null>(null);
 
   fieldTypes: FieldType[] = ['STRING', 'INTEGER', 'DECIMAL', 'DATE', 'DATETIME', 'BOOLEAN', 'ENUM'];
+  categoriasVariaveis: CategoriaVariaveis[] = VARIAVEIS_TEMPLATE;
+
+  // Variaveis derivadas do schema - aparecem dinamicamente conforme o usuario define campos
+  variaveisDoSchema = computed<VariavelTemplate[]>(() => {
+    return this.schemaFields()
+      .filter(field => field.nome?.trim())
+      .map(field => ({
+        nome: `item.${field.nome}`,
+        rotulo: field.rotulo || field.nome,
+        thymeleaf: `\${item.${field.nome}}`
+      }));
+  });
 
   ngOnInit() {
     this.initForm();
@@ -77,7 +95,20 @@ export class FormTemplate implements OnInit {
         }
 
         if (template.variaveisDisponiveis) {
-          this.variaveisDisponiveis.set([...template.variaveisDisponiveis]);
+          const variaveisPredefinidas = this.obterTodasVariaveisPredefinidas();
+          const selecionadas = new Set<string>();
+          const customizadas: string[] = [];
+
+          template.variaveisDisponiveis.forEach(v => {
+            if (variaveisPredefinidas.has(v)) {
+              selecionadas.add(v);
+            } else {
+              customizadas.push(v);
+            }
+          });
+
+          this.variaveisSelecionadas.set(selecionadas);
+          this.variaveisCustomizadas.set(customizadas);
         }
 
         this.loading.set(false);
@@ -89,6 +120,124 @@ export class FormTemplate implements OnInit {
     });
   }
 
+  obterTodasVariaveisPredefinidas(): Set<string> {
+    const todas = new Set<string>();
+    this.categoriasVariaveis.forEach(cat => {
+      cat.variaveis.forEach(v => todas.add(v.nome));
+    });
+    return todas;
+  }
+
+  // Variaveis - Selecao
+  toggleCategoria(categoria: string) {
+    this.categoriasExpandidas.update(set => {
+      const novo = new Set(set);
+      if (novo.has(categoria)) {
+        novo.delete(categoria);
+      } else {
+        novo.add(categoria);
+      }
+      return novo;
+    });
+  }
+
+  isCategoriaExpandida(categoria: string): boolean {
+    return this.categoriasExpandidas().has(categoria);
+  }
+
+  toggleVariavel(nome: string) {
+    this.variaveisSelecionadas.update(set => {
+      const novo = new Set(set);
+      if (novo.has(nome)) {
+        novo.delete(nome);
+      } else {
+        novo.add(nome);
+      }
+      return novo;
+    });
+  }
+
+  isVariavelSelecionada(nome: string): boolean {
+    return this.variaveisSelecionadas().has(nome);
+  }
+
+  selecionarTodosCategoria(categoria: CategoriaVariaveis) {
+    this.variaveisSelecionadas.update(set => {
+      const novo = new Set(set);
+      categoria.variaveis.forEach(v => novo.add(v.nome));
+      return novo;
+    });
+  }
+
+  desmarcarTodosCategoria(categoria: CategoriaVariaveis) {
+    this.variaveisSelecionadas.update(set => {
+      const novo = new Set(set);
+      categoria.variaveis.forEach(v => novo.delete(v.nome));
+      return novo;
+    });
+  }
+
+  todosCategoriaSelecionados(categoria: CategoriaVariaveis): boolean {
+    return categoria.variaveis.every(v => this.variaveisSelecionadas().has(v.nome));
+  }
+
+  // Variaveis customizadas
+  adicionarVariavelCustomizada() {
+    this.variaveisCustomizadas.update(vars => [...vars, '']);
+  }
+
+  removerVariavelCustomizada(index: number) {
+    this.variaveisCustomizadas.update(vars => vars.filter((_, i) => i !== index));
+  }
+
+  atualizarVariavelCustomizada(index: number, valor: string) {
+    this.variaveisCustomizadas.update(vars =>
+      vars.map((v, i) => i === index ? valor : v)
+    );
+  }
+
+  // Inserir no HTML
+  inserirNoHtml(variavel: VariavelTemplate) {
+    const textarea = this.htmlEditor?.nativeElement;
+    if (!textarea) return;
+
+    const codigo = variavel.nome.startsWith('item.') || variavel.nome === 'itens'
+      ? variavel.thymeleaf
+      : `<span th:text="${variavel.thymeleaf}"></span>`;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const textoAtual = this.form.get('conteudoHtml')?.value || '';
+
+    const novoTexto = textoAtual.substring(0, start) + codigo + textoAtual.substring(end);
+    this.form.patchValue({ conteudoHtml: novoTexto });
+
+    // Reposiciona cursor apos o texto inserido
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + codigo.length;
+    }, 0);
+
+    // Seleciona a variavel automaticamente
+    if (!this.variaveisSelecionadas().has(variavel.nome)) {
+      this.toggleVariavel(variavel.nome);
+    }
+
+    // Feedback visual
+    this.mensagemCopiado.set(variavel.rotulo);
+    setTimeout(() => this.mensagemCopiado.set(null), 1500);
+  }
+
+  copiarThymeleaf(variavel: VariavelTemplate, event: Event) {
+    event.stopPropagation();
+    const codigo = `th:text="${variavel.thymeleaf}"`;
+    navigator.clipboard.writeText(codigo);
+
+    this.mensagemCopiado.set(variavel.rotulo);
+    setTimeout(() => this.mensagemCopiado.set(null), 1500);
+  }
+
+  // Schema de itens
   adicionarCampoSchema() {
     const novoCampo: FieldDefinition = {
       nome: '',
@@ -109,20 +258,7 @@ export class FormTemplate implements OnInit {
     );
   }
 
-  adicionarVariavel() {
-    this.variaveisDisponiveis.update(vars => [...vars, '']);
-  }
-
-  removerVariavel(index: number) {
-    this.variaveisDisponiveis.update(vars => vars.filter((_, i) => i !== index));
-  }
-
-  atualizarVariavel(index: number, valor: string) {
-    this.variaveisDisponiveis.update(vars =>
-      vars.map((v, i) => i === index ? valor : v)
-    );
-  }
-
+  // Tipos de vaga
   toggleTipoVaga(tipoId: number) {
     const atual = this.form.get('tiposVagaPermitidosIds')?.value || [];
     const index = atual.indexOf(tipoId);
@@ -139,15 +275,22 @@ export class FormTemplate implements OnInit {
     return selecionados.includes(tipoId);
   }
 
+  // Submit
   onSubmit() {
     if (this.form.invalid) return;
 
     this.salvando.set(true);
 
+    // Combina variaveis selecionadas + customizadas
+    const todasVariaveis = [
+      ...Array.from(this.variaveisSelecionadas()),
+      ...this.variaveisCustomizadas().filter(v => v.trim() !== '')
+    ];
+
     const dto: TemplateDocumentoCreate = {
       ...this.form.value,
       schemaItens: this.schemaFields().length > 0 ? { fields: this.schemaFields() } : null,
-      variaveisDisponiveis: this.variaveisDisponiveis().filter(v => v.trim() !== '')
+      variaveisDisponiveis: todasVariaveis
     };
 
     const operacao = this.editMode()
