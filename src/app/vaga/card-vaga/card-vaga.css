@@ -1,82 +1,159 @@
-/* ======================================================= */
-/* ESTILOS DO CARD VAGA (FINAL) - FOCO NA ELIMINAÇÃO DE FAIXA BRANCA */
-/* ======================================================= */
-
-/* Estilo Básico do Card */
 .card {
-    margin: 0 0 1rem 0;
-    padding: 0;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-width: 2px;
+  margin: 0 0 1rem 0;
+  padding: 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background-color: white;
+  border: 2px solid transparent;
+  overflow: hidden;
 }
 
-/* CABEÇALHO COLORIDO E CLICÁVEL */
+.card.border-success {
+  border-color: #198754;
+}
+
+.card.border-danger {
+  border-color: #dc3545;
+}
+
 .card-header-styled {
-    padding: 0.75rem 1.25rem; 
-    margin: 0; /* Essencial */
-    cursor: pointer;
-    border-top-left-radius: 8px; 
-    border-top-right-radius: 8px;
+  padding: 1.25rem;
+  margin: 0;
+  cursor: pointer;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom: 1px solid #e9ecef;
+  position: relative;
 }
 
-/* ÁREA DE CONTEÚDO (Substitui .card-body) */
+.status-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-badge.active {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-badge.inactive {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.tipo-vaga-titulo {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
 .card-content-area {
-    /* 🛑 CRÍTICO: Zera a margem superior E o padding superior para que o conteúdo cole no header */
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-
-    /* Mantém o padding lateral e inferior para o conteúdo */
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-    padding-bottom: 1.25rem;
+  padding: 0;
+  margin: 0;
 }
 
-/* 🛑 AJUSTE NO ROW INTERNO DO CONTEÚDO 🛑 */
-/* Aplica o padding superior apenas dentro do div.collapse para dar o respiro inicial */
-.card-content-area .collapse .row.nowrap-details {
-    /* Zera margens verticais que possam ter sido herdadas */
-    margin-top: 0;
-    margin-bottom: 0;
-    
-    /* Adiciona padding superior APENAS se necessário, 
-       mas na maioria dos casos, o padding do próprio .card-content-area já basta 
-       se a faixa branca sumir. Se precisar, descomente e use um valor menor (ex: 0.75rem) */
-    /* padding-top: 0.75rem; */
+.collapse {
+  display: none;
+  visibility: hidden;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-
-/* REGRAS DE MARGEM (Reforço) */
-
-/* Garante que o subtítulo não tenha margem inferior extra (dentro do header) */
-.card-header-styled .card-subtitle {
-    margin-bottom: 0 !important; 
+.collapse.show {
+  display: block;
+  visibility: visible;
+  height: auto;
+  margin: 0;
+  padding: 1.25rem;
+  padding-bottom: 1.5rem;
+  overflow: visible;
 }
-
-/* ======================================================= */
-/* ESTRUTURA E TIPOGRAFIA (Não alterados)                   */
-/* ======================================================= */
 
 .card-header-clickable {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.card-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-    flex-grow: 1;
-    overflow: hidden; 
-    white-space: nowrap;
-    text-overflow: ellipsis; 
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .card-subtitle {
-    font-size: 0.875rem;
-    color: #6c757d; 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-weight: 400;
+  margin: 0;
+}
+
+.bi {
+  font-size: 1.25rem;
+  transition: transform 0.3s ease;
+  color: #6c757d;
+  flex-shrink: 0;
+}
+
+.bi-chevron-down {
+  transform: rotate(0deg);
+}
+
+.bi-chevron-up {
+  transform: rotate(180deg);
+}
+
+.row.nowrap-details {
+  row-gap: 0.75rem;
+}
+
+.row.nowrap-details .col-md-6 {
+  font-size: 0.9rem;
+}
+
+.row.nowrap-details strong {
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+}
+
+@media (max-width: 768px) {
+  .tipo-vaga-titulo {
+    font-size: 1rem;
+  }
+
+  .card-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .status-badge {
+    position: static;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+  }
 }

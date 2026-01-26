@@ -37,7 +37,7 @@
             <div class="row nowrap-details">
 
                 <div class="col-md-6 mb-2">
-                    <strong>Item ID: </strong>
+                    <strong>Item ID</strong>
                     <a [routerLink]="['/itens', recurso().item.id, 'detalhes']">
                         {{ recurso().item.id || 'N/D' }}
                     </a>
@@ -45,15 +45,18 @@
 
                 @for (attr of atributosFormatados(); track attr.key) {
                     <div class="col-md-6 mb-2">
-                        <strong>{{ attr.key }}:</strong> {{ attr.value }}
+                        <strong>{{ attr.key }}</strong>
+                        {{ attr.value }}
                     </div>
                 }
 
                 <div class="col-md-6 mb-2">
-                    <strong>Data de Entrega:</strong> {{ recurso().dataEntrega | dateDisplayPipe }}
+                    <strong>Data de Entrega</strong>
+                    {{ recurso().dataEntrega | dateDisplayPipe }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Data de Devolução:</strong> {{ recurso().dataDevolucao | dateDisplayPipe }}
+                    <strong>Data de Devolucao</strong>
+                    {{ recurso().dataDevolucao | dateDisplayPipe }}
                 </div>
 
             </div>

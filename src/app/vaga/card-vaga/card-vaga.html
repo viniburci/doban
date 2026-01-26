@@ -1,88 +1,101 @@
-<div class="card" 
-     [class.border-success]="isVagaAtiva()" 
-     [class.border-danger]="!isVagaAtiva()" 
-     style="width: 100%;">
-    
+<div class="card"
+     [class.border-success]="isVagaAtiva()"
+     [class.border-danger]="!isVagaAtiva()">
+
     <div class="card-header-styled"
-         [class.bg-success-subtle]="isVagaAtiva()" 
+         [class.bg-success-subtle]="isVagaAtiva()"
          [class.bg-danger-subtle]="!isVagaAtiva()"
-         (click)="toggleCollapse()" 
+         (click)="toggleCollapse()"
          [attr.aria-expanded]="!isCollapsed()"
-         [attr.aria-controls]="'vagaDetalhes-' + vaga()?.id" 
-         tabindex="0" 
+         [attr.aria-controls]="'vagaDetalhes-' + vaga()?.id"
+         tabindex="0"
          role="button">
 
-        <div class="d-flex justify-content-between align-items-center card-header-clickable">
+        <span class="status-badge" [class.active]="isVagaAtiva()" [class.inactive]="!isVagaAtiva()">
+            {{ isVagaAtiva() ? 'Ativa' : 'Inativa' }}
+        </span>
 
-            <h6 class="card-subtitle text-muted text-end mb-0 d-none d-sm-block">
-                {{ vaga()?.dataAdmissao | dateDisplayPipe }} - {{vaga()?.dataDemissao | dateDisplayPipe}}
-            </h6>
-            
+        <div class="d-flex justify-content-between align-items-center card-header-clickable">
+            <div class="flex-grow-1">
+                <h5 class="tipo-vaga-titulo">
+                    {{ vaga()?.tipoVagaNome || 'Tipo de vaga nao disponivel' }}
+                </h5>
+
+                <h6 class="card-subtitle">
+                    <span class="text-muted">
+                        {{ vaga()?.dataAdmissao | dateDisplayPipe }} - {{ vaga()?.dataDemissao | dateDisplayPipe }}
+                    </span>
+                </h6>
+            </div>
+
             <i class="bi ms-3" [class]="isCollapsed() ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
         </div>
-        
-        <h6 class="card-subtitle mb-0 text-muted mt-1">
-             {{ vaga()?.tipoVagaNome || 'Nome de tipo de vaga não disponível' }}
-             
-             <span class="d-sm-none">
-                <br>{{ vaga()?.dataAdmissao | dateDisplayPipe }} - {{vaga()?.dataDemissao | dateDisplayPipe}}
-             </span>
-        </h6>
-        
     </div>
-    <div class="card-content-area"> 
 
+    <div class="card-content-area">
         <div class="collapse" [class.show]="!isCollapsed()" id="vagaDetalhes-{{ vaga()?.id }}">
-            
-            <div class="row nowrap-details"> 
-                
+
+            <div class="row nowrap-details">
                 <div class="col-md-6 mb-2">
-                    <strong>Cliente:</strong> {{ vaga()?.clienteNome || 'N/D' }}
+                    <strong>Cliente</strong>
+                    {{ vaga()?.clienteNome || 'N/D' }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Cidade:</strong> {{ vaga()?.cidade || 'N/D' }}
+                    <strong>Cidade</strong>
+                    {{ vaga()?.cidade || 'N/D' }}
                 </div>
 
                 <div class="col-md-6 mb-2">
-                    <strong>UF:</strong> {{ vaga()?.uf || 'N/D' }}
+                    <strong>UF</strong>
+                    {{ vaga()?.uf || 'N/D' }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Salário:</strong> R$ {{ vaga()?.salario || 'N/D' }}
+                    <strong>Salario</strong>
+                    R$ {{ vaga()?.salario || 'N/D' }}
                 </div>
 
                 <div class="col-md-6 mb-2">
-                    <strong>Tipo Contrato:</strong> {{ vaga()?.tipoContrato?.toString() || 'N/D' }}
+                    <strong>Tipo Contrato</strong>
+                    {{ vaga()?.tipoContrato?.toString() || 'N/D' }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Contratante:</strong> {{ vaga()?.contratante?.toString() || 'N/D' }}
+                    <strong>Contratante</strong>
+                    {{ vaga()?.contratante?.toString() || 'N/D' }}
                 </div>
 
                 <div class="col-md-6 mb-2">
-                    <strong>Admissão:</strong> {{ vaga()?.dataAdmissao | dateDisplayPipe }}
+                    <strong>Admissao</strong>
+                    {{ vaga()?.dataAdmissao | dateDisplayPipe }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Demissão:</strong> {{ vaga()?.dataDemissao | dateDisplayPipe }}
+                    <strong>Demissao</strong>
+                    {{ vaga()?.dataDemissao | dateDisplayPipe }}
                 </div>
 
                 <div class="col-md-6 mb-2">
-                    <strong>Acrés./Subst.:</strong> {{ vaga()?.acrescimoOuSubstituicao?.toString() || 'N/D' }}
+                    <strong>Acres./Subst.</strong>
+                    {{ vaga()?.acrescimoOuSubstituicao?.toString() || 'N/D' }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>ASO:</strong> {{ vaga()?.aso || 'N/D' }}
+                    <strong>ASO</strong>
+                    {{ vaga()?.aso || 'N/D' }}
                 </div>
 
                 <div class="col-md-6 mb-2">
-                    <strong>Entrada:</strong> {{ vaga()?.horarioEntrada | timeDisplayPipe }}
+                    <strong>Entrada</strong>
+                    {{ vaga()?.horarioEntrada | timeDisplayPipe }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Saída:</strong> {{ vaga()?.horarioSaida | timeDisplayPipe }}
+                    <strong>Saida</strong>
+                    {{ vaga()?.horarioSaida | timeDisplayPipe }}
                 </div>
                 <div class="col-md-6 mb-2">
-                    <strong>Optante VT:</strong> {{ vaga()?.optanteVT != null ? (vaga()?.optanteVT ? 'Sim' : 'Não') : 'N/D' }}
+                    <strong>Optante VT</strong>
+                    {{ vaga()?.optanteVT != null ? (vaga()?.optanteVT ? 'Sim' : 'Nao') : 'N/D' }}
                 </div>
-
             </div>
-            <button (click)="onEditarVaga()" class="btn btn-primary mt-3"> 
+
+            <button (click)="onEditarVaga()" class="btn btn-primary mt-3">
                 Editar
             </button>
         </div>
