@@ -6,7 +6,7 @@ import { TipoRecursoService } from '../../services/tipo-recurso.service';
 import { TipoVagaCreateDTO } from '../../entities/tipo-vaga.model';
 import { TipoRecursoDTO } from '../../entities/tipo-recurso.model';
 import { FieldDefinition, FieldType } from '../../entities/field-schema.model';
-import { ItemPadrao } from '../../entities/template-documento.model';
+import { CAMPOS_TAMANHO_PESSOA, ItemPadrao } from '../../entities/template-documento.model';
 
 @Component({
   selector: 'app-form-tipo-vaga',
@@ -34,6 +34,7 @@ export class FormTipoVaga implements OnInit {
   editMode = signal(false);
 
   fieldTypes: FieldType[] = ['STRING', 'INTEGER', 'DECIMAL', 'DATE', 'DATETIME', 'BOOLEAN', 'ENUM'];
+  camposTamanhoPessoa = CAMPOS_TAMANHO_PESSOA;
 
   ngOnInit() {
     this.initForm();

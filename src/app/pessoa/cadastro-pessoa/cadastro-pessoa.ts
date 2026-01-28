@@ -57,6 +57,12 @@ export class CadastroPessoa implements OnInit {
       registroCnh: new FormControl(''),
       validadeCnh: new FormControl(''),
       chavePix: new FormControl(''),
+      // Campos de tamanho EPI
+      tamanhoCamisa: new FormControl(''),
+      tamanhoCalca: new FormControl(''),
+      tamanhoCalcado: new FormControl(''),
+      tamanhoLuva: new FormControl(''),
+      tamanhoCapacete: new FormControl(''),
     });
 
     if (this.pessoaId()) {

@@ -164,17 +164,47 @@
                   </div>
                   <div class="item-fields">
                     <div class="row g-2">
-                      <div class="col-md-8">
-                        <label class="form-label">Descricao</label>
+                      <div class="col-md-6">
+                        <label class="form-label">Descricao *</label>
                         <input type="text" class="form-control form-control-sm" [value]="item.descricao"
                           (input)="atualizarItemPadrao(i, 'descricao', $any($event.target).value)"
-                          placeholder="Descricao do item">
+                          placeholder="Ex: Camiseta Uniforme">
                       </div>
-                      <div class="col-md-4">
-                        <label class="form-label">Quantidade</label>
+                      <div class="col-md-2">
+                        <label class="form-label">Qtd *</label>
                         <input type="number" class="form-control form-control-sm" [value]="item.quantidade"
                           (input)="atualizarItemPadrao(i, 'quantidade', +$any($event.target).value)"
                           min="1">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Marca</label>
+                        <input type="text" class="form-control form-control-sm" [value]="item.marca || ''"
+                          (input)="atualizarItemPadrao(i, 'marca', $any($event.target).value)"
+                          placeholder="Ex: 3M">
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Valor (R$)</label>
+                        <input type="number" class="form-control form-control-sm" [value]="item.valor || ''"
+                          (input)="atualizarItemPadrao(i, 'valor', +$any($event.target).value || null)"
+                          step="0.01" min="0" placeholder="0.00">
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">Num. Serie</label>
+                        <input type="text" class="form-control form-control-sm" [value]="item.numeroSerie || ''"
+                          (input)="atualizarItemPadrao(i, 'numeroSerie', $any($event.target).value)"
+                          placeholder="Para equipamentos">
+                      </div>
+                      <div class="col-md-5">
+                        <label class="form-label">Mapeamento Tamanho</label>
+                        <select class="form-select form-select-sm"
+                          [value]="item.campoTamanhoPessoa || ''"
+                          (change)="atualizarItemPadrao(i, 'campoTamanhoPessoa', $any($event.target).value || null)">
+                          <option value="">Sem mapeamento (manual)</option>
+                          @for (campo of camposTamanhoPessoa; track campo.valor) {
+                            <option [value]="campo.valor">{{ campo.rotulo }}</option>
+                          }
+                        </select>
+                        <small class="text-muted">Preenche automaticamente com tamanho da Pessoa</small>
                       </div>
                     </div>
                   </div>

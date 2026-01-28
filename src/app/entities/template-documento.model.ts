@@ -40,12 +40,26 @@ export interface TemplateDocumentoUpdate {
   ativo?: boolean | null;
 }
 
+export type CampoTamanhoPessoa = 'tamanhoCamisa' | 'tamanhoCalca' | 'tamanhoCalcado' | 'tamanhoLuva' | 'tamanhoCapacete';
+
 export interface ItemPadrao {
   descricao: string;
   quantidade: number;
   tamanho?: string;
+  marca?: string;
+  valor?: number;
+  numeroSerie?: string;
+  campoTamanhoPessoa?: CampoTamanhoPessoa | null;
   [key: string]: unknown;
 }
+
+export const CAMPOS_TAMANHO_PESSOA: { valor: CampoTamanhoPessoa; rotulo: string }[] = [
+  { valor: 'tamanhoCamisa', rotulo: 'Tam. Camisa' },
+  { valor: 'tamanhoCalca', rotulo: 'Tam. Calca' },
+  { valor: 'tamanhoCalcado', rotulo: 'Tam. Calcado' },
+  { valor: 'tamanhoLuva', rotulo: 'Tam. Luva' },
+  { valor: 'tamanhoCapacete', rotulo: 'Tam. Capacete' },
+];
 
 export interface DadosTemplate {
   pessoa: Record<string, unknown>;

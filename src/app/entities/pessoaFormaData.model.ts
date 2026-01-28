@@ -30,4 +30,10 @@ export interface PessoaFormData {
   validadeCnh: string | null;
   chavePix: string | null;
   ativo?: boolean | null;
+  // Campos de tamanho EPI
+  tamanhoCamisa: string | null;
+  tamanhoCalca: string | null;
+  tamanhoCalcado: string | null;
+  tamanhoLuva: string | null;
+  tamanhoCapacete: string | null;
 }
