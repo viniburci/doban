@@ -14,7 +14,7 @@ import { RecursoDinamicoService } from '../../services/recurso-dinamico.service'
 import { TipoRecursoService } from '../../services/tipo-recurso.service';
 import { CardRecursoDinamico } from "../../recursos/recurso-dinamico/card-recurso-dinamico/card-recurso-dinamico";
 import { FormRecursoDinamico } from "../../recursos/recurso-dinamico/form-recurso-dinamico/form-recurso-dinamico";
-import { DocumentoService, TipoDocumento, TIPOS_DOCUMENTOS } from '../../services/documento.service';
+import { DocumentoService, TipoDocumento, TIPOS_DOCUMENTOS_VAGA } from '../../services/documento.service';
 
 @Component({
   selector: 'app-detalhes-pessoa',
@@ -46,10 +46,13 @@ export class DetalhesPessoa implements OnInit {
   editRecursoDinamico = signal<RecursoDinamicoDTO | null>(null);
   showFormRecursoDinamico = signal(false);
 
-  tiposDocumentos = signal<TipoDocumento[]>(TIPOS_DOCUMENTOS.map(t => ({ ...t })));
+  tiposDocumentos = signal<TipoDocumento[]>(TIPOS_DOCUMENTOS_VAGA.map(t => ({ ...t })));
   vagaSelecionadaParaDocumento = signal<number | null>(null);
   gerandoDocumento = signal(false);
   showGeradorDocumento = signal(false);
+
+  // Selecao de recursos para documentos
+  recursosSelecionadosIds = signal<Set<number>>(new Set());
 
   temDocumentoSelecionado = computed(() =>
     this.tiposDocumentos().some(t => t.selecionado)
@@ -85,6 +88,9 @@ export class DetalhesPessoa implements OnInit {
       count: recursos.filter(r => r.item.tipoRecursoCodigo === tipo.codigo).length
     }));
   });
+
+  temRecursoSelecionado = computed(() => this.recursosSelecionadosIds().size > 0);
+  quantidadeRecursosSelecionados = computed(() => this.recursosSelecionadosIds().size);
 
   ngOnInit() {
     const id = this.pessoaId();
@@ -249,6 +255,77 @@ export class DetalhesPessoa implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao gerar documento:', error);
+        this.gerandoDocumento.set(false);
+      }
+    });
+  }
+
+  // Selecao de recursos para documentos
+  toggleRecursoSelecionado(recursoId: number) {
+    this.recursosSelecionadosIds.update(ids => {
+      const newIds = new Set(ids);
+      if (newIds.has(recursoId)) {
+        newIds.delete(recursoId);
+      } else {
+        newIds.add(recursoId);
+      }
+      return newIds;
+    });
+  }
+
+  isRecursoSelecionado(recursoId: number): boolean {
+    return this.recursosSelecionadosIds().has(recursoId);
+  }
+
+  limparSelecaoRecursos() {
+    this.recursosSelecionadosIds.set(new Set());
+  }
+
+  getItemIdsDosRecursosSelecionados(): number[] {
+    const recursos = this.recursosDinamicos();
+    const selecionados = this.recursosSelecionadosIds();
+    return recursos
+      .filter(r => selecionados.has(Number(r.id)) && r.item.id !== null)
+      .map(r => r.item.id as number);
+  }
+
+  gerarTermoResponsabilidade() {
+    const pessoaId = Number(this.pessoaId());
+    const itemIds = this.getItemIdsDosRecursosSelecionados();
+
+    if (!pessoaId || itemIds.length === 0) return;
+
+    this.gerandoDocumento.set(true);
+
+    this.documentoService.gerarTermoResponsabilidadeMateriais(pessoaId, itemIds).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.gerandoDocumento.set(false);
+      },
+      error: (error) => {
+        console.error('Erro ao gerar termo:', error);
+        this.gerandoDocumento.set(false);
+      }
+    });
+  }
+
+  gerarDeclaracaoDevolucao() {
+    const pessoaId = Number(this.pessoaId());
+    const itemIds = this.getItemIdsDosRecursosSelecionados();
+
+    if (!pessoaId || itemIds.length === 0) return;
+
+    this.gerandoDocumento.set(true);
+
+    this.documentoService.gerarDeclaracaoDevolucaoAparelho(pessoaId, itemIds).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.gerandoDocumento.set(false);
+      },
+      error: (error) => {
+        console.error('Erro ao gerar declaracao:', error);
         this.gerandoDocumento.set(false);
       }
     });

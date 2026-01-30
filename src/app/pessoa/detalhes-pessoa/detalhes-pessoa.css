@@ -235,3 +235,42 @@
   font-size: 1rem;
   margin-bottom: 1.5rem;
 }
+
+/* ===== SELECAO DE RECURSOS ===== */
+.recursos-acoes {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.recurso-wrapper {
+  position: relative;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.recurso-wrapper.recurso-selecionado {
+  box-shadow: 0 0 0 2px #0d6efd;
+  border-radius: 12px;
+}
+
+.recurso-checkbox {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 5;
+}
+
+.recurso-checkbox .form-check-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+  background-color: white;
+  border: 2px solid #dee2e6;
+}
+
+.recurso-checkbox .form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
