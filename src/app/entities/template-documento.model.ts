@@ -47,7 +47,7 @@ export interface ItemPadrao {
   quantidade: number;
   tamanho?: string;
   marca?: string;
-  valor?: number;
+  valorUnitario?: number;
   numeroSerie?: string;
   campoTamanhoPessoa?: CampoTamanhoPessoa | null;
   [key: string]: unknown;
