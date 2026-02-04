@@ -57,11 +57,14 @@ export class DocumentoService {
   }
 
   // Documentos baseados em PESSOA + ITENS
-  gerarTermoResponsabilidadeMateriais(pessoaId: number, itemIds: number[]): Observable<Blob> {
+  gerarTermoResponsabilidadeMateriais(pessoaId: number, itemIds: number[], clienteId?: number | null): Observable<Blob> {
     let params = new HttpParams();
     itemIds.forEach(id => {
       params = params.append('itemIds', id.toString());
     });
+    if (clienteId) {
+      params = params.append('clienteId', clienteId.toString());
+    }
     return this.http.get(`${this.apiUrl}/termo_responsabilidade_materiais/${pessoaId}`, {
       params,
       responseType: 'blob'

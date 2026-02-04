@@ -15,6 +15,8 @@ import { TipoRecursoService } from '../../services/tipo-recurso.service';
 import { CardRecursoDinamico } from "../../recursos/recurso-dinamico/card-recurso-dinamico/card-recurso-dinamico";
 import { FormRecursoDinamico } from "../../recursos/recurso-dinamico/form-recurso-dinamico/form-recurso-dinamico";
 import { DocumentoService, TipoDocumento, TIPOS_DOCUMENTOS_VAGA } from '../../services/documento.service';
+import { ClienteService } from '../../services/cliente.service';
+import { ClienteDTO } from '../../entities/cliente.model';
 
 @Component({
   selector: 'app-detalhes-pessoa',
@@ -31,6 +33,7 @@ export class DetalhesPessoa implements OnInit {
   private recursoDinamicoService = inject(RecursoDinamicoService);
   private tipoRecursoService = inject(TipoRecursoService);
   private documentoService = inject(DocumentoService);
+  private clienteService = inject(ClienteService);
 
   pessoaId = input<string | null>(null);
   errorMessage: string | null = null;
@@ -51,8 +54,12 @@ export class DetalhesPessoa implements OnInit {
   gerandoDocumento = signal(false);
   showGeradorDocumento = signal(false);
 
-  // Selecao de recursos para documentos
-  recursosSelecionadosIds = signal<Set<number>>(new Set());
+  // Selecao de recurso para documentos (apenas 1 por vez)
+  recursoSelecionadoId = signal<number | null>(null);
+
+  // Clientes para termo de responsabilidade
+  clientes = signal<ClienteDTO[]>([]);
+  clienteSelecionadoId = signal<number | null>(null);
 
   temDocumentoSelecionado = computed(() =>
     this.tiposDocumentos().some(t => t.selecionado)
@@ -89,14 +96,22 @@ export class DetalhesPessoa implements OnInit {
     }));
   });
 
-  temRecursoSelecionado = computed(() => this.recursosSelecionadosIds().size > 0);
-  quantidadeRecursosSelecionados = computed(() => this.recursosSelecionadosIds().size);
+  temRecursoSelecionado = computed(() => this.recursoSelecionadoId() !== null);
+
+  tipoRecursoSelecionado = computed(() => {
+    const recursoId = this.recursoSelecionadoId();
+    if (!recursoId) return null;
+
+    const recurso = this.recursosDinamicos().find(r => r.id === recursoId);
+    return recurso?.item.tipoRecursoCodigo ?? null;
+  });
 
   ngOnInit() {
     const id = this.pessoaId();
     if (id && !isNaN(Number(id))) {
       this.updateComponent();
       this.carregarTiposRecurso();
+      this.carregarClientes();
     } else {
       this.errorMessage = 'Id inválido.'
     }
@@ -109,6 +124,17 @@ export class DetalhesPessoa implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao carregar tipos de recurso', error);
+      }
+    });
+  }
+
+  carregarClientes() {
+    this.clienteService.listarAtivos().subscribe({
+      next: (response) => {
+        this.clientes.set(response);
+      },
+      error: (error) => {
+        console.error('Erro ao carregar clientes', error);
       }
     });
   }
@@ -260,44 +286,49 @@ export class DetalhesPessoa implements OnInit {
     });
   }
 
-  // Selecao de recursos para documentos
+  // Selecao de recurso para documentos (apenas 1 por vez)
   toggleRecursoSelecionado(recursoId: number) {
-    this.recursosSelecionadosIds.update(ids => {
-      const newIds = new Set(ids);
-      if (newIds.has(recursoId)) {
-        newIds.delete(recursoId);
-      } else {
-        newIds.add(recursoId);
-      }
-      return newIds;
-    });
+    const atual = this.recursoSelecionadoId();
+    if (atual === recursoId) {
+      this.recursoSelecionadoId.set(null);
+    } else {
+      this.recursoSelecionadoId.set(recursoId);
+    }
   }
 
   isRecursoSelecionado(recursoId: number): boolean {
-    return this.recursosSelecionadosIds().has(recursoId);
+    return this.recursoSelecionadoId() === recursoId;
   }
 
   limparSelecaoRecursos() {
-    this.recursosSelecionadosIds.set(new Set());
+    this.recursoSelecionadoId.set(null);
+    this.clienteSelecionadoId.set(null);
+  }
+
+  selecionarCliente(clienteId: number | null) {
+    this.clienteSelecionadoId.set(clienteId);
   }
 
   getItemIdsDosRecursosSelecionados(): number[] {
-    const recursos = this.recursosDinamicos();
-    const selecionados = this.recursosSelecionadosIds();
-    return recursos
-      .filter(r => selecionados.has(Number(r.id)) && r.item.id !== null)
-      .map(r => r.item.id as number);
+    const recursoId = this.recursoSelecionadoId();
+    if (!recursoId) return [];
+
+    const recurso = this.recursosDinamicos().find(r => r.id === recursoId);
+    if (!recurso || recurso.item.id === null) return [];
+
+    return [recurso.item.id];
   }
 
   gerarTermoResponsabilidade() {
     const pessoaId = Number(this.pessoaId());
     const itemIds = this.getItemIdsDosRecursosSelecionados();
+    const clienteId = this.clienteSelecionadoId();
 
     if (!pessoaId || itemIds.length === 0) return;
 
     this.gerandoDocumento.set(true);
 
-    this.documentoService.gerarTermoResponsabilidadeMateriais(pessoaId, itemIds).subscribe({
+    this.documentoService.gerarTermoResponsabilidadeMateriais(pessoaId, itemIds, clienteId).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         window.open(url, '_blank');

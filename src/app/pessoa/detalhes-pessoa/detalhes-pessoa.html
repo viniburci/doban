@@ -260,23 +260,33 @@
           <h5 class="card-title mb-0">Recursos Emprestados</h5>
           @if (temRecursoSelecionado()) {
             <div class="recursos-acoes">
-              <span class="badge bg-primary me-2">{{ quantidadeRecursosSelecionados() }} selecionado(s)</span>
+              <span class="badge bg-primary me-2">1 selecionado</span>
               <button type="button" class="btn btn-sm btn-outline-secondary me-1"
                 (click)="limparSelecaoRecursos()">
                 Limpar
               </button>
-              <button type="button" class="btn btn-sm btn-success me-1"
-                (click)="gerarTermoResponsabilidade()"
-                [disabled]="gerandoDocumento()"
-                title="Gerar termo de responsabilidade para emprestimo">
-                Termo Emprestimo
-              </button>
-              <button type="button" class="btn btn-sm btn-warning"
-                (click)="gerarDeclaracaoDevolucao()"
-                [disabled]="gerandoDocumento()"
-                title="Gerar declaracao de devolucao">
-                Declaracao Devolucao
-              </button>
+              @if (tipoRecursoSelecionado() === 'CELULAR') {
+                <select class="form-select form-select-sm me-1" style="width: auto; display: inline-block;"
+                  [value]="clienteSelecionadoId() ?? ''"
+                  (change)="selecionarCliente($any($event.target).value ? +$any($event.target).value : null)">
+                  <option value="">Sem cliente</option>
+                  @for (cliente of clientes(); track cliente.id) {
+                    <option [value]="cliente.id">{{ cliente.nome }}</option>
+                  }
+                </select>
+                <button type="button" class="btn btn-sm btn-success me-1"
+                  (click)="gerarTermoResponsabilidade()"
+                  [disabled]="gerandoDocumento()"
+                  title="Gerar termo de responsabilidade para emprestimo">
+                  Termo Emprestimo
+                </button>
+                <button type="button" class="btn btn-sm btn-warning"
+                  (click)="gerarDeclaracaoDevolucao()"
+                  [disabled]="gerandoDocumento()"
+                  title="Gerar declaracao de devolucao">
+                  Declaracao Devolucao
+                </button>
+              }
             </div>
           }
         </div>

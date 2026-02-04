@@ -149,7 +149,7 @@ export class FormRecursoDinamico implements OnInit {
         this.updated.emit();
       },
       error: (error) => {
-        console.error('Erro ao registrar devolução', error);
+        console.error('Erro ao registrar devolução', error.message);
         this.loading.set(false);
       }
     });
