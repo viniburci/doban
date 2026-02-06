@@ -5,7 +5,7 @@ import { ItemDinamicoService } from '../../../services/item-dinamico.service';
 import { TipoRecursoService } from '../../../services/tipo-recurso.service';
 import { TipoRecursoDTO } from '../../../entities/tipo-recurso.model';
 import { ItemDinamicoDTO } from '../../../entities/item-dinamico.model';
-import { RecursoDinamicoDTO } from '../../../entities/recurso-dinamico.model';
+import { ItemExtraDTO, RecursoDinamicoDTO } from '../../../entities/recurso-dinamico.model';
 
 @Component({
   selector: 'app-form-recurso-dinamico',
@@ -29,8 +29,10 @@ export class FormRecursoDinamico implements OnInit {
   loading = signal(false);
   tiposRecurso = signal<TipoRecursoDTO[]>([]);
   itensDisponiveis = signal<ItemDinamicoDTO[]>([]);
+  itensExtras = signal<ItemExtraDTO[]>([]);
 
   form!: FormGroup;
+  itemExtraForm!: FormGroup;
 
   isEditMode = signal(false);
 
@@ -52,6 +54,15 @@ export class FormRecursoDinamico implements OnInit {
       itemId: new FormControl<number | null>(null, { validators: [Validators.required] }),
       dataEntrega: new FormControl(hoje, { nonNullable: true, validators: [Validators.required] }),
       dataDevolucao: new FormControl<string | null>(null)
+    });
+
+    this.itemExtraForm = this.fb.group({
+      descricao: ['', Validators.required],
+      marca: [''],
+      numeroSerie: [''],
+      ddd: [''],
+      quantidade: [1],
+      valor: [0]
     });
 
     this.carregarTiposRecurso();
@@ -85,6 +96,11 @@ export class FormRecursoDinamico implements OnInit {
     this.form.controls['dataDevolucao'].setValidators([Validators.required]);
 
     this.itensDisponiveis.set([recurso.item]);
+
+    // Carregar itens extras existentes
+    if (recurso.itensExtras) {
+      this.itensExtras.set([...recurso.itensExtras]);
+    }
   }
 
   onTipoChange(codigo: string) {
@@ -117,14 +133,28 @@ export class FormRecursoDinamico implements OnInit {
     }
   }
 
+  adicionarItemExtra() {
+    if (this.itemExtraForm.invalid) return;
+
+    const item: ItemExtraDTO = this.itemExtraForm.getRawValue();
+    this.itensExtras.update(itens => [...itens, item]);
+    this.itemExtraForm.reset({ descricao: '', marca: '', numeroSerie: '', ddd: '', quantidade: 1, valor: 0 });
+  }
+
+  removerItemExtra(index: number) {
+    this.itensExtras.update(itens => itens.filter((_, i) => i !== index));
+  }
+
   criarEmprestimo() {
     const formValue = this.form.getRawValue();
     const pessoaIdNumber = Number(this.pessoaId());
+    const extras = this.itensExtras();
 
     this.recursoDinamicoService.emprestar({
       pessoaId: pessoaIdNumber,
       itemId: formValue.itemId!,
-      dataEntrega: formValue.dataEntrega
+      dataEntrega: formValue.dataEntrega,
+      ...(extras.length > 0 ? { itensExtras: extras } : {})
     }).subscribe({
       next: () => {
         this.loading.set(false);
@@ -150,6 +180,24 @@ export class FormRecursoDinamico implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao registrar devolução', error.message);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  salvarItensExtras() {
+    const recursoId = this.editRecurso()?.id;
+    if (!recursoId) return;
+
+    this.loading.set(true);
+
+    this.recursoDinamicoService.atualizarItensExtras(recursoId, this.itensExtras()).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.updated.emit();
+      },
+      error: (error) => {
+        console.error('Erro ao salvar itens extras', error.message);
         this.loading.set(false);
       }
     });

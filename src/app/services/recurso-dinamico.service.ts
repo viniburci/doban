@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DevolucaoDinamicaDTO, RecursoDinamicoCreateDTO, RecursoDinamicoDTO } from '../entities/recurso-dinamico.model';
+import { DevolucaoDinamicaDTO, ItemExtraDTO, RecursoDinamicoCreateDTO, RecursoDinamicoDTO } from '../entities/recurso-dinamico.model';
 
 @Injectable({
   providedIn: 'root'
@@ -45,5 +45,9 @@ export class RecursoDinamicoService {
 
   deletar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  atualizarItensExtras(id: number, itensExtras: ItemExtraDTO[]): Observable<RecursoDinamicoDTO> {
+    return this.http.put<RecursoDinamicoDTO>(`${this.baseUrl}/${id}/itens-extras`, { itensExtras });
   }
 }

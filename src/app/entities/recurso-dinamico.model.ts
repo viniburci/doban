@@ -1,7 +1,16 @@
 import { ItemDinamicoDTO } from './item-dinamico.model';
 
+export interface ItemExtraDTO {
+  descricao: string;
+  marca?: string;
+  numeroSerie?: string;
+  ddd?: string;
+  quantidade?: number;
+  valor?: number;
+}
+
 /**
- * DTO de resposta para RecursoDinamico (empréstimo)
+ * DTO de resposta para RecursoDinamico (emprestimo)
  */
 export interface RecursoDinamicoDTO {
   id: number | null;
@@ -10,22 +19,24 @@ export interface RecursoDinamicoDTO {
   item: ItemDinamicoDTO;
   dataEntrega: string | null;
   dataDevolucao: string | null;
-  atributosSnapshot?: Record<string, any>;
+  atributosSnapshot?: Record<string, unknown>;
+  itensExtras?: ItemExtraDTO[];
   createdAt?: string;
   updatedAt?: string;
 }
 
 /**
- * DTO de criação para RecursoDinamico (emprestar)
+ * DTO de criacao para RecursoDinamico (emprestar)
  */
 export interface RecursoDinamicoCreateDTO {
   pessoaId: number;
   itemId: number;
   dataEntrega: string;
+  itensExtras?: ItemExtraDTO[];
 }
 
 /**
- * DTO de devolução
+ * DTO de devolucao
  */
 export interface DevolucaoDinamicaDTO {
   dataDevolucao: string;

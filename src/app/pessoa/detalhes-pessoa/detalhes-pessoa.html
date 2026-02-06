@@ -128,16 +128,41 @@
                 <span class="info-value">{{ pessoa()?.localNascimento || '-' }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Estado Civil</span>
-                <span class="info-value">{{ pessoa()?.estadoCivil || '-' }}</span>
+                <span class="info-label">Pai</span>
+                <span class="info-value">{{ pessoa()?.pai || '-' }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Mãe</span>
                 <span class="info-value">{{ pessoa()?.mae || '-' }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Pai</span>
-                <span class="info-value">{{ pessoa()?.pai || '-' }}</span>
+                <span class="info-label">Estado Civil</span>
+                <span class="info-value">{{ pessoa()?.estadoCivil || '-' }}</span>
+              </div>
+            </div>
+
+            <!-- SEÇÃO: TAMANHO EQUIPAMENTO -->
+            <div class="section-header">Tamanhos</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Camisa</span>
+                <span class="info-value">{{ pessoa()?.tamanhoCamisa || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Calça</span>
+                <span class="info-value">{{ pessoa()?.tamanhoCalca || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Calçado</span>
+                <span class="info-value">{{ pessoa()?.tamanhoCalcado || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Luva</span>
+                <span class="info-value">{{ pessoa()?.tamanhoLuva || '-' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Capacete</span>
+                <span class="info-value">{{ pessoa()?.tamanhoCapacete || '-' }}</span>
               </div>
             </div>
 
