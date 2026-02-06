@@ -261,32 +261,10 @@
           @if (temRecursoSelecionado()) {
             <div class="recursos-acoes">
               <span class="badge bg-primary me-2">1 selecionado</span>
-              <button type="button" class="btn btn-sm btn-outline-secondary me-1"
+              <button type="button" class="btn btn-sm btn-outline-secondary"
                 (click)="limparSelecaoRecursos()">
                 Limpar
               </button>
-              @if (tipoRecursoSelecionado() === 'CELULAR') {
-                <select class="form-select form-select-sm me-1" style="width: auto; display: inline-block;"
-                  [value]="clienteSelecionadoId() ?? ''"
-                  (change)="selecionarCliente($any($event.target).value ? +$any($event.target).value : null)">
-                  <option value="">Sem cliente</option>
-                  @for (cliente of clientes(); track cliente.id) {
-                    <option [value]="cliente.id">{{ cliente.nome }}</option>
-                  }
-                </select>
-                <button type="button" class="btn btn-sm btn-success me-1"
-                  (click)="gerarTermoResponsabilidade()"
-                  [disabled]="gerandoDocumento()"
-                  title="Gerar termo de responsabilidade para emprestimo">
-                  Termo Emprestimo
-                </button>
-                <button type="button" class="btn btn-sm btn-warning"
-                  (click)="gerarDeclaracaoDevolucao()"
-                  [disabled]="gerandoDocumento()"
-                  title="Gerar declaracao de devolucao">
-                  Declaracao Devolucao
-                </button>
-              }
             </div>
           }
         </div>
@@ -346,6 +324,119 @@
             </div>
           }
         </div>
+
+        <!-- Secao de itens extras para termo -->
+        @if (tipoRecursoSelecionado() === 'CELULAR') {
+          <div class="card mt-3">
+            <div class="card-body">
+              <h6 class="card-title">Itens Extras do Emprestimo</h6>
+
+              <div class="mb-3">
+                <label class="form-label">Cliente (para documento)</label>
+                <select class="form-select form-select-sm"
+                  [value]="clienteSelecionadoId() ?? ''"
+                  (change)="selecionarCliente($any($event.target).value ? +$any($event.target).value : null)">
+                  <option value="">Sem cliente</option>
+                  @for (cliente of clientes(); track cliente.id) {
+                    <option [value]="cliente.id">{{ cliente.nome }}</option>
+                  }
+                </select>
+              </div>
+
+              <label class="form-label fw-bold">Adicionar Item Extra</label>
+              <form [formGroup]="itemExtraForm" (ngSubmit)="adicionarItemExtra()" class="row g-2 align-items-end mb-3">
+                <div class="col-md-3">
+                  <label class="form-label">Descricao *</label>
+                  <input type="text" class="form-control form-control-sm" formControlName="descricao">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Marca</label>
+                  <input type="text" class="form-control form-control-sm" formControlName="marca">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">N. Serie</label>
+                  <input type="text" class="form-control form-control-sm" formControlName="numeroSerie">
+                </div>
+                <div class="col-md-1">
+                  <label class="form-label">DDD</label>
+                  <input type="text" class="form-control form-control-sm" formControlName="ddd">
+                </div>
+                <div class="col-md-1">
+                  <label class="form-label">Qtd</label>
+                  <input type="number" class="form-control form-control-sm" formControlName="quantidade" min="1">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label">Valor</label>
+                  <input type="number" class="form-control form-control-sm" formControlName="valor" min="0" step="0.01">
+                </div>
+                <div class="col-md-1">
+                  <button type="submit" class="btn btn-sm btn-outline-primary w-100"
+                    [disabled]="itemExtraForm.invalid">
+                    +
+                  </button>
+                </div>
+              </form>
+
+              @if (itensExtrasEditaveis().length > 0) {
+                <table class="table table-sm table-bordered mb-3">
+                  <thead>
+                    <tr>
+                      <th>Descricao</th>
+                      <th>Marca</th>
+                      <th>N. Serie</th>
+                      <th>DDD</th>
+                      <th>Qtd</th>
+                      <th>Valor</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of itensExtrasEditaveis(); track $index) {
+                      <tr>
+                        <td>{{ item.descricao }}</td>
+                        <td>{{ item.marca || '-' }}</td>
+                        <td>{{ item.numeroSerie || '-' }}</td>
+                        <td>{{ item.ddd || '-' }}</td>
+                        <td>{{ item.quantidade || 1 }}</td>
+                        <td>{{ item.valor || 0 }}</td>
+                        <td>
+                          <button type="button" class="btn btn-sm btn-outline-danger" (click)="removerItemExtra($index)">
+                            X
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              }
+
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-primary"
+                  (click)="salvarItensExtras()"
+                  [disabled]="salvandoItensExtras()"
+                  title="Salvar itens extras no emprestimo">
+                  @if (salvandoItensExtras()) {
+                    Salvando...
+                  } @else {
+                    Salvar Itens
+                  }
+                </button>
+                <button type="button" class="btn btn-sm btn-success"
+                  (click)="gerarTermoResponsabilidade()"
+                  [disabled]="gerandoDocumento()"
+                  title="Gerar termo de responsabilidade para emprestimo">
+                  Termo Emprestimo
+                </button>
+                <button type="button" class="btn btn-sm btn-warning"
+                  (click)="gerarDeclaracaoDevolucao()"
+                  [disabled]="gerandoDocumento()"
+                  title="Gerar declaracao de devolucao">
+                  Declaracao Devolucao
+                </button>
+              </div>
+            </div>
+          </div>
+        }
 
         <button class="btn btn-primary mt-3" (click)="novoEmprestimo()">
           Registrar Emprestimo

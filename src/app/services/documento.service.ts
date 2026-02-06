@@ -9,6 +9,21 @@ export interface TipoDocumento {
   selecionado: boolean;
 }
 
+export interface ItemAdicionalDTO {
+  quantidade: number;
+  marca: string;
+  descricao: string;
+  numeroSerie: string;
+  ddd: string;
+  valor: number;
+}
+
+export interface TermoResponsabilidadeRequest {
+  clienteId: number | null;
+  itemIds: number[];
+  itensAdicionais: ItemAdicionalDTO[];
+}
+
 // Documentos baseados em VAGA (usam vagaId)
 export const TIPOS_DOCUMENTOS_VAGA: TipoDocumento[] = [
   { id: 'contrato', nome: 'Contrato de Trabalho', descricao: 'Contrato CLT padrao', selecionado: false },
@@ -57,16 +72,22 @@ export class DocumentoService {
   }
 
   // Documentos baseados em PESSOA + ITENS
-  gerarTermoResponsabilidadeMateriais(pessoaId: number, itemIds: number[], clienteId?: number | null): Observable<Blob> {
-    let params = new HttpParams();
-    itemIds.forEach(id => {
-      params = params.append('itemIds', id.toString());
+  gerarTermoResponsabilidadeMateriais(pessoaId: number, body: TermoResponsabilidadeRequest): Observable<Blob> {
+    return this.http.post(`${this.apiUrl}/termo_responsabilidade_materiais/${pessoaId}`, body, {
+      responseType: 'blob'
     });
-    if (clienteId) {
-      params = params.append('clienteId', clienteId.toString());
-    }
-    return this.http.get(`${this.apiUrl}/termo_responsabilidade_materiais/${pessoaId}`, {
-      params,
+  }
+
+  // Gerar termo de emprestimo a partir de emprestimo salvo
+  gerarTermoEmprestimoDoRecurso(recursoDinamicoId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/termo_responsabilidade_materiais/recurso/${recursoDinamicoId}`, {
+      responseType: 'blob'
+    });
+  }
+
+  // Gerar termo de devolucao a partir de emprestimo salvo
+  gerarTermoDevolucaoDoRecurso(recursoDinamicoId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/declaracao_devolucao_aparelho/recurso/${recursoDinamicoId}`, {
       responseType: 'blob'
     });
   }

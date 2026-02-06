@@ -59,13 +59,32 @@
                     {{ recurso().dataDevolucao | dateDisplayPipe }}
                 </div>
 
+                @if (recurso().itensExtras && recurso().itensExtras!.length > 0) {
+                    <div class="col-12 mb-2">
+                        <strong>Itens Extras</strong>
+                        <ul class="list-unstyled mb-0 ms-2">
+                            @for (extra of recurso().itensExtras; track $index) {
+                                <li>
+                                    {{ extra.quantidade || 1 }}x {{ extra.descricao }}
+                                    @if (extra.marca) { - {{ extra.marca }} }
+                                    @if (extra.numeroSerie) { ({{ extra.numeroSerie }}) }
+                                    @if (extra.ddd) { DDD: {{ extra.ddd }} }
+                                    @if (extra.valor) { R$ {{ extra.valor }} }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+
             </div>
-            <button (click)="onEditarRecurso()" class="btn btn-primary mt-3 ">
-                Registrar Devolução
-            </button>
-            <button appConfirmDelete (confirmedDelete)="onConfirmDelete($event)" class="btn btn-danger mt-3 offset-1">
-                Deletar
-            </button>
+            <div class="d-flex gap-2 mt-3">
+                <button (click)="onEditarRecurso()" class="btn btn-primary">
+                    Registrar Devolucao
+                </button>
+                <button appConfirmDelete (confirmedDelete)="onConfirmDelete($event)" class="btn btn-danger">
+                    Deletar
+                </button>
+            </div>
         </div>
     </div>
 </div>

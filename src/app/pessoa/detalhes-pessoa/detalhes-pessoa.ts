@@ -8,25 +8,27 @@ import { ScrollOnRenderDirective } from '../../directives/scroll-on-render-direc
 import { VagaFormData } from '../../entities/vagaFormData.model';
 import { VagaService } from '../../services/vaga-service';
 import { CardVaga } from "../../vaga/card-vaga/card-vaga";
-import { RecursoDinamicoDTO } from '../../entities/recurso-dinamico.model';
+import { ItemExtraDTO, RecursoDinamicoDTO } from '../../entities/recurso-dinamico.model';
 import { TipoRecursoDTO } from '../../entities/tipo-recurso.model';
 import { RecursoDinamicoService } from '../../services/recurso-dinamico.service';
 import { TipoRecursoService } from '../../services/tipo-recurso.service';
 import { CardRecursoDinamico } from "../../recursos/recurso-dinamico/card-recurso-dinamico/card-recurso-dinamico";
 import { FormRecursoDinamico } from "../../recursos/recurso-dinamico/form-recurso-dinamico/form-recurso-dinamico";
 import { DocumentoService, TipoDocumento, TIPOS_DOCUMENTOS_VAGA } from '../../services/documento.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClienteService } from '../../services/cliente.service';
 import { ClienteDTO } from '../../entities/cliente.model';
 
 @Component({
   selector: 'app-detalhes-pessoa',
-  imports: [RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoDinamico, FormRecursoDinamico],
+  imports: [RouterLink, CadastroVaga, ScrollOnRenderDirective, CardVaga, CardRecursoDinamico, FormRecursoDinamico, ReactiveFormsModule],
   templateUrl: './detalhes-pessoa.html',
   styleUrl: './detalhes-pessoa.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DetalhesPessoa implements OnInit {
 
+  private fb = inject(FormBuilder);
   private pessoaService = inject(PessoaService);
   private vagaService = inject(VagaService);
   private dataService = inject(DataService);
@@ -60,6 +62,18 @@ export class DetalhesPessoa implements OnInit {
   // Clientes para termo de responsabilidade
   clientes = signal<ClienteDTO[]>([]);
   clienteSelecionadoId = signal<number | null>(null);
+
+  // Itens extras editaveis do recurso selecionado
+  itensExtrasEditaveis = signal<ItemExtraDTO[]>([]);
+  salvandoItensExtras = signal(false);
+  itemExtraForm: FormGroup = this.fb.group({
+    descricao: ['', Validators.required],
+    marca: [''],
+    numeroSerie: [''],
+    ddd: [''],
+    quantidade: [1, [Validators.min(1)]],
+    valor: [0, [Validators.min(0)]]
+  });
 
   temDocumentoSelecionado = computed(() =>
     this.tiposDocumentos().some(t => t.selecionado)
@@ -105,6 +119,7 @@ export class DetalhesPessoa implements OnInit {
     const recurso = this.recursosDinamicos().find(r => r.id === recursoId);
     return recurso?.item.tipoRecursoCodigo ?? null;
   });
+
 
   ngOnInit() {
     const id = this.pessoaId();
@@ -291,8 +306,12 @@ export class DetalhesPessoa implements OnInit {
     const atual = this.recursoSelecionadoId();
     if (atual === recursoId) {
       this.recursoSelecionadoId.set(null);
+      this.itensExtrasEditaveis.set([]);
     } else {
       this.recursoSelecionadoId.set(recursoId);
+      // Carregar itens extras do recurso para edicao
+      const recurso = this.recursosDinamicos().find(r => r.id === recursoId);
+      this.itensExtrasEditaveis.set(recurso?.itensExtras ? [...recurso.itensExtras] : []);
     }
   }
 
@@ -303,32 +322,51 @@ export class DetalhesPessoa implements OnInit {
   limparSelecaoRecursos() {
     this.recursoSelecionadoId.set(null);
     this.clienteSelecionadoId.set(null);
+    this.itensExtrasEditaveis.set([]);
+    this.itemExtraForm.reset({ descricao: '', marca: '', numeroSerie: '', ddd: '', quantidade: 1, valor: 0 });
   }
 
   selecionarCliente(clienteId: number | null) {
     this.clienteSelecionadoId.set(clienteId);
   }
 
-  getItemIdsDosRecursosSelecionados(): number[] {
+  adicionarItemExtra() {
+    if (this.itemExtraForm.invalid) return;
+
+    const item: ItemExtraDTO = this.itemExtraForm.getRawValue();
+    this.itensExtrasEditaveis.update(itens => [...itens, item]);
+    this.itemExtraForm.reset({ descricao: '', marca: '', numeroSerie: '', ddd: '', quantidade: 1, valor: 0 });
+  }
+
+  removerItemExtra(index: number) {
+    this.itensExtrasEditaveis.update(itens => itens.filter((_, i) => i !== index));
+  }
+
+  salvarItensExtras() {
     const recursoId = this.recursoSelecionadoId();
-    if (!recursoId) return [];
+    if (!recursoId) return;
 
-    const recurso = this.recursosDinamicos().find(r => r.id === recursoId);
-    if (!recurso || recurso.item.id === null) return [];
+    this.salvandoItensExtras.set(true);
 
-    return [recurso.item.id];
+    this.recursoDinamicoService.atualizarItensExtras(recursoId, this.itensExtrasEditaveis()).subscribe({
+      next: () => {
+        this.salvandoItensExtras.set(false);
+        this.updateComponent();
+      },
+      error: (error) => {
+        console.error('Erro ao salvar itens extras:', error);
+        this.salvandoItensExtras.set(false);
+      }
+    });
   }
 
   gerarTermoResponsabilidade() {
-    const pessoaId = Number(this.pessoaId());
-    const itemIds = this.getItemIdsDosRecursosSelecionados();
-    const clienteId = this.clienteSelecionadoId();
-
-    if (!pessoaId || itemIds.length === 0) return;
+    const recursoId = this.recursoSelecionadoId();
+    if (!recursoId) return;
 
     this.gerandoDocumento.set(true);
 
-    this.documentoService.gerarTermoResponsabilidadeMateriais(pessoaId, itemIds, clienteId).subscribe({
+    this.documentoService.gerarTermoEmprestimoDoRecurso(recursoId).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         window.open(url, '_blank');
@@ -342,14 +380,12 @@ export class DetalhesPessoa implements OnInit {
   }
 
   gerarDeclaracaoDevolucao() {
-    const pessoaId = Number(this.pessoaId());
-    const itemIds = this.getItemIdsDosRecursosSelecionados();
-
-    if (!pessoaId || itemIds.length === 0) return;
+    const recursoId = this.recursoSelecionadoId();
+    if (!recursoId) return;
 
     this.gerandoDocumento.set(true);
 
-    this.documentoService.gerarDeclaracaoDevolucaoAparelho(pessoaId, itemIds).subscribe({
+    this.documentoService.gerarTermoDevolucaoDoRecurso(recursoId).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         window.open(url, '_blank');
