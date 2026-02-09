@@ -109,25 +109,26 @@ export class CallbackComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       const token = params['token'];
+      const refreshToken = params['refreshToken'];
       const error = params['error'];
       const message = params['message'];
-      
+
       if (error) {
         this.handleError(message || 'Email não autorizado. Entre em contato com o administrador.');
         return;
       }
-      
-      if (token) {
-        this.handleSuccess(token);
+
+      if (token && refreshToken) {
+        this.handleSuccess(token, refreshToken);
         return;
       }
-      
+
       this.handleError('Resposta inválida do servidor de autenticação.');
     });
   }
-  
-  private handleSuccess(token: string): void {
-    this.authService.handleOAuthCallback(token).subscribe({
+
+  private handleSuccess(token: string, refreshToken: string): void {
+    this.authService.handleOAuthCallback(token, refreshToken).subscribe({
       next: (user) => {
         console.log('Login bem-sucedido:', user.email);
         

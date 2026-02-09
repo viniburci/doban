@@ -2,8 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-
-const TOKEN_KEY = 'auth_token';
+import { AuthService } from './auth.service';
 
 export interface ApiError {
   status: number;
@@ -12,22 +11,15 @@ export interface ApiError {
   original: HttpErrorResponse;
 }
 
-/**
- * Extrai a mensagem de erro do HttpErrorResponse
- * O backend retorna a mensagem em error.error.message
- */
 export function extractErrorMessage(error: HttpErrorResponse): string {
-  // Tenta extrair a mensagem do body da resposta
   if (error.error?.message) {
     return error.error.message;
   }
 
-  // Se error.error for uma string, usa diretamente
   if (typeof error.error === 'string') {
     return error.error;
   }
 
-  // Fallback para mensagens padrao por status
   switch (error.status) {
     case 0:
       return 'Servidor indisponivel. Verifique sua conexao.';
@@ -46,16 +38,18 @@ export function extractErrorMessage(error: HttpErrorResponse): string {
   }
 }
 
-/**
- * Interceptor funcional para adicionar token JWT nas requisicoes
- */
+const AUTH_URLS = ['/api/v1/auth/refresh', '/oauth2/authorization', '/api/v1/auth/logout'];
+
+function isAuthUrl(url: string): boolean {
+  return AUTH_URLS.some(authUrl => url.includes(authUrl));
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
+  const authService = inject(AuthService);
 
-  // Obtem o token diretamente do localStorage
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = authService.getToken();
 
-  // Se existe token, adiciona ao header Authorization
   if (token) {
     req = req.clone({
       setHeaders: {
@@ -64,23 +58,19 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
-  // Processa a requisicao e trata erros de autenticacao
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       const isApiRequest = req.url.includes('localhost:8080');
       const errorMessage = extractErrorMessage(error);
 
-      if (isApiRequest) {
-        console.error(`[HTTP ${error.status}] ${errorMessage}`, error);
-
-        // Se erro 401 (Unauthorized), limpa token e redireciona para login
-        if (error.status === 401) {
-          localStorage.removeItem(TOKEN_KEY);
-          router.navigate(['/login']);
-        }
+      if (isApiRequest && error.status === 401 && !isAuthUrl(req.url)) {
+        return authService.handle401Error(req, next);
       }
 
-      // Relanca erro com mensagem extraida para facilitar uso nos componentes
+      if (isApiRequest) {
+        console.error(`[HTTP ${error.status}] ${errorMessage}`, error);
+      }
+
       return throwError(() => ({
         status: error.status,
         message: errorMessage,
