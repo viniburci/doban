@@ -1,9 +1,10 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, inject, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './services/auth.interceptor';
+import { AuthService } from './services/auth.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,6 +13,14 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding(), withRouterConfig({paramsInheritanceStrategy: "always"})),
     provideHttpClient(
       withInterceptors([authInterceptor])
-    )
+    ),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => {
+        const authService = inject(AuthService);
+        return () => authService.initialize();
+      },
+      multi: true
+    }
   ]
 };

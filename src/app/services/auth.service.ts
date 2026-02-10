@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpHandlerFn, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, throwError, tap, switchMap, catchError, filter, take } from 'rxjs';
+import { Observable, BehaviorSubject, of, throwError, tap, switchMap, catchError, filter, take } from 'rxjs';
 
 export interface User {
   id: number;
@@ -39,7 +39,6 @@ export class AuthService {
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
   constructor() {
-    this.checkStoredToken();
     this.setupStorageListener();
   }
 
@@ -54,40 +53,40 @@ export class AuthService {
     });
   }
 
-  private checkStoredToken(): void {
+  initialize(): Observable<void> {
     const token = this.getToken();
 
     if (token && this.isValidJwtFormat(token) && !this.isTokenExpired(token)) {
-      this.isAuthenticatedSignal.set(true);
-      this.loadCurrentUser().subscribe({
-        error: () => {
+      return this.loadCurrentUser().pipe(
+        tap(() => this.isAuthenticatedSignal.set(true)),
+        catchError(() => {
           this.currentUserSignal.set(null);
           this.isAuthenticatedSignal.set(false);
-        }
-      });
-      return;
+          return of(undefined);
+        }),
+        switchMap(() => of(undefined))
+      );
     }
 
-    // Access token ausente ou expirado - tentar refresh se refresh token existe
     const refreshToken = this.getRefreshToken();
     if (refreshToken) {
-      this.isAuthenticatedSignal.set(true);
-      this.refreshAccessToken().pipe(
-        switchMap(() => this.loadCurrentUser())
-      ).subscribe({
-        error: () => {
+      return this.refreshAccessToken().pipe(
+        switchMap(() => this.loadCurrentUser()),
+        tap(() => this.isAuthenticatedSignal.set(true)),
+        catchError(() => {
           this.removeTokens();
           this.currentUserSignal.set(null);
           this.isAuthenticatedSignal.set(false);
-        }
-      });
-      return;
+          return of(undefined);
+        }),
+        switchMap(() => of(undefined))
+      );
     }
 
-    // Nenhum token disponivel
     if (token) {
       this.removeTokens();
     }
+    return of(undefined);
   }
 
   private isValidJwtFormat(token: string): boolean {
