@@ -92,6 +92,12 @@ export class DocumentoService {
     });
   }
 
+  gerarCarroChecklist(recursoDinamicoId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/carro_checklist/recurso/${recursoDinamicoId}`, {
+      responseType: 'blob'
+    });
+  }
+
   gerarDeclaracaoDevolucaoAparelho(pessoaId: number, itemIds: number[]): Observable<Blob> {
     let params = new HttpParams();
     itemIds.forEach(id => {

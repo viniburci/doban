@@ -436,12 +436,17 @@
               }
 
               <div class="d-flex gap-2">
-                <button type="button" class="btn btn-sm btn-primary"
+                <button type="button" class="btn btn-sm"
+                  [class.btn-primary]="!itensSalvosComSucesso()"
+                  [class.btn-success]="itensSalvosComSucesso()"
                   (click)="salvarItensExtras()"
-                  [disabled]="salvandoItensExtras()"
+                  [disabled]="salvandoItensExtras() || itensSalvosComSucesso()"
                   title="Salvar itens extras no emprestimo">
                   @if (salvandoItensExtras()) {
+                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
                     Salvando...
+                  } @else if (itensSalvosComSucesso()) {
+                    Salvo!
                   } @else {
                     Salvar Itens
                   }
@@ -457,6 +462,22 @@
                   [disabled]="gerandoDocumento()"
                   title="Gerar declaracao de devolucao">
                   Declaracao Devolucao
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (tipoRecursoSelecionado() === 'CARRO') {
+          <div class="card mt-3">
+            <div class="card-body">
+              <h6 class="card-title">Documentos do Veiculo</h6>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-success"
+                  (click)="gerarCarroChecklist()"
+                  [disabled]="gerandoDocumento()"
+                  title="Gerar checklist de vistoria do veiculo">
+                  Checklist Vistoria
                 </button>
               </div>
             </div>

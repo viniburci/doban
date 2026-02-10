@@ -66,6 +66,7 @@ export class DetalhesPessoa implements OnInit {
   // Itens extras editaveis do recurso selecionado
   itensExtrasEditaveis = signal<ItemExtraDTO[]>([]);
   salvandoItensExtras = signal(false);
+  itensSalvosComSucesso = signal(false);
   itemExtraForm: FormGroup = this.fb.group({
     descricao: ['', Validators.required],
     marca: [''],
@@ -351,6 +352,8 @@ export class DetalhesPessoa implements OnInit {
     this.recursoDinamicoService.atualizarItensExtras(recursoId, this.itensExtrasEditaveis()).subscribe({
       next: () => {
         this.salvandoItensExtras.set(false);
+        this.itensSalvosComSucesso.set(true);
+        setTimeout(() => this.itensSalvosComSucesso.set(false), 2000);
         this.updateComponent();
       },
       error: (error) => {
@@ -393,6 +396,25 @@ export class DetalhesPessoa implements OnInit {
       },
       error: (error) => {
         console.error('Erro ao gerar declaracao:', error);
+        this.gerandoDocumento.set(false);
+      }
+    });
+  }
+
+  gerarCarroChecklist() {
+    const recursoId = this.recursoSelecionadoId();
+    if (!recursoId) return;
+
+    this.gerandoDocumento.set(true);
+
+    this.documentoService.gerarCarroChecklist(recursoId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.gerandoDocumento.set(false);
+      },
+      error: (error) => {
+        console.error('Erro ao gerar checklist do carro:', error);
         this.gerandoDocumento.set(false);
       }
     });
