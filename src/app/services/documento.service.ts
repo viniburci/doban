@@ -79,15 +79,25 @@ export class DocumentoService {
   }
 
   // Gerar termo de emprestimo a partir de emprestimo salvo
-  gerarTermoEmprestimoDoRecurso(recursoDinamicoId: number): Observable<Blob> {
+  gerarTermoEmprestimoDoRecurso(recursoDinamicoId: number, clienteId?: number | null): Observable<Blob> {
+    let params = new HttpParams();
+    if (clienteId) {
+      params = params.set('clienteId', clienteId.toString());
+    }
     return this.http.get(`${this.apiUrl}/termo_responsabilidade_materiais/recurso/${recursoDinamicoId}`, {
+      params,
       responseType: 'blob'
     });
   }
 
   // Gerar termo de devolucao a partir de emprestimo salvo
-  gerarTermoDevolucaoDoRecurso(recursoDinamicoId: number): Observable<Blob> {
+  gerarTermoDevolucaoDoRecurso(recursoDinamicoId: number, clienteId?: number | null): Observable<Blob> {
+    let params = new HttpParams();
+    if (clienteId) {
+      params = params.set('clienteId', clienteId.toString());
+    }
     return this.http.get(`${this.apiUrl}/declaracao_devolucao_aparelho/recurso/${recursoDinamicoId}`, {
+      params,
       responseType: 'blob'
     });
   }

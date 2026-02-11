@@ -369,7 +369,7 @@ export class DetalhesPessoa implements OnInit {
 
     this.gerandoDocumento.set(true);
 
-    this.documentoService.gerarTermoEmprestimoDoRecurso(recursoId).subscribe({
+    this.documentoService.gerarTermoEmprestimoDoRecurso(recursoId, this.clienteSelecionadoId()).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         window.open(url, '_blank');
@@ -388,7 +388,7 @@ export class DetalhesPessoa implements OnInit {
 
     this.gerandoDocumento.set(true);
 
-    this.documentoService.gerarTermoDevolucaoDoRecurso(recursoId).subscribe({
+    this.documentoService.gerarTermoDevolucaoDoRecurso(recursoId, this.clienteSelecionadoId()).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         window.open(url, '_blank');
