@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
 import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { DataService } from '../../services/data-service';
@@ -37,10 +37,19 @@ export class DetalhesPessoa implements OnInit {
   private documentoService = inject(DocumentoService);
   private clienteService = inject(ClienteService);
 
+  private destroyRef = inject(DestroyRef);
+
   pessoaId = input<string | null>(null);
   errorMessage: string | null = null;
   pessoa = signal<PessoaFormData | null>(null);
   vagasPessoa = signal<VagaFormData[] | null>(null);
+
+  // Foto de perfil
+  fotoUrl = signal<string | null>(null);
+  fotoCarregando = signal(false);
+  fotoUploadando = signal(false);
+  fotoPreviewUrl = signal<string | null>(null);
+  fotoErro = signal<string | null>(null);
 
   editVaga = signal<VagaFormData | null>(null);
   showRegistrarVaga = signal<boolean>(false);
@@ -113,6 +122,16 @@ export class DetalhesPessoa implements OnInit {
 
   temRecursoSelecionado = computed(() => this.recursoSelecionadoId() !== null);
 
+  iniciais = computed(() => {
+    const nome = this.pessoa()?.nome;
+    if (!nome) return '?';
+    const partes = nome.trim().split(/\s+/);
+    if (partes.length >= 2) {
+      return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+    }
+    return partes[0][0].toUpperCase();
+  });
+
   tipoRecursoSelecionado = computed(() => {
     const recursoId = this.recursoSelecionadoId();
     if (!recursoId) return null;
@@ -128,6 +147,14 @@ export class DetalhesPessoa implements OnInit {
       this.updateComponent();
       this.carregarTiposRecurso();
       this.carregarClientes();
+      this.carregarFoto(Number(id));
+
+      this.destroyRef.onDestroy(() => {
+        const url = this.fotoUrl();
+        if (url) URL.revokeObjectURL(url);
+        const preview = this.fotoPreviewUrl();
+        if (preview) URL.revokeObjectURL(preview);
+      });
     } else {
       this.errorMessage = 'Id inválido.'
     }
@@ -399,6 +426,67 @@ export class DetalhesPessoa implements OnInit {
         this.gerandoDocumento.set(false);
       }
     });
+  }
+
+  private carregarFoto(pessoaId: number): void {
+    this.fotoCarregando.set(true);
+    this.pessoaService.buscarFoto(pessoaId).subscribe({
+      next: (blob) => {
+        const oldUrl = this.fotoUrl();
+        if (oldUrl) URL.revokeObjectURL(oldUrl);
+        this.fotoUrl.set(URL.createObjectURL(blob));
+        this.fotoCarregando.set(false);
+      },
+      error: () => {
+        this.fotoUrl.set(null);
+        this.fotoCarregando.set(false);
+      }
+    });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.fotoErro.set(null);
+
+    if (!file.type.startsWith('image/')) {
+      this.fotoErro.set('Selecione apenas arquivos de imagem.');
+      input.value = '';
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      this.fotoErro.set('A imagem deve ter no maximo 5MB.');
+      input.value = '';
+      return;
+    }
+
+    const oldPreview = this.fotoPreviewUrl();
+    if (oldPreview) URL.revokeObjectURL(oldPreview);
+
+    const previewUrl = URL.createObjectURL(file);
+    this.fotoPreviewUrl.set(previewUrl);
+    this.fotoUploadando.set(true);
+
+    const pessoaId = Number(this.pessoaId());
+    this.pessoaService.uploadFoto(pessoaId, file).subscribe({
+      next: () => {
+        URL.revokeObjectURL(previewUrl);
+        this.fotoPreviewUrl.set(null);
+        this.fotoUploadando.set(false);
+        this.carregarFoto(pessoaId);
+      },
+      error: (err) => {
+        this.fotoErro.set('Erro ao enviar foto. Tente novamente.');
+        this.fotoUploadando.set(false);
+        console.error('Erro ao enviar foto:', err);
+      }
+    });
+
+    input.value = '';
   }
 
   gerarCarroChecklist() {

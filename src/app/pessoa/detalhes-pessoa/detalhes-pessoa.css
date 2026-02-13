@@ -274,3 +274,70 @@
   background-color: #0d6efd;
   border-color: #0d6efd;
 }
+
+/* ===== FOTO DE PERFIL ===== */
+.foto-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.foto-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e9ecef;
+  transition: border-color 0.2s ease;
+}
+
+.foto-img:hover {
+  border-color: #0d6efd;
+}
+
+.foto-img.foto-uploading {
+  opacity: 0.5;
+}
+
+.foto-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #e9ecef;
+  transition: border-color 0.2s ease;
+}
+
+.foto-placeholder:hover {
+  border-color: #0d6efd;
+}
+
+.foto-iniciais {
+  background-color: #0d6efd;
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.foto-loading {
+  background-color: #f8f9fa;
+}
+
+.foto-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

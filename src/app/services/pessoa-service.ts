@@ -38,4 +38,14 @@ export class PessoaService {
   deletarPessoa(pessoaId: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${pessoaId}`);
   }
+
+  uploadFoto(pessoaId: number, file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('foto', file);
+    return this.http.post(`${this.baseUrl}/${pessoaId}/foto`, formData, { responseType: 'text' });
+  }
+
+  buscarFoto(pessoaId: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${pessoaId}/foto`, { responseType: 'blob' });
+  }
 }
