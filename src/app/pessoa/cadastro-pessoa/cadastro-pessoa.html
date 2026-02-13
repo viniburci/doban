@@ -119,11 +119,6 @@
                 </select>
               </div>
 
-              <div class="col-md-6">
-                <label class="form-label">Chave Pix</label>
-                <input name="chavePix" type="text" class="form-control" formControlName="chavePix">
-              </div>
-
               <hr class="mt-5">
 
               <div class="col-md-6">
@@ -245,6 +240,41 @@
                   <option value="Unico">Unico</option>
                 </select>
               </div>
+
+              <hr class="mt-5">
+              <h6 class="text-muted mb-3">Dados Bancarios</h6>
+
+              <div class="col-md-6">
+                <label class="form-label">Chave Pix</label>
+                <input type="text" class="form-control" formControlName="chavePix">
+              </div>
+
+              <ng-container [formGroup]="dadosBancariosForm">
+                <div class="col-md-6">
+                  <label class="form-label">Banco</label>
+                  <input type="text" class="form-control" formControlName="banco" placeholder="Nome do banco">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Agencia</label>
+                  <input type="text" class="form-control" formControlName="agencia" placeholder="0000-0">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Conta</label>
+                  <input type="text" class="form-control" formControlName="conta" placeholder="00000-0">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Tipo de Conta</label>
+                  <select class="form-select" formControlName="tipoConta">
+                    <option value="">Selecione...</option>
+                    <option value="CORRENTE">Corrente</option>
+                    <option value="POUPANCA">Poupanca</option>
+                    <option value="SALARIO">Salario</option>
+                  </select>
+                </div>
+              </ng-container>
 
               <div class="col-12 mt-3 d-flex justify-content-end">
                 @if(!editMode()){

@@ -2,7 +2,7 @@ import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormGroup, FormControl, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { PessoaFormData } from '../../entities/pessoaFormaData.model';
+import { DadosBancariosDTO, PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { PessoaService } from '../../services/pessoa-service';
 import { DataService } from '../../services/data-service';
 
@@ -24,9 +24,17 @@ export class CadastroPessoa implements OnInit {
 
   constructor(private fb: FormBuilder) { }
 
-  form!: FormGroup<{ [K in keyof PessoaFormData]: FormControl<PessoaFormData[K]> }>;
+  form!: FormGroup;
+  dadosBancariosForm!: FormGroup;
 
   ngOnInit(): void {
+    this.dadosBancariosForm = this.fb.group({
+      banco: new FormControl(''),
+      agencia: new FormControl(''),
+      conta: new FormControl(''),
+      tipoConta: new FormControl(''),
+    });
+
     this.form = this.fb.group({
       nome: new FormControl(''),
       email: new FormControl(''),
@@ -70,6 +78,9 @@ export class CadastroPessoa implements OnInit {
         this.editMode.set(true);
         let data = this.convertDatesToBr(response);
         this.form.patchValue(data);
+        if (response.dadosBancarios) {
+          this.dadosBancariosForm.patchValue(response.dadosBancarios);
+        }
         console.log(data);
       })
     }
@@ -120,12 +131,16 @@ export class CadastroPessoa implements OnInit {
       validadeCnh: this.dataService.convertDateToISO(this.form.get('validadeCnh')?.value || ''),
     };
 
-    console.log(cleaned);
+    const db = this.dadosBancariosForm.getRawValue() as DadosBancariosDTO;
+    const dadosBancarios = (db.banco || db.agencia || db.conta || db.tipoConta)
+      ? this.emptyStringsToNull(db) : null;
+
+    const payload: PessoaFormData = { ...cleaned, dadosBancarios };
 
     if(this.editMode()) {
-      this.pessoaService.atualizarPessoa(Number(this.pessoaId()), cleaned).subscribe(response => console.log(response));
+      this.pessoaService.atualizarPessoa(Number(this.pessoaId()), payload).subscribe(response => console.log(response));
     } else {
-      this.pessoaService.criarPessoa(cleaned).subscribe((response) => console.log(response));
+      this.pessoaService.criarPessoa(payload).subscribe((response) => console.log(response));
     }
   }
 

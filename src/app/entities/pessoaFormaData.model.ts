@@ -1,3 +1,11 @@
+export interface DadosBancariosDTO {
+  id?: number | null;
+  banco?: string | null;
+  agencia?: string | null;
+  conta?: string | null;
+  tipoConta?: 'CORRENTE' | 'POUPANCA' | 'SALARIO' | null;
+}
+
 export interface PessoaFormData {
   id?: string | null;
   nome: string | null;
@@ -36,4 +44,5 @@ export interface PessoaFormData {
   tamanhoCalcado: string | null;
   tamanhoLuva: string | null;
   tamanhoCapacete: string | null;
+  dadosBancarios?: DadosBancariosDTO | null;
 }

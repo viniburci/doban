@@ -45,10 +45,6 @@
                 <span class="info-label">Telefone</span>
                 <span class="info-value">{{ pessoa()?.telefone || '-' }}</span>
               </div>
-              <div class="info-item">
-                <span class="info-label">Chave Pix</span>
-                <span class="info-value">{{ pessoa()?.chavePix || '-' }}</span>
-              </div>
             </div>
 
             <!-- SEÇÃO: ENDEREÇO -->
@@ -192,6 +188,32 @@
                 <span class="info-value">{{ pessoa()?.tamanhoCapacete || '-' }}</span>
               </div>
             </div>
+
+            <!-- SEÇÃO: DADOS BANCÁRIOS -->
+              <div class="section-header">Dados Bancarios</div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Chave Pix</span>
+                  <span class="info-value">{{ pessoa()?.chavePix || '-' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Banco</span>
+                  <span class="info-value">{{ pessoa()?.dadosBancarios?.banco || '-' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Agencia</span>
+                  <span class="info-value">{{ pessoa()?.dadosBancarios?.agencia || '-' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Conta</span>
+                  <span class="info-value">{{ pessoa()?.dadosBancarios?.conta || '-' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Tipo</span>
+                  <span class="info-value">{{ pessoa()?.dadosBancarios?.tipoConta || '-' }}</span>
+                </div>
+              </div>
+            
 
             <!-- Botão Editar -->
             <a [routerLink]="['/pessoas', pessoa()?.id, 'editar']" class="btn btn-primary w-100 mt-3">
