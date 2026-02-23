@@ -7,6 +7,122 @@
   min-height: 100vh;
 }
 
+/* ===== SEÇÃO DE INFORMAÇÕES DA PESSOA (ACCORDION) ===== */
+.pessoa-info-section {
+  margin-bottom: 2rem;
+}
+
+.pessoa-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.pessoa-header .foto-container {
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.pessoa-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pessoa-header-actions {
+  flex-shrink: 0;
+}
+
+/* Accordion */
+.pessoa-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.accordion-item {
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.accordion-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  background-color: #f8f9fa;
+}
+
+.accordion-header:hover {
+  background-color: #e9ecef;
+}
+
+.accordion-icon {
+  font-size: 0.75rem;
+  color: #6c757d;
+  width: 1rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.accordion-icon.rotated {
+  transform: rotate(-90deg);
+}
+
+.accordion-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.accordion-content {
+  padding: 1rem;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.info-grid-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem 1.5rem;
+}
+
+.info-section-group {
+  margin-bottom: 1rem;
+}
+
+.info-section-group:last-child {
+  margin-bottom: 0;
+}
+
+.info-section-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
 /* ===== CARDS BASE ===== */
 .card {
   margin-bottom: 1.5rem;
@@ -141,11 +257,6 @@
 }
 
 /* ===== SEÇÃO DE DOCUMENTOS ===== */
-.documentos-section {
-  position: sticky;
-  top: 100px;
-  z-index: 10;
-}
 
 .documentos-lista {
   margin-bottom: 0.5rem;
@@ -200,6 +311,32 @@
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
+
+  .pessoa-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .pessoa-header .foto-container {
+    align-self: center;
+  }
+
+  .pessoa-header-actions {
+    width: 100%;
+  }
+
+  .pessoa-header-actions .btn {
+    width: 100%;
+  }
+
+  .info-grid-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .accordion-title {
+    font-size: 0.85rem;
+  }
 }
 
 /* ===== ANIMAÇÕES SUAVES ===== */
@@ -253,6 +390,10 @@
 .recurso-wrapper.recurso-selecionado {
   box-shadow: 0 0 0 2px #0d6efd;
   border-radius: 12px;
+}
+
+.recurso-wrapper.recurso-selecionado .card {
+  border-color: transparent !important;
 }
 
 .recurso-checkbox {

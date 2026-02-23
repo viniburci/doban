@@ -61,7 +61,6 @@
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(253, 126, 20, 0.35);
 }
 

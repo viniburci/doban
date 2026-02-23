@@ -65,12 +65,6 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
   overflow: hidden;
-  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
 }
 
 .card-header {
@@ -201,43 +195,16 @@
   box-shadow: var(--shadow-primary);
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-primary-hover);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
 .btn-danger {
   background: linear-gradient(135deg, var(--danger-gradient-start) 0%, var(--danger-gradient-end) 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(220, 53, 69, 0.25);
 }
 
-.btn-danger:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(220, 53, 69, 0.35);
-}
-
-.btn-danger:active {
-  transform: translateY(0);
-}
-
 .btn-success {
   background: linear-gradient(135deg, var(--success-gradient-start) 0%, var(--success-gradient-end) 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
-}
-
-.btn-success:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.35);
-}
-
-.btn-success:active {
-  transform: translateY(0);
 }
 
 /* Botões desabilitados */

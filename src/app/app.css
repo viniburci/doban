@@ -27,7 +27,6 @@
 
 .brand-modern:hover {
   background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
 }
 
 .brand-icon {
@@ -43,7 +42,6 @@
 
 .brand-modern:hover .brand-icon {
   background: rgba(255, 255, 255, 0.3);
-  transform: rotate(360deg);
 }
 
 .brand-text {
@@ -116,11 +114,9 @@
 .nav-link-modern:hover {
   color: #ffffff !important;
   background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
 }
 
 .nav-link-modern:hover::before {
-  transform: translateX(0);
 }
 
 .nav-link-modern i,
@@ -133,7 +129,6 @@
 .nav-link-modern:hover i,
 .nav-link-modern:hover svg {
   opacity: 1;
-  transform: scale(1.1);
 }
 
 /* Active Link */
@@ -174,7 +169,6 @@
 .dropdown-menu-modern .dropdown-item:hover {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #ffffff;
-  transform: translateX(4px);
 }
 
 .dropdown-menu-modern .dropdown-item i,
@@ -187,7 +181,6 @@
 .dropdown-menu-modern .dropdown-item:hover i,
 .dropdown-menu-modern .dropdown-item:hover svg {
   opacity: 1;
-  transform: scale(1.1);
 }
 
 /* User Section */
@@ -210,7 +203,6 @@
 
 .user-info:hover {
   background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.05);
 }
 
 .user-avatar {

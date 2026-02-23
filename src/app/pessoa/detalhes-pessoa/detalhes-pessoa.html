@@ -1,12 +1,10 @@
 <div class="container-fluid">
-  <!-- Primeira Linha: pessoa()? + Vagas + Impressão -->
-  <div class="row">
-
-    <!-- COLUNA 1: DETALHES DA pessoa()? -->
-    <div class="col-lg-3 col-md-4">
-      @if (pessoa() != null && errorMessage == null) {
-        <div class="card">
-          <div class="card-body">
+  <!-- SEÇÃO 1: INFORMAÇÕES DA PESSOA (FULL WIDTH HORIZONTAL) -->
+  @if (pessoa() != null && errorMessage == null) {
+    <div class="pessoa-info-section">
+      <div class="card">
+        <div class="card-body">
+          <div class="pessoa-header">
             <!-- Foto de perfil -->
             <div class="foto-container" (click)="fotoInput.click()">
               @if (fotoCarregando()) {
@@ -28,209 +26,274 @@
               }
               <input #fotoInput type="file" accept="image/*" hidden (change)="onFileSelected($event)">
             </div>
-            @if (fotoErro()) {
-              <div class="alert alert-danger mt-2 mb-0 p-2" style="font-size: 0.85rem;">
-                {{ fotoErro() }}
-              </div>
-            }
 
-            <!-- Header do Card -->
-            <h5 class="card-title">{{ pessoa()?.nome || 'Nome não disponível' }}</h5>
-            <h6 class="card-subtitle">{{ pessoa()?.email || 'Email não disponível' }}</h6>
-
-            <!-- SEÇÃO: CONTATO -->
-            <div class="section-header">Contato</div>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">Telefone</span>
-                <span class="info-value">{{ pessoa()?.telefone || '-' }}</span>
-              </div>
-            </div>
-
-            <!-- SEÇÃO: ENDEREÇO -->
-            <div class="section-header">Endereço</div>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">Logradouro</span>
-                <span class="info-value">{{ pessoa()?.endereco || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Complemento</span>
-                <span class="info-value">{{ pessoa()?.complemento || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Bairro</span>
-                <span class="info-value">{{ pessoa()?.bairro || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Cidade/UF</span>
-                <span class="info-value">{{ pessoa()?.cidade || '-' }}/{{ pessoa()?.estado || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">CEP</span>
-                <span class="info-value">{{ pessoa()?.cep || '-' }}</span>
-              </div>
-            </div>
-
-            <!-- SEÇÃO: DOCUMENTOS -->
-            <div class="section-header">Documentos</div>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">CPF</span>
-                <span class="info-value">{{ pessoa()?.cpf || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">RG</span>
-                <span class="info-value">{{ pessoa()?.numeroRg || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Emissão RG</span>
-                <span class="info-value">{{ pessoa()?.dataEmissaoRg || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">UF RG</span>
-                <span class="info-value">{{ pessoa()?.ufRg || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">PIS</span>
-                <span class="info-value">{{ pessoa()?.pis || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Título Eleitor</span>
-                <span class="info-value">{{ pessoa()?.tituloEleitor || '-' }}</span>
-              </div>
-            </div>
-
-            <!-- SEÇÃO: CTPS -->
-            <div class="section-header">CTPS</div>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">Número</span>
-                <span class="info-value">{{ pessoa()?.numeroCtps || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Série</span>
-                <span class="info-value">{{ pessoa()?.serieCtps || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Emissão</span>
-                <span class="info-value">{{ pessoa()?.dataEmissaoCtps || '-' }}</span>
-              </div>
-            </div>
-
-            <!-- SEÇÃO: CNH -->
-            <div class="section-header">CNH</div>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">Número</span>
-                <span class="info-value">{{ pessoa()?.numeroCnh || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Categoria</span>
-                <span class="info-value">{{ pessoa()?.categoriaCnh || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Registro</span>
-                <span class="info-value">{{ pessoa()?.registroCnh || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Validade</span>
-                <span class="info-value">{{ pessoa()?.validadeCnh || '-' }}</span>
-              </div>
-            </div>
-
-            <!-- SEÇÃO: DADOS PESSOAIS -->
-            <div class="section-header">Dados Pessoais</div>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">Nascimento</span>
-                <span class="info-value">{{ pessoa()?.dataNascimento || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Local Nasc.</span>
-                <span class="info-value">{{ pessoa()?.localNascimento || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Pai</span>
-                <span class="info-value">{{ pessoa()?.pai || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Mãe</span>
-                <span class="info-value">{{ pessoa()?.mae || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Estado Civil</span>
-                <span class="info-value">{{ pessoa()?.estadoCivil || '-' }}</span>
-              </div>
-            </div>
-
-            <!-- SEÇÃO: TAMANHO EQUIPAMENTO -->
-            <div class="section-header">Tamanhos</div>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">Camisa</span>
-                <span class="info-value">{{ pessoa()?.tamanhoCamisa || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Calça</span>
-                <span class="info-value">{{ pessoa()?.tamanhoCalca || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Calçado</span>
-                <span class="info-value">{{ pessoa()?.tamanhoCalcado || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Luva</span>
-                <span class="info-value">{{ pessoa()?.tamanhoLuva || '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Capacete</span>
-                <span class="info-value">{{ pessoa()?.tamanhoCapacete || '-' }}</span>
-              </div>
-            </div>
-
-            <!-- SEÇÃO: DADOS BANCÁRIOS -->
-              <div class="section-header">Dados Bancarios</div>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="info-label">Chave Pix</span>
-                  <span class="info-value">{{ pessoa()?.chavePix || '-' }}</span>
+            <div class="pessoa-header-info">
+              <h5 class="card-title mb-1">{{ pessoa()?.nome || 'Nome não disponível' }}</h5>
+              <h6 class="card-subtitle mb-0">{{ pessoa()?.email || 'Email não disponível' }}</h6>
+              @if (fotoErro()) {
+                <div class="alert alert-danger mt-2 mb-0 p-2" style="font-size: 0.85rem;">
+                  {{ fotoErro() }}
                 </div>
-                <div class="info-item">
-                  <span class="info-label">Banco</span>
-                  <span class="info-value">{{ pessoa()?.dadosBancarios?.banco || '-' }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Agencia</span>
-                  <span class="info-value">{{ pessoa()?.dadosBancarios?.agencia || '-' }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Conta</span>
-                  <span class="info-value">{{ pessoa()?.dadosBancarios?.conta || '-' }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Tipo</span>
-                  <span class="info-value">{{ pessoa()?.dadosBancarios?.tipoConta || '-' }}</span>
-                </div>
-              </div>
-            
+              }
+            </div>
 
-            <!-- Botão Editar -->
-            <a [routerLink]="['/pessoas', pessoa()?.id, 'editar']" class="btn btn-primary w-100 mt-3">
-              Editar Informações
-            </a>
+            <div class="pessoa-header-actions">
+              <a [routerLink]="['/pessoas', pessoa()?.id, 'editar']" class="btn btn-primary">
+                Editar Informações
+              </a>
+            </div>
+          </div>
+
+          <!-- Accordion de Informações -->
+          <div class="pessoa-accordion">
+            <!-- Seção: Contato e Dados Pessoais -->
+            <div class="accordion-item">
+              <div class="accordion-header" (click)="toggleSecao('contato')">
+                <span class="accordion-icon" [class.rotated]="!secaoContatoAberta()">▼</span>
+                <span class="accordion-title">Contato e Dados Pessoais</span>
+              </div>
+              @if (secaoContatoAberta()) {
+                <div class="accordion-content">
+                  <div class="info-grid-cols">
+                    <div class="info-item">
+                      <span class="info-label">Telefone</span>
+                      <span class="info-value">{{ pessoa()?.telefone || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Nascimento</span>
+                      <span class="info-value">{{ pessoa()?.dataNascimento || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Local Nasc.</span>
+                      <span class="info-value">{{ pessoa()?.localNascimento || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Pai</span>
+                      <span class="info-value">{{ pessoa()?.pai || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Mãe</span>
+                      <span class="info-value">{{ pessoa()?.mae || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Estado Civil</span>
+                      <span class="info-value">{{ pessoa()?.estadoCivil || '-' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Seção: Documentos -->
+            <div class="accordion-item">
+              <div class="accordion-header" (click)="toggleSecao('documentos')">
+                <span class="accordion-icon" [class.rotated]="!secaoDocumentosAberta()">▼</span>
+                <span class="accordion-title">Documentos</span>
+              </div>
+              @if (secaoDocumentosAberta()) {
+                <div class="accordion-content">
+                  <div class="info-grid-cols">
+                    <div class="info-item">
+                      <span class="info-label">CPF</span>
+                      <span class="info-value">{{ pessoa()?.cpf || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">RG</span>
+                      <span class="info-value">{{ pessoa()?.numeroRg || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Emissão RG</span>
+                      <span class="info-value">{{ pessoa()?.dataEmissaoRg || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">UF RG</span>
+                      <span class="info-value">{{ pessoa()?.ufRg || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">PIS</span>
+                      <span class="info-value">{{ pessoa()?.pis || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Título Eleitor</span>
+                      <span class="info-value">{{ pessoa()?.tituloEleitor || '-' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Seção: CNH -->
+            <div class="accordion-item">
+              <div class="accordion-header" (click)="toggleSecao('cnh')">
+                <span class="accordion-icon" [class.rotated]="!secaoCnhAberta()">▼</span>
+                <span class="accordion-title">CNH</span>
+              </div>
+              @if (secaoCnhAberta()) {
+                <div class="accordion-content">
+                  <div class="info-grid-cols">
+                    <div class="info-item">
+                      <span class="info-label">Número</span>
+                      <span class="info-value">{{ pessoa()?.numeroCnh || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Categoria</span>
+                      <span class="info-value">{{ pessoa()?.categoriaCnh || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Registro</span>
+                      <span class="info-value">{{ pessoa()?.registroCnh || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Validade</span>
+                      <span class="info-value">{{ pessoa()?.validadeCnh || '-' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Seção: CTPS -->
+            <div class="accordion-item">
+              <div class="accordion-header" (click)="toggleSecao('ctps')">
+                <span class="accordion-icon" [class.rotated]="!secaoCtpsAberta()">▼</span>
+                <span class="accordion-title">CTPS</span>
+              </div>
+              @if (secaoCtpsAberta()) {
+                <div class="accordion-content">
+                  <div class="info-grid-cols">
+                    <div class="info-item">
+                      <span class="info-label">Número</span>
+                      <span class="info-value">{{ pessoa()?.numeroCtps || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Série</span>
+                      <span class="info-value">{{ pessoa()?.serieCtps || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Emissão</span>
+                      <span class="info-value">{{ pessoa()?.dataEmissaoCtps || '-' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Seção: Endereço -->
+            <div class="accordion-item">
+              <div class="accordion-header" (click)="toggleSecao('endereco')">
+                <span class="accordion-icon" [class.rotated]="!secaoEnderecoAberta()">▼</span>
+                <span class="accordion-title">Endereço</span>
+              </div>
+              @if (secaoEnderecoAberta()) {
+                <div class="accordion-content">
+                  <div class="info-grid-cols">
+                    <div class="info-item">
+                      <span class="info-label">Logradouro</span>
+                      <span class="info-value">{{ pessoa()?.endereco || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Complemento</span>
+                      <span class="info-value">{{ pessoa()?.complemento || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Bairro</span>
+                      <span class="info-value">{{ pessoa()?.bairro || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Cidade/UF</span>
+                      <span class="info-value">{{ pessoa()?.cidade || '-' }}/{{ pessoa()?.estado || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">CEP</span>
+                      <span class="info-value">{{ pessoa()?.cep || '-' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Seção: Dados Bancários -->
+            <div class="accordion-item">
+              <div class="accordion-header" (click)="toggleSecao('bancaria')">
+                <span class="accordion-icon" [class.rotated]="!secaoBancariaAberta()">▼</span>
+                <span class="accordion-title">Dados Bancários</span>
+              </div>
+              @if (secaoBancariaAberta()) {
+                <div class="accordion-content">
+                  <div class="info-grid-cols">
+                    <div class="info-item">
+                      <span class="info-label">Chave Pix</span>
+                      <span class="info-value">{{ pessoa()?.chavePix || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Banco</span>
+                      <span class="info-value">{{ pessoa()?.dadosBancarios?.banco || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Agência</span>
+                      <span class="info-value">{{ pessoa()?.dadosBancarios?.agencia || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Conta</span>
+                      <span class="info-value">{{ pessoa()?.dadosBancarios?.conta || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Tipo</span>
+                      <span class="info-value">{{ pessoa()?.dadosBancarios?.tipoConta || '-' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Seção: Tamanhos -->
+            <div class="accordion-item">
+              <div class="accordion-header" (click)="toggleSecao('tamanhos')">
+                <span class="accordion-icon" [class.rotated]="!secaoTamanhosAberta()">▼</span>
+                <span class="accordion-title">Tamanhos</span>
+              </div>
+              @if (secaoTamanhosAberta()) {
+                <div class="accordion-content">
+                  <div class="info-grid-cols">
+                    <div class="info-item">
+                      <span class="info-label">Camisa</span>
+                      <span class="info-value">{{ pessoa()?.tamanhoCamisa || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Calça</span>
+                      <span class="info-value">{{ pessoa()?.tamanhoCalca || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Calçado</span>
+                      <span class="info-value">{{ pessoa()?.tamanhoCalcado || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Luva</span>
+                      <span class="info-value">{{ pessoa()?.tamanhoLuva || '-' }}</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Capacete</span>
+                      <span class="info-value">{{ pessoa()?.tamanhoCapacete || '-' }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
           </div>
         </div>
-      }
-      @else if (errorMessage != null) {
-        <div class="alert alert-danger" role="alert">
-          {{ errorMessage }}
-        </div>
-      }
+      </div>
     </div>
+  }
+  @else if (errorMessage != null) {
+    <div class="alert alert-danger" role="alert">
+      {{ errorMessage }}
+    </div>
+  }
 
-    <!-- COLUNA 2: VAGAS -->
-    <div class="col-lg-6 col-md-5">
+  <!-- SEÇÃO 2: VAGAS + DOCUMENTOS -->
+  <div class="row">
+    <!-- COLUNA 1: VAGAS -->
+    <div class="col-lg-8 col-md-7">
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Vagas</h5>
@@ -253,9 +316,9 @@
       </div>
     </div>
 
-    <!-- COLUNA 3: DOCUMENTOS -->
-    <div class="col-lg-3 col-md-3">
-      <div class="card documentos-section">
+    <!-- COLUNA 2: DOCUMENTOS -->
+    <div class="col-lg-4 col-md-5">
+      <div class="card">
         <div class="card-body">
           <h5 class="card-title">Gerar Documentos</h5>
 

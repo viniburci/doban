@@ -140,6 +140,41 @@ export class DetalhesPessoa implements OnInit {
     return recurso?.item.tipoRecursoCodigo ?? null;
   });
 
+  // Controle de accordion para seções de informações
+  secaoContatoAberta = signal(false);
+  secaoDocumentosAberta = signal(false);
+  secaoCnhAberta = signal(false);
+  secaoCtpsAberta = signal(false);
+  secaoEnderecoAberta = signal(false);
+  secaoBancariaAberta = signal(false);
+  secaoTamanhosAberta = signal(false);
+
+  toggleSecao(secao: string) {
+    switch(secao) {
+      case 'contato':
+        this.secaoContatoAberta.update(v => !v);
+        break;
+      case 'documentos':
+        this.secaoDocumentosAberta.update(v => !v);
+        break;
+      case 'cnh':
+        this.secaoCnhAberta.update(v => !v);
+        break;
+      case 'ctps':
+        this.secaoCtpsAberta.update(v => !v);
+        break;
+      case 'endereco':
+        this.secaoEnderecoAberta.update(v => !v);
+        break;
+      case 'bancaria':
+        this.secaoBancariaAberta.update(v => !v);
+        break;
+      case 'tamanhos':
+        this.secaoTamanhosAberta.update(v => !v);
+        break;
+    }
+  }
+
 
   ngOnInit() {
     const id = this.pessoaId();
