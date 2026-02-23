@@ -105,11 +105,10 @@
                       <div class="col-md-5">
                         <label class="form-label">Mapeamento Tamanho</label>
                         <select class="form-select form-select-sm"
-                          [value]="item.campoTamanhoPessoa || ''"
                           (change)="atualizarItemPadrao(i, 'campoTamanhoPessoa', $any($event.target).value || null)">
-                          <option value="">Sem mapeamento (manual)</option>
+                          <option value="" [selected]="!item.campoTamanhoPessoa">Sem mapeamento (manual)</option>
                           @for (campo of camposTamanhoPessoa; track campo.valor) {
-                            <option [value]="campo.valor">{{ campo.rotulo }}</option>
+                            <option [value]="campo.valor" [selected]="item.campoTamanhoPessoa === campo.valor">{{ campo.rotulo }}</option>
                           }
                         </select>
                         <small class="text-muted">Preenche automaticamente com tamanho da Pessoa</small>
