@@ -40,7 +40,7 @@ export interface TemplateDocumentoUpdate {
   ativo?: boolean | null;
 }
 
-export type CampoTamanhoPessoa = 'tamanhoCamisa' | 'tamanhoCalca' | 'tamanhoCalcado' | 'tamanhoLuva' | 'tamanhoCapacete';
+export type CampoTamanhoPessoa = 'tamanhoCamisa' | 'tamanhoCalca' | 'tamanhoCalcado' | 'tamanhoLuva' | 'tamanhoCapacete' | 'tamanhoUnico';
 
 export interface ItemPadrao {
   descricao: string;
@@ -54,11 +54,12 @@ export interface ItemPadrao {
 }
 
 export const CAMPOS_TAMANHO_PESSOA: { valor: CampoTamanhoPessoa; rotulo: string }[] = [
-  { valor: 'tamanhoCamisa', rotulo: 'Tam. Camisa' },
-  { valor: 'tamanhoCalca', rotulo: 'Tam. Calca' },
-  { valor: 'tamanhoCalcado', rotulo: 'Tam. Calcado' },
-  { valor: 'tamanhoLuva', rotulo: 'Tam. Luva' },
-  { valor: 'tamanhoCapacete', rotulo: 'Tam. Capacete' },
+  { valor: 'tamanhoCamisa', rotulo: 'Tamanho Camisa' },
+  { valor: 'tamanhoCalca', rotulo: 'Tamanho Calca' },
+  { valor: 'tamanhoCalcado', rotulo: 'Tamanho Calcado' },
+  { valor: 'tamanhoLuva', rotulo: 'Tamanho Luva' },
+  { valor: 'tamanhoCapacete', rotulo: 'Tamanho Capacete' },
+  { valor: 'tamanhoUnico', rotulo: 'Tamanho Unico' },
 ];
 
 export interface DadosTemplate {
