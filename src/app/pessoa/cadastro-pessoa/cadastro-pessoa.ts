@@ -5,6 +5,8 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { DadosBancariosDTO, PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { PessoaService } from '../../services/pessoa-service';
 import { DataService } from '../../services/data-service';
+import { NotificationService } from '../../services/notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cadastro-pessoa',
@@ -18,6 +20,8 @@ export class CadastroPessoa implements OnInit {
 
   private pessoaService = inject(PessoaService);
   private dataService = inject(DataService);
+  private notifications = inject(NotificationService);
+  private router = inject(Router);
 
   pessoaId = input<string | null>(null);
   editMode = signal<boolean>(false);
@@ -137,10 +141,20 @@ export class CadastroPessoa implements OnInit {
 
     const payload: PessoaFormData = { ...cleaned, dadosBancarios };
 
-    if(this.editMode()) {
-      this.pessoaService.atualizarPessoa(Number(this.pessoaId()), payload).subscribe(response => console.log(response));
+    if (this.editMode()) {
+      this.pessoaService.atualizarPessoa(Number(this.pessoaId()), payload).subscribe({
+        next: () => {
+          this.notifications.success('Pessoa atualizada com sucesso.');
+          this.router.navigate(['/pessoas', this.pessoaId(), 'detalhes']);
+        }
+      });
     } else {
-      this.pessoaService.criarPessoa(payload).subscribe((response) => console.log(response));
+      this.pessoaService.criarPessoa(payload).subscribe({
+        next: (response) => {
+          this.notifications.success('Pessoa cadastrada com sucesso.');
+          this.router.navigate(['/pessoas', response.id, 'detalhes']);
+        }
+      });
     }
   }
 

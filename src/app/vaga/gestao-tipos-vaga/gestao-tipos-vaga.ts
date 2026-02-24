@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { TipoVagaService } from '../../services/tipo-vaga.service';
 import { TipoVagaDTO } from '../../entities/tipo-vaga.model';
 import { ConfirmDeleteDirective } from '../../directives/confirm-delete';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-gestao-tipos-vaga',
@@ -13,6 +14,7 @@ import { ConfirmDeleteDirective } from '../../directives/confirm-delete';
 })
 export class GestaoTiposVaga implements OnInit {
   private tipoVagaService = inject(TipoVagaService);
+  private notifications = inject(NotificationService);
 
   tiposVaga = signal<TipoVagaDTO[]>([]);
   loading = signal(true);
@@ -39,8 +41,10 @@ export class GestaoTiposVaga implements OnInit {
     if (!confirmed || !tipo.id) return;
 
     this.tipoVagaService.desativar(tipo.id).subscribe({
-      next: () => this.carregarTiposVaga(),
-      error: (err) => console.error('Erro ao desativar tipo de vaga:', err)
+      next: () => {
+        this.notifications.success('Tipo de vaga desativado com sucesso.');
+        this.carregarTiposVaga();
+      }
     });
   }
 }

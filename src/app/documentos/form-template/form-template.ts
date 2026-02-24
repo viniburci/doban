@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TemplateDocumentoService } from '../../services/template-documento.service';
+import { NotificationService } from '../../services/notification.service';
 import { TipoVagaService } from '../../services/tipo-vaga.service';
 import { TemplateDocumentoCreate } from '../../entities/template-documento.model';
 import { TipoVagaDTO } from '../../entities/tipo-vaga.model';
@@ -20,6 +21,7 @@ export class FormTemplate implements OnInit {
   private router = inject(Router);
   private templateService = inject(TemplateDocumentoService);
   private tipoVagaService = inject(TipoVagaService);
+  private notifications = inject(NotificationService);
 
   @ViewChild('htmlEditor') htmlEditor!: ElementRef<HTMLTextAreaElement>;
 
@@ -300,10 +302,10 @@ export class FormTemplate implements OnInit {
     operacao.subscribe({
       next: () => {
         this.salvando.set(false);
+        this.notifications.success(this.editMode() ? 'Template atualizado com sucesso.' : 'Template criado com sucesso.');
         this.router.navigate(['/templates-documento']);
       },
-      error: (err) => {
-        console.error('Erro ao salvar template:', err);
+      error: () => {
         this.salvando.set(false);
       }
     });

@@ -5,6 +5,7 @@ import { TitleCasePipe, CommonModule } from '@angular/common';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { VagaService } from '../../services/vaga-service';
 import { DataService } from '../../services/data-service';
+import { NotificationService } from '../../services/notification.service';
 import { ClienteService } from '../../services/cliente.service';
 import { TipoVagaService } from '../../services/tipo-vaga.service';
 import { ClienteDTO } from '../../entities/cliente.model';
@@ -24,6 +25,7 @@ export class CadastroVaga implements OnInit {
   private dataService = inject(DataService);
   private clienteService = inject(ClienteService);
   private tipoVagaService = inject(TipoVagaService);
+  private notifications = inject(NotificationService);
   private destroy$ = new Subject<void>();
 
   pessoaId = input<string | null>(null);
@@ -147,11 +149,10 @@ export class CadastroVaga implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.updated.emit(true); // 🔹 Avise o pai que terminou
+          this.notifications.success(this.editVaga() ? 'Vaga atualizada com sucesso.' : 'Vaga cadastrada com sucesso.');
+          this.updated.emit(true);
         },
-        error: (error) => {
-          console.error('Erro ao salvar vaga:', error);
-        }
+        error: () => {}
       });
   }
 

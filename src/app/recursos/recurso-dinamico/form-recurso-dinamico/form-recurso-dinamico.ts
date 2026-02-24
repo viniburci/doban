@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal, input, output, effect, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RecursoDinamicoService } from '../../../services/recurso-dinamico.service';
+import { NotificationService } from '../../../services/notification.service';
 import { ItemDinamicoService } from '../../../services/item-dinamico.service';
 import { TipoRecursoService } from '../../../services/tipo-recurso.service';
 import { TipoRecursoDTO } from '../../../entities/tipo-recurso.model';
@@ -18,6 +19,7 @@ export class FormRecursoDinamico implements OnInit {
   private fb = inject(FormBuilder);
   private recursoDinamicoService = inject(RecursoDinamicoService);
   private itemDinamicoService = inject(ItemDinamicoService);
+  private notifications = inject(NotificationService);
   private tipoRecursoService = inject(TipoRecursoService);
 
   pessoaId = input.required<string | null>();
@@ -158,10 +160,10 @@ export class FormRecursoDinamico implements OnInit {
     }).subscribe({
       next: () => {
         this.loading.set(false);
+        this.notifications.success('Emprestimo registrado com sucesso.');
         this.updated.emit();
       },
-      error: (error) => {
-        console.error('Erro ao registrar empréstimo', error);
+      error: () => {
         this.loading.set(false);
       }
     });
@@ -176,10 +178,10 @@ export class FormRecursoDinamico implements OnInit {
     }).subscribe({
       next: () => {
         this.loading.set(false);
+        this.notifications.success('Devolucao registrada com sucesso.');
         this.updated.emit();
       },
-      error: (error) => {
-        console.error('Erro ao registrar devolução', error.message);
+      error: () => {
         this.loading.set(false);
       }
     });
@@ -194,10 +196,10 @@ export class FormRecursoDinamico implements OnInit {
     this.recursoDinamicoService.atualizarItensExtras(recursoId, this.itensExtras()).subscribe({
       next: () => {
         this.loading.set(false);
+        this.notifications.success('Itens extras salvos com sucesso.');
         this.updated.emit();
       },
-      error: (error) => {
-        console.error('Erro ao salvar itens extras', error.message);
+      error: () => {
         this.loading.set(false);
       }
     });

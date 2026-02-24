@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TipoRecursoService } from '../../../services/tipo-recurso.service';
+import { NotificationService } from '../../../services/notification.service';
 import { FieldDefinition, FieldType } from '../../../entities/field-schema.model';
 
 interface FieldDefinitionForm {
@@ -40,6 +41,8 @@ export class CadastroTipoRecurso implements OnInit {
   fieldTypes: FieldType[] = ['STRING', 'INTEGER', 'DECIMAL', 'DATE', 'DATETIME', 'BOOLEAN', 'ENUM'];
 
   form!: FormGroup<TipoRecursoForm>;
+
+  private notifications = inject(NotificationService);
 
   constructor(
     private fb: FormBuilder,
@@ -180,10 +183,10 @@ export class CadastroTipoRecurso implements OnInit {
       }).subscribe({
         next: () => {
           this.loading.set(false);
+          this.notifications.success('Tipo de recurso atualizado com sucesso.');
           this.router.navigate(['/tipos-recurso', this.tipoRecursoId(), 'detalhes']);
         },
-        error: (error) => {
-          console.error('Erro ao atualizar tipo de recurso', error);
+        error: () => {
           this.loading.set(false);
         }
       });
@@ -196,14 +199,13 @@ export class CadastroTipoRecurso implements OnInit {
       }).subscribe({
         next: (response) => {
           this.loading.set(false);
+          this.notifications.success('Tipo de recurso criado com sucesso.');
           this.router.navigate(['/tipos-recurso', response.id, 'detalhes']);
         },
-        error: (error) => {
-          console.error('Erro ao criar tipo de recurso', error);
+        error: () => {
           this.loading.set(false);
         }
       });
     }
-    console.log('Form Value:', this.form.value);
   }
 }

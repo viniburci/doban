@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ItemDinamicoService } from '../../../services/item-dinamico.service';
+import { NotificationService } from '../../../services/notification.service';
 import { TipoRecursoService } from '../../../services/tipo-recurso.service';
 import { TipoRecursoDTO } from '../../../entities/tipo-recurso.model';
 import { FieldDefinition } from '../../../entities/field-schema.model';
@@ -24,6 +25,8 @@ export class CadastroItemDinamico implements OnInit {
 
   form!: FormGroup;
   atributosForm!: FormGroup;
+
+  private notifications = inject(NotificationService);
 
   constructor(
     private fb: FormBuilder,
@@ -165,10 +168,10 @@ export class CadastroItemDinamico implements OnInit {
       }).subscribe({
         next: () => {
           this.loading.set(false);
+          this.notifications.success('Item atualizado com sucesso.');
           this.router.navigate(['/itens', this.itemId(), 'detalhes']);
         },
-        error: (error) => {
-          console.error('Erro ao atualizar item', error);
+        error: () => {
           this.loading.set(false);
         }
       });
@@ -180,10 +183,10 @@ export class CadastroItemDinamico implements OnInit {
       }).subscribe({
         next: (response) => {
           this.loading.set(false);
+          this.notifications.success('Item criado com sucesso.');
           this.router.navigate(['/itens', response.id, 'detalhes']);
         },
-        error: (error) => {
-          console.error('Erro ao criar item', error);
+        error: () => {
           this.loading.set(false);
         }
       });

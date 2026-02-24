@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { TemplateDocumentoService } from '../../services/template-documento.service';
 import { TemplateDocumento } from '../../entities/template-documento.model';
 import { ConfirmDeleteDirective } from '../../directives/confirm-delete';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-gestao-templates',
@@ -13,6 +14,7 @@ import { ConfirmDeleteDirective } from '../../directives/confirm-delete';
 })
 export class GestaoTemplates implements OnInit {
   private templateService = inject(TemplateDocumentoService);
+  private notifications = inject(NotificationService);
 
   templates = signal<TemplateDocumento[]>([]);
   loading = signal(true);
@@ -39,8 +41,10 @@ export class GestaoTemplates implements OnInit {
     if (!confirmed) return;
 
     this.templateService.desativar(template.id).subscribe({
-      next: () => this.carregarTemplates(),
-      error: (err) => console.error('Erro ao desativar template:', err)
+      next: () => {
+        this.notifications.success('Template desativado com sucesso.');
+        this.carregarTemplates();
+      }
     });
   }
 }

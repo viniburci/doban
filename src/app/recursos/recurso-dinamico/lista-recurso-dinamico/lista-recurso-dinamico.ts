@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RecursoDinamicoService } from '../../../services/recurso-dinamico.service';
+import { NotificationService } from '../../../services/notification.service';
 import { TipoRecursoService } from '../../../services/tipo-recurso.service';
 import { RecursoDinamicoDTO } from '../../../entities/recurso-dinamico.model';
 import { TipoRecursoDTO } from '../../../entities/tipo-recurso.model';
@@ -20,6 +21,8 @@ export class ListaRecursoDinamico implements OnInit {
   filtroTipo = signal<string>('');
   filtroStatus = signal<string>('');
   recursoExpandido = signal<number | null>(null);
+
+  private notifications = inject(NotificationService);
 
   constructor(
     private recursoDinamicoService: RecursoDinamicoService,
@@ -109,10 +112,8 @@ export class ListaRecursoDinamico implements OnInit {
     const dataHoje = new Date().toISOString().split('T')[0];
     this.recursoDinamicoService.registrarDevolucao(recurso.id, { dataDevolucao: dataHoje }).subscribe({
       next: () => {
+        this.notifications.success('Devolucao registrada com sucesso.');
         this.carregarRecursos();
-      },
-      error: (error) => {
-        console.error('Erro ao registrar devolução', error);
       }
     });
   }
@@ -123,6 +124,11 @@ export class ListaRecursoDinamico implements OnInit {
     } else {
       this.recursoExpandido.set(id);
     }
+  }
+
+  getAtributo(atributos: Record<string, any> | undefined, key: string): string | null {
+    if (!atributos) return null;
+    return atributos[key] ?? null;
   }
 
   getAtributos(atributos: Record<string, any>): Array<{key: string, value: any}> {

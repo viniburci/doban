@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } fro
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TipoVagaService } from '../../services/tipo-vaga.service';
+import { NotificationService } from '../../services/notification.service';
 import { TipoVagaCreateDTO } from '../../entities/tipo-vaga.model';
 import { CAMPOS_TAMANHO_PESSOA, ItemPadrao } from '../../entities/template-documento.model';
 
@@ -16,6 +17,7 @@ export class FormTipoVaga implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private tipoVagaService = inject(TipoVagaService);
+  private notifications = inject(NotificationService);
 
   tipoVagaId = input<string | null>(null);
 
@@ -105,10 +107,10 @@ export class FormTipoVaga implements OnInit {
     operacao.subscribe({
       next: () => {
         this.salvando.set(false);
+        this.notifications.success(this.editMode() ? 'Tipo de vaga atualizado com sucesso.' : 'Tipo de vaga criado com sucesso.');
         this.router.navigate(['/tipos-vaga']);
       },
-      error: (err) => {
-        console.error('Erro ao salvar tipo de vaga:', err);
+      error: () => {
         this.salvando.set(false);
       }
     });

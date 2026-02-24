@@ -12,6 +12,7 @@ import { ItemExtraDTO, RecursoDinamicoDTO } from '../../entities/recurso-dinamic
 import { TipoRecursoDTO } from '../../entities/tipo-recurso.model';
 import { RecursoDinamicoService } from '../../services/recurso-dinamico.service';
 import { TipoRecursoService } from '../../services/tipo-recurso.service';
+import { NotificationService } from '../../services/notification.service';
 import { CardRecursoDinamico } from "../../recursos/recurso-dinamico/card-recurso-dinamico/card-recurso-dinamico";
 import { FormRecursoDinamico } from "../../recursos/recurso-dinamico/form-recurso-dinamico/form-recurso-dinamico";
 import { DocumentoService, TipoDocumento, TIPOS_DOCUMENTOS_VAGA } from '../../services/documento.service';
@@ -38,6 +39,7 @@ export class DetalhesPessoa implements OnInit {
   private clienteService = inject(ClienteService);
 
   private destroyRef = inject(DestroyRef);
+  private notifications = inject(NotificationService);
 
   pessoaId = input<string | null>(null);
   errorMessage: string | null = null;
@@ -512,12 +514,12 @@ export class DetalhesPessoa implements OnInit {
         URL.revokeObjectURL(previewUrl);
         this.fotoPreviewUrl.set(null);
         this.fotoUploadando.set(false);
+        this.notifications.success('Foto atualizada com sucesso.');
         this.carregarFoto(pessoaId);
       },
-      error: (err) => {
+      error: () => {
         this.fotoErro.set('Erro ao enviar foto. Tente novamente.');
         this.fotoUploadando.set(false);
-        console.error('Erro ao enviar foto:', err);
       }
     });
 

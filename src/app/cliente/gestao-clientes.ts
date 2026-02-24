@@ -1,6 +1,7 @@
 import { Component, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClienteService } from '../services/cliente.service';
+import { NotificationService } from '../services/notification.service';
 import { ClienteDTO, ClienteCreateDTO } from '../entities/cliente.model';
 import { ConfirmDeleteDirective } from '../directives/confirm-delete';
 
@@ -14,6 +15,7 @@ import { ConfirmDeleteDirective } from '../directives/confirm-delete';
 export class GestaoClientes {
   private fb = inject(FormBuilder);
   private clienteService = inject(ClienteService);
+  private notifications = inject(NotificationService);
 
   clientes = signal<ClienteDTO[]>([]);
   editMode = signal(false);
@@ -93,27 +95,29 @@ export class GestaoClientes {
 
     request$.subscribe({
       next: () => {
+        this.notifications.success(this.editMode() ? 'Cliente atualizado com sucesso.' : 'Cliente criado com sucesso.');
         this.carregarClientes();
         this.onCancelar();
-      },
-      error: (error) => {
-        console.error('Erro ao salvar cliente:', error);
       }
     });
   }
 
   onToggleAtivo(cliente: ClienteDTO) {
     this.clienteService.alternarAtivo(cliente.id!).subscribe({
-      next: () => this.carregarClientes(),
-      error: (error) => console.error('Erro ao alterar status:', error)
+      next: () => {
+        this.notifications.success(`Cliente ${cliente.ativo ? 'desativado' : 'ativado'} com sucesso.`);
+        this.carregarClientes();
+      }
     });
   }
 
   onDeletar(cliente: ClienteDTO, confirmed: boolean) {
     if (confirmed) {
       this.clienteService.deletar(cliente.id!).subscribe({
-        next: () => this.carregarClientes(),
-        error: (error) => console.error('Erro ao deletar cliente:', error)
+        next: () => {
+          this.notifications.success('Cliente removido com sucesso.');
+          this.carregarClientes();
+        }
       });
     }
   }
