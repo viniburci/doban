@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
 import { RouterOutlet, RouterLinkActive, RouterLink, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
+import { Toast } from './shared/toast/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLinkActive, RouterLink],
+  imports: [RouterOutlet, RouterLinkActive, RouterLink, Toast],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -4,6 +4,7 @@ import { provideRouter, withComponentInputBinding, withRouterConfig } from '@ang
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './services/auth.interceptor';
+import { httpErrorInterceptor } from './services/http-error.interceptor';
 import { AuthService } from './services/auth.service';
 
 export const appConfig: ApplicationConfig = {
@@ -12,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding(), withRouterConfig({paramsInheritanceStrategy: "always"})),
     provideHttpClient(
-      withInterceptors([authInterceptor])
+      withInterceptors([authInterceptor, httpErrorInterceptor])
     ),
     {
       provide: APP_INITIALIZER,
