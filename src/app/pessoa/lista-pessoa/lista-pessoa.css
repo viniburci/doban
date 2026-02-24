@@ -1,13 +1,9 @@
-/* ===== ESTILO MINIMALISTA E CLEAN ===== */
-
-/* Container principal */
 .container-fluid {
   padding: 2rem;
   background-color: #f8f9fa;
   min-height: 100vh;
 }
 
-/* ===== HEADER COM BOTÃO ===== */
 .header-section {
   display: flex;
   justify-content: space-between;
@@ -23,53 +19,67 @@
   letter-spacing: -0.02em;
 }
 
-/* ===== TABS PARA PESSOAS ===== */
-.pessoas-tabs {
-  margin-bottom: 2rem;
+/* ===== GRID DE DUAS COLUNAS ===== */
+.pessoas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
 }
 
-.nav-tabs {
-  border-bottom: 2px solid #e9ecef;
-  margin-bottom: 1.5rem;
+/* ===== COLUNA ===== */
+.pessoas-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.nav-tabs .nav-link {
-  border: none;
-  border-bottom: 3px solid transparent;
-  color: #6c757d;
-  font-weight: 500;
-  padding: 0.75rem 1.5rem;
-  transition: all 0.2s ease;
+.coluna-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.625rem 0.875rem;
+  border-radius: 8px;
+  margin-bottom: 0.25rem;
 }
 
-.nav-tabs .nav-link:hover {
-  border-bottom-color: #dee2e6;
-  color: #495057;
+.coluna-header.ativas {
+  background-color: #d1e7dd;
+  color: #0f5132;
 }
 
-.nav-tabs .nav-link.active {
-  color: #0d6efd;
-  border-bottom-color: #0d6efd;
-  background-color: transparent;
+.coluna-header.inativas {
+  background-color: #f8d7da;
+  color: #842029;
 }
 
-/* ===== CARDS DE PESSOA ===== */
+.coluna-titulo {
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.coluna-count {
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+/* ===== CARDS ===== */
 .pessoa-card {
-  margin-bottom: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   background-color: white;
   border: 2px solid transparent;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease;
 }
 
 .pessoa-card:hover {
   border-color: #0d6efd;
 }
 
-/* Bordas de Status */
 .pessoa-card.ativa {
   border-left: 4px solid #198754;
 }
@@ -78,53 +88,80 @@
   border-left: 4px solid #dc3545;
 }
 
-/* Conteúdo do Card */
 .pessoa-card-body {
-  padding: 1.25rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.pessoa-info {
-  flex-grow: 1;
+  padding: 0.75rem 1rem;
 }
 
 .pessoa-nome {
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #212529;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.125rem;
   letter-spacing: -0.01em;
 }
 
 .pessoa-email {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #6c757d;
   margin-bottom: 0;
 }
 
-/* Status Badge */
-.status-badge {
-  font-size: 0.75rem;
+/* ===== PAGINAÇÃO ===== */
+.paginacao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+  margin-top: 0.25rem;
+}
+
+.btn-pagina {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.375rem;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background: white;
+  color: #495057;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-pagina:hover:not(:disabled) {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.btn-pagina.ativo {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
   font-weight: 600;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
-.status-badge.ativa {
-  background-color: #d1e7dd;
-  color: #0f5132;
+.btn-pagina:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
-.status-badge.inativa {
-  background-color: #f8d7da;
-  color: #842029;
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #adb5bd;
 }
 
-/* ===== BOTÕES MELHORADOS ===== */
+.empty-state-text {
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
+/* ===== BOTÕES ===== */
 .btn {
   border-radius: 8px;
   font-weight: 500;
@@ -138,24 +175,6 @@
 
 .btn-primary:hover {
   background-color: #0b5ed7;
-}
-
-/* ===== EMPTY STATES ===== */
-.empty-state {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: #6c757d;
-}
-
-.empty-state-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.empty-state-text {
-  font-size: 1rem;
-  margin-bottom: 0;
 }
 
 /* ===== RESPONSIVIDADE ===== */
@@ -174,16 +193,7 @@
     font-size: 1.5rem;
   }
 
-  .nav-tabs .nav-link {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .pessoa-nome {
-    font-size: 1rem;
-  }
-
-  .pessoa-email {
-    font-size: 0.8rem;
+  .pessoas-grid {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,5 +1,4 @@
 <div class="container-fluid">
-  <!-- Header com Título e Botão de Registro -->
   <div class="header-section">
     <h1 class="page-title">Pessoas</h1>
     <button type="button" class="btn btn-primary" (click)="navegarParaRegistro()">
@@ -7,70 +6,81 @@
     </button>
   </div>
 
-  <!-- Tabs para Pessoas Ativas e Inativas -->
-  <div class="pessoas-tabs">
-    <ul class="nav nav-tabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="ativas-tab" data-bs-toggle="tab"
-                data-bs-target="#ativas" type="button" role="tab">
-          ✓ Ativas ({{ pessoasAtivas().length }})
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="inativas-tab" data-bs-toggle="tab"
-                data-bs-target="#inativas" type="button" role="tab">
-          ✗ Inativas ({{ pessoasInativas().length }})
-        </button>
-      </li>
-    </ul>
-
-    <!-- Tab Content -->
-    <div class="tab-content">
-
-      <!-- TAB: PESSOAS ATIVAS -->
-      <div class="tab-pane fade show active" id="ativas" role="tabpanel">
-        @if (pessoasAtivas().length > 0) {
-          @for(pessoa of pessoasAtivas(); track pessoa.id) {
-            <div class="pessoa-card ativa" (click)="navegarParaDetalhes(pessoa.id ?? null)">
-              <div class="pessoa-card-body">
-                <div class="pessoa-info">
-                  <h5 class="pessoa-nome">{{ pessoa.nome || 'Nome não disponível' }}</h5>
-                  <p class="pessoa-email">{{ pessoa.email || 'Email não disponível' }}</p>
-                </div>
-                <span class="status-badge ativa">Ativa</span>
+  <div class="pessoas-grid">
+    <div class="pessoas-coluna">
+      <div class="coluna-header ativas">
+        <span class="coluna-titulo">Ativas</span>
+        <span class="coluna-count">{{ pessoasAtivas().length }}</span>
+      </div>
+      @if (pessoasAtivas().length > 0) {
+        @for (pessoa of pessoasAtivasPaginadas(); track pessoa.id) {
+          <div class="pessoa-card ativa" (click)="navegarParaDetalhes(pessoa.id ?? null)">
+            <div class="pessoa-card-body">
+              <div class="pessoa-info">
+                <h5 class="pessoa-nome">{{ pessoa.nome || 'Nome não disponível' }}</h5>
+                <p class="pessoa-email">{{ pessoa.email || 'Email não disponível' }}</p>
               </div>
             </div>
-          }
-        } @else {
-          <div class="empty-state">
-            <div class="empty-state-icon">👤</div>
-            <p class="empty-state-text">Nenhuma pessoa ativa registrada</p>
           </div>
         }
-      </div>
+        @if (totalPaginasAtivas() > 1) {
+          <div class="paginacao">
+            <button class="btn-pagina" [disabled]="paginaAtivas() === 0" (click)="navegarPaginaAtivas(paginaAtivas() - 1)">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            @for (p of range(totalPaginasAtivas()); track p) {
+              <button class="btn-pagina" [class.ativo]="paginaAtivas() === p" (click)="navegarPaginaAtivas(p)">
+                {{ p + 1 }}
+              </button>
+            }
+            <button class="btn-pagina" [disabled]="paginaAtivas() === totalPaginasAtivas() - 1" (click)="navegarPaginaAtivas(paginaAtivas() + 1)">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        }
+      } @else {
+        <div class="empty-state">
+          <p class="empty-state-text">Nenhuma pessoa ativa</p>
+        </div>
+      }
+    </div>
 
-      <!-- TAB: PESSOAS INATIVAS -->
-      <div class="tab-pane fade" id="inativas" role="tabpanel">
-        @if (pessoasInativas().length > 0) {
-          @for(pessoa of pessoasInativas(); track pessoa.id) {
-            <div class="pessoa-card inativa" (click)="navegarParaDetalhes(pessoa.id ?? null)">
-              <div class="pessoa-card-body">
-                <div class="pessoa-info">
-                  <h5 class="pessoa-nome">{{ pessoa.nome || 'Nome não disponível' }}</h5>
-                  <p class="pessoa-email">{{ pessoa.email || 'Email não disponível' }}</p>
-                </div>
-                <span class="status-badge inativa">Inativa</span>
+    <div class="pessoas-coluna">
+      <div class="coluna-header inativas">
+        <span class="coluna-titulo">Inativas</span>
+        <span class="coluna-count">{{ pessoasInativas().length }}</span>
+      </div>
+      @if (pessoasInativas().length > 0) {
+        @for (pessoa of pessoasInativasPaginadas(); track pessoa.id) {
+          <div class="pessoa-card inativa" (click)="navegarParaDetalhes(pessoa.id ?? null)">
+            <div class="pessoa-card-body">
+              <div class="pessoa-info">
+                <h5 class="pessoa-nome">{{ pessoa.nome || 'Nome não disponível' }}</h5>
+                <p class="pessoa-email">{{ pessoa.email || 'Email não disponível' }}</p>
               </div>
             </div>
-          }
-        } @else {
-          <div class="empty-state">
-            <div class="empty-state-icon">👤</div>
-            <p class="empty-state-text">Nenhuma pessoa inativa registrada</p>
           </div>
         }
-      </div>
-
+        @if (totalPaginasInativas() > 1) {
+          <div class="paginacao">
+            <button class="btn-pagina" [disabled]="paginaInativas() === 0" (click)="navegarPaginaInativas(paginaInativas() - 1)">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            @for (p of range(totalPaginasInativas()); track p) {
+              <button class="btn-pagina" [class.ativo]="paginaInativas() === p" (click)="navegarPaginaInativas(p)">
+                {{ p + 1 }}
+              </button>
+            }
+            <button class="btn-pagina" [disabled]="paginaInativas() === totalPaginasInativas() - 1" (click)="navegarPaginaInativas(paginaInativas() + 1)">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        }
+      } @else {
+        <div class="empty-state">
+          <p class="empty-state-text">Nenhuma pessoa inativa</p>
+        </div>
+      }
     </div>
   </div>
 </div>
