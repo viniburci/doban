@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { PessoaFormData } from '../entities/pessoaFormaData.model';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
+import { SUPPRESS_ERROR_NOTIFICATION } from './http-error.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,9 @@ export class PessoaService {
   }
 
   buscarFoto(pessoaId: number): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/${pessoaId}/foto`, { responseType: 'blob' });
+    return this.http.get(`${this.baseUrl}/${pessoaId}/foto`, {
+      responseType: 'blob',
+      context: new HttpContext().set(SUPPRESS_ERROR_NOTIFICATION, true)
+    });
   }
 }
