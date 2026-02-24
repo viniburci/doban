@@ -32,7 +32,12 @@
           <div class="recurso-card-header" (click)="toggleExpand(recurso.id!)">
             <div class="recurso-info">
               <div class="recurso-header">
-                <h5 class="recurso-item">{{ recurso.item.identificador }}</h5>
+                <h5 class="recurso-item">
+                  @if (getAtributo(recurso.atributosSnapshot ?? recurso.item.atributos, 'modelo'); as modelo) {
+                    {{ modelo }} -
+                  }
+                  {{ recurso.item.identificador }}
+                </h5>
                 <span class="recurso-tipo-badge">{{ recurso.item.tipoRecursoNome }}</span>
               </div>
               <p class="recurso-pessoa">
