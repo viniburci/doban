@@ -16,8 +16,8 @@ export class PessoaService {
     return this.http.get<PessoaFormData[]>(this.baseUrl);
   }
 
-  buscarPessoa(pessoaId: number): Observable<PessoaFormData> {
-    return this.http.get<PessoaFormData>(`${this.baseUrl}/${pessoaId}`);
+  buscarPessoa(pessoaId: number, context?: HttpContext): Observable<PessoaFormData> {
+    return this.http.get<PessoaFormData>(`${this.baseUrl}/${pessoaId}`, { context });
   }
 
   buscarPessoasAtivas(): Observable<PessoaFormData[]> {
