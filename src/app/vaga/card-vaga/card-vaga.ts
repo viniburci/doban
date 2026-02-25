@@ -13,9 +13,9 @@ import { parseDateString } from '../../utils/date-utils';
 })
 export class CardVaga {
 
-  vaga = input<VagaFormData | null>(null);
+  vaga = input.required<VagaFormData>();
 
-  editarVaga = output<string>();
+  editarVaga = output<VagaFormData>();
 
   isCollapsed = signal(true);
 
@@ -46,10 +46,6 @@ export class CardVaga {
   });
 
   onEditarVaga() {
-    const vagaId = this.vaga()?.id;
-
-    if (vagaId) {
-      this.editarVaga.emit(vagaId);
-    }
+    this.editarVaga.emit(this.vaga());
   }
 }

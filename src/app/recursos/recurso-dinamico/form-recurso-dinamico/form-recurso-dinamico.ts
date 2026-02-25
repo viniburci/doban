@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal, input, output, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, signal, input, output, effect, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RecursoDinamicoService } from '../../../services/recurso-dinamico.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -21,8 +22,9 @@ export class FormRecursoDinamico implements OnInit {
   private itemDinamicoService = inject(ItemDinamicoService);
   private notifications = inject(NotificationService);
   private tipoRecursoService = inject(TipoRecursoService);
+  private destroyRef = inject(DestroyRef);
 
-  pessoaId = input.required<string | null>();
+  pessoaId = input.required<string>();
   editRecurso = input<RecursoDinamicoDTO | null>(null);
 
   updated = output<void>();
@@ -49,13 +51,13 @@ export class FormRecursoDinamico implements OnInit {
     valor: [0]
   });
 
-  isEditMode = signal(false);
+  isDevolucaoMode = signal(false);
 
   constructor() {
     effect(() => {
       const recurso = this.editRecurso();
       if (recurso) {
-        this.isEditMode.set(true);
+        this.isDevolucaoMode.set(true);
         this.preencherFormularioEdicao(recurso);
       }
     });
@@ -66,14 +68,16 @@ export class FormRecursoDinamico implements OnInit {
   }
 
   carregarTiposRecurso() {
-    this.tipoRecursoService.listarAtivos().subscribe({
-      next: (response) => {
-        this.tiposRecurso.set(response);
-      },
-      error: (error) => {
-        console.error('Erro ao carregar tipos de recurso', error);
-      }
-    });
+    this.tipoRecursoService.listarAtivos()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.tiposRecurso.set(response);
+        },
+        error: (error) => {
+          console.error('Erro ao carregar tipos de recurso', error);
+        }
+      });
   }
 
   preencherFormularioEdicao(recurso: RecursoDinamicoDTO) {
@@ -104,14 +108,16 @@ export class FormRecursoDinamico implements OnInit {
     this.itensDisponiveis.set([]);
 
     if (codigo) {
-      this.itemDinamicoService.listarDisponiveis(codigo).subscribe({
-        next: (response) => {
-          this.itensDisponiveis.set(response);
-        },
-        error: (error) => {
-          console.error('Erro ao carregar itens disponíveis', error);
-        }
-      });
+      this.itemDinamicoService.listarDisponiveis(codigo)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response) => {
+            this.itensDisponiveis.set(response);
+          },
+          error: (error) => {
+            console.error('Erro ao carregar itens disponíveis', error);
+          }
+        });
     }
   }
 
@@ -122,7 +128,7 @@ export class FormRecursoDinamico implements OnInit {
 
     this.loading.set(true);
 
-    if (this.isEditMode()) {
+    if (this.isDevolucaoMode()) {
       this.registrarDevolucao();
     } else {
       this.criarEmprestimo();

@@ -19,7 +19,7 @@ export class CardRecursoDinamico {
   private notifications = inject(NotificationService);
 
   recurso = input.required<RecursoDinamicoDTO>();
-  editarRecurso = output<number>();
+  editarRecurso = output<RecursoDinamicoDTO>();
   updated = output<void>();
 
   isCollapsed = signal(true);
@@ -66,11 +66,7 @@ export class CardRecursoDinamico {
   }
 
   onEditarRecurso() {
-    const recursoId = this.recurso()?.id;
-
-    if (recursoId) {
-      this.editarRecurso.emit(recursoId);
-    }
+    this.editarRecurso.emit(this.recurso());
   }
 
   onConfirmDelete(event: boolean) {

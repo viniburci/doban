@@ -309,7 +309,7 @@
             </div>
           }
 
-          <button class="btn btn-primary w-100 mt-3" (click)="toggleRegistrarVaga()">
+          <button class="btn btn-primary w-100 mt-3" (click)="abrirNovaVaga()">
             Registrar Nova Vaga
           </button>
         </div>
@@ -441,7 +441,7 @@
                   <app-card-recurso-dinamico
                     [recurso]="recurso"
                     (editarRecurso)="editarEmprestimo($event)"
-                    (updated)="updateComponent()">
+                    (updated)="handleRecursoUpdated()">
                   </app-card-recurso-dinamico>
                 </div>
               </div>
@@ -607,8 +607,8 @@
   @if(showRegistrarVaga()) {
     <div class="card mt-4 fade-in">
       <div class="card-body">
-        <app-cadastro-vaga #vagaForm appScrollOnRender (updated)="handleUpdateAndClose()"
-          [editVaga]="editVaga() ? editVaga() : null" (close)="handleOnlyClose()"
+        <app-cadastro-vaga #vagaForm appScrollOnRender (updated)="handleVagaUpdated()"
+          [editVaga]="editVaga()"
           (closeForm)="handleOnlyClose()" [pessoaId]="pessoaId()">
         </app-cadastro-vaga>
       </div>
@@ -620,9 +620,9 @@
       <div class="card-body">
         <app-form-recurso-dinamico
           appScrollOnRender
-          [pessoaId]="pessoaId()"
+          [pessoaId]="pessoaId()!"
           [editRecurso]="editRecursoDinamico()"
-          (updated)="handleUpdateAndClose()"
+          (updated)="handleRecursoUpdated()"
           (closeForm)="handleOnlyClose()">
         </app-form-recurso-dinamico>
       </div>

@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpContext } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
+import { SUPPRESS_ERROR_NOTIFICATION } from '../../services/http-error.interceptor';
 import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { DataService } from '../../services/data-service';
@@ -212,10 +214,10 @@ export class DetalhesPessoa implements OnInit {
     });
   }
 
-  toggleRegistrarVaga() {
+  abrirNovaVaga() {
     this.handleOnlyClose();
     this.editVaga.set(null);
-    this.showRegistrarVaga.set(!this.showRegistrarVaga());
+    this.showRegistrarVaga.set(true);
   }
 
   novoEmprestimo() {
@@ -228,26 +230,25 @@ export class DetalhesPessoa implements OnInit {
     this.tipoFiltroSelecionado.set(codigo);
   }
 
-  editarVaga(event: string) {
-    this.toggleRegistrarVaga();
-    const vaga = this.vagasPessoa()?.find(v => v.id === event);
-    if (vaga) {
-      this.editVaga.set(vaga);
-    }
+  editarVaga(vaga: VagaFormData) {
+    this.handleOnlyClose();
+    this.editVaga.set(vaga);
+    this.showRegistrarVaga.set(true);
   }
 
-  editarEmprestimo(id: number) {
-    const recurso = this.recursosDinamicos().find(r => r.id === id);
-
-    if (!recurso) return;
-
+  editarEmprestimo(recurso: RecursoDinamicoDTO) {
     this.editRecursoDinamico.set(recurso);
     this.handleOnlyClose();
     this.showFormRecursoDinamico.set(true);
   }
 
-  handleUpdateAndClose() {
-    this.updateComponent();
+  handleVagaUpdated() {
+    this.carregarVagas(Number(this.pessoaId()));
+    this.handleOnlyClose();
+  }
+
+  handleRecursoUpdated() {
+    this.carregarRecursos(Number(this.pessoaId()));
     this.handleOnlyClose();
   }
 
@@ -257,27 +258,43 @@ export class DetalhesPessoa implements OnInit {
     return dateA > dateB ? 1 : -1;
   }
 
-  updateComponent() {
-    const id = Number(this.pessoaId());
+  private carregarPessoa(id: number) {
+    const suppressContext = new HttpContext().set(SUPPRESS_ERROR_NOTIFICATION, true);
 
-    this.pessoaService.buscarPessoa(id)
+    this.pessoaService.buscarPessoa(id, suppressContext)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(data => {
-        this.pessoa.set(data);
-        this.convertDatesToBr();
+      .subscribe({
+        next: data => {
+          this.pessoa.set(data);
+          this.convertDatesToBr();
+        },
+        error: () => {
+          this.errorMessage.set('Pessoa não encontrada.');
+        }
       });
+  }
 
+  private carregarVagas(id: number) {
     this.vagaService.getVagaPorPessoa(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(data => {
         this.vagasPessoa.set(data.sort(this.sortByDate));
       });
+  }
 
+  private carregarRecursos(id: number) {
     this.recursoDinamicoService.listarPorPessoa(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(data => {
         this.recursosDinamicos.set(data.sort(this.sortByDate));
       });
+  }
+
+  updateComponent() {
+    const id = Number(this.pessoaId());
+    this.carregarPessoa(id);
+    this.carregarVagas(id);
+    this.carregarRecursos(id);
   }
 
   handleOnlyClose() {
@@ -400,7 +417,7 @@ export class DetalhesPessoa implements OnInit {
         timer(2000)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => this.itensSalvosComSucesso.set(false));
-        this.updateComponent();
+        this.carregarRecursos(Number(this.pessoaId()));
       },
       error: (error) => {
         console.error('Erro ao salvar itens extras:', error);

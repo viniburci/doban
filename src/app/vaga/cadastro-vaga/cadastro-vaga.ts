@@ -1,4 +1,4 @@
-import { Component, input, OnInit, signal, inject, output, effect, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, OnInit, signal, inject, output, effect, DestroyRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AtestadoSaudeOcupacional, TipoAcrescimoSubstituicao, TipoContratante, TipoContrato, VagaFormData } from '../../entities/vagaFormData.model';
 import { TitleCasePipe } from '@angular/common';
@@ -17,7 +17,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [ReactiveFormsModule, TitleCasePipe, NgxMaskDirective],
   providers: [provideNgxMask()],
   templateUrl: './cadastro-vaga.html',
-  styleUrl: './cadastro-vaga.css'
+  styleUrl: './cadastro-vaga.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CadastroVaga implements OnInit {
   private fb = inject(FormBuilder);
@@ -31,7 +32,7 @@ export class CadastroVaga implements OnInit {
   pessoaId = input<string | null>(null);
   editMode = signal<boolean>(false);
   editVaga = input<VagaFormData | null>(null);
-  updated = output<boolean>();
+  updated = output<void>();
   closeForm = output<void>();
 
   clientes = signal<ClienteDTO[]>([]);
@@ -144,7 +145,7 @@ export class CadastroVaga implements OnInit {
       .subscribe({
         next: () => {
           this.notifications.success(this.editVaga() ? 'Vaga atualizada com sucesso.' : 'Vaga cadastrada com sucesso.');
-          this.updated.emit(true);
+          this.updated.emit();
         },
         error: () => {}
       });
