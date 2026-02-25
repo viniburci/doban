@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <!-- SEÇÃO 1: INFORMAÇÕES DA PESSOA (FULL WIDTH HORIZONTAL) -->
-  @if (pessoa() != null && errorMessage == null) {
+  @if (pessoa() != null && errorMessage() == null) {
     <div class="pessoa-info-section">
       <div class="card">
         <div class="card-body">
@@ -49,10 +49,10 @@
             <!-- Seção: Contato e Dados Pessoais -->
             <div class="accordion-item">
               <div class="accordion-header" (click)="toggleSecao('contato')">
-                <span class="accordion-icon" [class.rotated]="!secaoContatoAberta()">▼</span>
+                <span class="accordion-icon" [class.rotated]="!isSecaoAberta('contato')">▼</span>
                 <span class="accordion-title">Contato e Dados Pessoais</span>
               </div>
-              @if (secaoContatoAberta()) {
+              @if (isSecaoAberta('contato')) {
                 <div class="accordion-content">
                   <div class="info-grid-cols">
                     <div class="info-item">
@@ -87,10 +87,10 @@
             <!-- Seção: Documentos -->
             <div class="accordion-item">
               <div class="accordion-header" (click)="toggleSecao('documentos')">
-                <span class="accordion-icon" [class.rotated]="!secaoDocumentosAberta()">▼</span>
+                <span class="accordion-icon" [class.rotated]="!isSecaoAberta('documentos')">▼</span>
                 <span class="accordion-title">Documentos</span>
               </div>
-              @if (secaoDocumentosAberta()) {
+              @if (isSecaoAberta('documentos')) {
                 <div class="accordion-content">
                   <div class="info-grid-cols">
                     <div class="info-item">
@@ -125,10 +125,10 @@
             <!-- Seção: CNH -->
             <div class="accordion-item">
               <div class="accordion-header" (click)="toggleSecao('cnh')">
-                <span class="accordion-icon" [class.rotated]="!secaoCnhAberta()">▼</span>
+                <span class="accordion-icon" [class.rotated]="!isSecaoAberta('cnh')">▼</span>
                 <span class="accordion-title">CNH</span>
               </div>
-              @if (secaoCnhAberta()) {
+              @if (isSecaoAberta('cnh')) {
                 <div class="accordion-content">
                   <div class="info-grid-cols">
                     <div class="info-item">
@@ -155,10 +155,10 @@
             <!-- Seção: CTPS -->
             <div class="accordion-item">
               <div class="accordion-header" (click)="toggleSecao('ctps')">
-                <span class="accordion-icon" [class.rotated]="!secaoCtpsAberta()">▼</span>
+                <span class="accordion-icon" [class.rotated]="!isSecaoAberta('ctps')">▼</span>
                 <span class="accordion-title">CTPS</span>
               </div>
-              @if (secaoCtpsAberta()) {
+              @if (isSecaoAberta('ctps')) {
                 <div class="accordion-content">
                   <div class="info-grid-cols">
                     <div class="info-item">
@@ -181,10 +181,10 @@
             <!-- Seção: Endereço -->
             <div class="accordion-item">
               <div class="accordion-header" (click)="toggleSecao('endereco')">
-                <span class="accordion-icon" [class.rotated]="!secaoEnderecoAberta()">▼</span>
+                <span class="accordion-icon" [class.rotated]="!isSecaoAberta('endereco')">▼</span>
                 <span class="accordion-title">Endereço</span>
               </div>
-              @if (secaoEnderecoAberta()) {
+              @if (isSecaoAberta('endereco')) {
                 <div class="accordion-content">
                   <div class="info-grid-cols">
                     <div class="info-item">
@@ -215,10 +215,10 @@
             <!-- Seção: Dados Bancários -->
             <div class="accordion-item">
               <div class="accordion-header" (click)="toggleSecao('bancaria')">
-                <span class="accordion-icon" [class.rotated]="!secaoBancariaAberta()">▼</span>
+                <span class="accordion-icon" [class.rotated]="!isSecaoAberta('bancaria')">▼</span>
                 <span class="accordion-title">Dados Bancários</span>
               </div>
-              @if (secaoBancariaAberta()) {
+              @if (isSecaoAberta('bancaria')) {
                 <div class="accordion-content">
                   <div class="info-grid-cols">
                     <div class="info-item">
@@ -249,10 +249,10 @@
             <!-- Seção: Tamanhos -->
             <div class="accordion-item">
               <div class="accordion-header" (click)="toggleSecao('tamanhos')">
-                <span class="accordion-icon" [class.rotated]="!secaoTamanhosAberta()">▼</span>
+                <span class="accordion-icon" [class.rotated]="!isSecaoAberta('tamanhos')">▼</span>
                 <span class="accordion-title">Tamanhos</span>
               </div>
-              @if (secaoTamanhosAberta()) {
+              @if (isSecaoAberta('tamanhos')) {
                 <div class="accordion-content">
                   <div class="info-grid-cols">
                     <div class="info-item">
@@ -284,9 +284,9 @@
       </div>
     </div>
   }
-  @else if (errorMessage != null) {
+  @else if (errorMessage() != null) {
     <div class="alert alert-danger" role="alert">
-      {{ errorMessage }}
+      {{ errorMessage() }}
     </div>
   }
 
@@ -298,7 +298,7 @@
         <div class="card-body">
           <h5 class="card-title">Vagas</h5>
 
-          @if ((vagasPessoa()?.length || 0) > 0) {
+          @if (vagasPessoa()?.length) {
             @for(vaga of vagasPessoa(); track vaga.id) {
               <app-card-vaga [vaga]="vaga" (editarVaga)="editarVaga($event)"></app-card-vaga>
             }
@@ -323,12 +323,12 @@
           <h5 class="card-title">Gerar Documentos</h5>
 
           <!-- Selecao de Vaga -->
-          @if ((vagasPessoa()?.length || 0) > 0) {
+          @if (vagasPessoa()?.length) {
             <div class="mb-3">
               <label class="form-label">Selecione a Vaga</label>
               <select class="form-select form-select-sm"
                 [value]="vagaSelecionadaParaDocumento() ?? ''"
-                (change)="selecionarVagaParaDocumento(+$any($event.target).value)">
+                (change)="onVagaSelectChange($event)">
                 <option value="" disabled>Escolha uma vaga...</option>
                 @for (vaga of vagasPessoa(); track vaga.id) {
                   <option [value]="vaga.id">{{ vaga.clienteNome }} - {{ vaga.tipoVagaNome }}</option>
@@ -413,7 +413,7 @@
             [class.btn-primary]="tipoFiltroSelecionado() === null"
             [class.btn-outline-primary]="tipoFiltroSelecionado() !== null"
             (click)="filtrarPorTipo(null)">
-            Todos ({{ recursosDinamicos().length || 0 }})
+            Todos ({{ recursosDinamicos().length }})
           </button>
           @for(tipo of contadorPorTipo(); track tipo.codigo) {
             <button
@@ -428,7 +428,7 @@
 
         <!-- Grid de cards -->
         <div class="row">
-          @if ((recursosFiltrados().length || 0) > 0) {
+          @if (recursosFiltrados().length > 0) {
             @for(recurso of recursosFiltrados(); track recurso.id) {
               <div class="col-lg-4 col-md-6 mb-3">
                 <div class="recurso-wrapper" [class.recurso-selecionado]="isRecursoSelecionado(recurso.id!)">
@@ -472,7 +472,7 @@
                 <label class="form-label">Cliente (para documento)</label>
                 <select class="form-select form-select-sm"
                   [value]="clienteSelecionadoId() ?? ''"
-                  (change)="selecionarCliente($any($event.target).value ? +$any($event.target).value : null)">
+                  (change)="onClienteSelectChange($event)">
                   <option value="">Sem cliente</option>
                   @for (cliente of clientes(); track cliente.id) {
                     <option [value]="cliente.id">{{ cliente.nome }}</option>

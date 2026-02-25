@@ -33,8 +33,21 @@ export class FormRecursoDinamico implements OnInit {
   itensDisponiveis = signal<ItemDinamicoDTO[]>([]);
   itensExtras = signal<ItemExtraDTO[]>([]);
 
-  form!: FormGroup;
-  itemExtraForm!: FormGroup;
+  form: FormGroup = this.fb.group({
+    tipoRecursoCodigo: new FormControl('', { nonNullable: true }),
+    itemId: new FormControl<number | null>(null, { validators: [Validators.required] }),
+    dataEntrega: new FormControl(new Date().toISOString().split('T')[0], { nonNullable: true, validators: [Validators.required] }),
+    dataDevolucao: new FormControl<string | null>(null)
+  });
+
+  itemExtraForm: FormGroup = this.fb.group({
+    descricao: ['', Validators.required],
+    marca: [''],
+    numeroSerie: [''],
+    ddd: [''],
+    quantidade: [1],
+    valor: [0]
+  });
 
   isEditMode = signal(false);
 
@@ -49,31 +62,13 @@ export class FormRecursoDinamico implements OnInit {
   }
 
   ngOnInit() {
-    const hoje = new Date().toISOString().split('T')[0];
-
-    this.form = this.fb.group({
-      tipoRecursoCodigo: new FormControl('', { nonNullable: true }),
-      itemId: new FormControl<number | null>(null, { validators: [Validators.required] }),
-      dataEntrega: new FormControl(hoje, { nonNullable: true, validators: [Validators.required] }),
-      dataDevolucao: new FormControl<string | null>(null)
-    });
-
-    this.itemExtraForm = this.fb.group({
-      descricao: ['', Validators.required],
-      marca: [''],
-      numeroSerie: [''],
-      ddd: [''],
-      quantidade: [1],
-      valor: [0]
-    });
-
     this.carregarTiposRecurso();
   }
 
   carregarTiposRecurso() {
-    this.tipoRecursoService.listarTodos().subscribe({
+    this.tipoRecursoService.listarAtivos().subscribe({
       next: (response) => {
-        this.tiposRecurso.set(response.filter(t => t.ativo));
+        this.tiposRecurso.set(response);
       },
       error: (error) => {
         console.error('Erro ao carregar tipos de recurso', error);
@@ -99,7 +94,6 @@ export class FormRecursoDinamico implements OnInit {
 
     this.itensDisponiveis.set([recurso.item]);
 
-    // Carregar itens extras existentes
     if (recurso.itensExtras) {
       this.itensExtras.set([...recurso.itensExtras]);
     }

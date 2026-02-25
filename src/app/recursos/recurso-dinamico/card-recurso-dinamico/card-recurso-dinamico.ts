@@ -4,6 +4,8 @@ import { DateDisplayPipe } from '../../../pipes/date-display-pipe';
 import { ConfirmDeleteDirective } from '../../../directives/confirm-delete';
 import { RecursoDinamicoDTO } from '../../../entities/recurso-dinamico.model';
 import { RecursoDinamicoService } from '../../../services/recurso-dinamico.service';
+import { NotificationService } from '../../../services/notification.service';
+import { parseDateString } from '../../../utils/date-utils';
 
 @Component({
   selector: 'app-card-recurso-dinamico',
@@ -14,6 +16,7 @@ import { RecursoDinamicoService } from '../../../services/recurso-dinamico.servi
 })
 export class CardRecursoDinamico {
   private recursoDinamicoService = inject(RecursoDinamicoService);
+  private notifications = inject(NotificationService);
 
   recurso = input.required<RecursoDinamicoDTO>();
   editarRecurso = output<number>();
@@ -23,15 +26,12 @@ export class CardRecursoDinamico {
 
   isRecursoAtivo = computed<boolean>(() => {
     const recursoData = this.recurso();
-    if (!recursoData) {
-      return false;
-    }
 
     if (!recursoData.dataDevolucao) {
       return true;
     }
 
-    const dataDevolucao = this.parseDateString(recursoData.dataDevolucao);
+    const dataDevolucao = parseDateString(recursoData.dataDevolucao);
 
     if (!dataDevolucao) {
       return false;
@@ -45,8 +45,6 @@ export class CardRecursoDinamico {
 
   atributosFormatados = computed(() => {
     const recurso = this.recurso();
-    // Usa atributosSnapshot (dados no momento do empréstimo) se disponível,
-    // senão fallback para atributos atuais do item
     const atributos = recurso?.atributosSnapshot ?? recurso?.item?.atributos;
     if (!atributos) return [];
 
@@ -65,18 +63,6 @@ export class CardRecursoDinamico {
       .replace(/([A-Z])/g, ' $1')
       .replace(/^./, str => str.toUpperCase())
       .trim();
-  }
-
-  private parseDateString(dateString: string | null | undefined): Date | null {
-    if (!dateString) {
-      return null;
-    }
-    try {
-      const datePart = dateString.substring(0, 10);
-      return new Date(datePart);
-    } catch (e) {
-      return null;
-    }
   }
 
   onEditarRecurso() {
@@ -99,11 +85,10 @@ export class CardRecursoDinamico {
     if (recursoId) {
       this.recursoDinamicoService.deletar(recursoId).subscribe({
         next: () => {
-          console.log('Recurso dinamico deletado com sucesso:', recursoId);
           this.updated.emit();
         },
-        error: (error) => {
-          console.error('Erro ao deletar recurso dinamico:', error);
+        error: () => {
+          this.notifications.error('Erro ao deletar recurso. Tente novamente.');
         }
       });
     }

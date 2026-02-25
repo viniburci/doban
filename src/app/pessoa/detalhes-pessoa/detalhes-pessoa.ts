@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Observable, timer } from 'rxjs';
 import { PessoaService } from '../../services/pessoa-service';
 import { PessoaFormData } from '../../entities/pessoaFormaData.model';
 import { DataService } from '../../services/data-service';
@@ -42,7 +44,7 @@ export class DetalhesPessoa implements OnInit {
   private notifications = inject(NotificationService);
 
   pessoaId = input<string | null>(null);
-  errorMessage: string | null = null;
+  errorMessage = signal<string | null>(null);
   pessoa = signal<PessoaFormData | null>(null);
   vagasPessoa = signal<VagaFormData[] | null>(null);
 
@@ -67,14 +69,11 @@ export class DetalhesPessoa implements OnInit {
   gerandoDocumento = signal(false);
   showGeradorDocumento = signal(false);
 
-  // Selecao de recurso para documentos (apenas 1 por vez)
   recursoSelecionadoId = signal<number | null>(null);
 
-  // Clientes para termo de responsabilidade
   clientes = signal<ClienteDTO[]>([]);
   clienteSelecionadoId = signal<number | null>(null);
 
-  // Itens extras editaveis do recurso selecionado
   itensExtrasEditaveis = signal<ItemExtraDTO[]>([]);
   salvandoItensExtras = signal(false);
   itensSalvosComSucesso = signal(false);
@@ -142,41 +141,24 @@ export class DetalhesPessoa implements OnInit {
     return recurso?.item.tipoRecursoCodigo ?? null;
   });
 
-  // Controle de accordion para seções de informações
-  secaoContatoAberta = signal(false);
-  secaoDocumentosAberta = signal(false);
-  secaoCnhAberta = signal(false);
-  secaoCtpsAberta = signal(false);
-  secaoEnderecoAberta = signal(false);
-  secaoBancariaAberta = signal(false);
-  secaoTamanhosAberta = signal(false);
+  // Controle de accordion para secoes de informacoes
+  secoes = signal<Record<string, boolean>>({
+    contato: false,
+    documentos: false,
+    cnh: false,
+    ctps: false,
+    endereco: false,
+    bancaria: false,
+    tamanhos: false
+  });
 
-  toggleSecao(secao: string) {
-    switch(secao) {
-      case 'contato':
-        this.secaoContatoAberta.update(v => !v);
-        break;
-      case 'documentos':
-        this.secaoDocumentosAberta.update(v => !v);
-        break;
-      case 'cnh':
-        this.secaoCnhAberta.update(v => !v);
-        break;
-      case 'ctps':
-        this.secaoCtpsAberta.update(v => !v);
-        break;
-      case 'endereco':
-        this.secaoEnderecoAberta.update(v => !v);
-        break;
-      case 'bancaria':
-        this.secaoBancariaAberta.update(v => !v);
-        break;
-      case 'tamanhos':
-        this.secaoTamanhosAberta.update(v => !v);
-        break;
-    }
+  isSecaoAberta(secao: string): boolean {
+    return this.secoes()[secao] ?? false;
   }
 
+  toggleSecao(secao: string) {
+    this.secoes.update(s => ({ ...s, [secao]: !s[secao] }));
+  }
 
   ngOnInit() {
     const id = this.pessoaId();
@@ -193,43 +175,41 @@ export class DetalhesPessoa implements OnInit {
         if (preview) URL.revokeObjectURL(preview);
       });
     } else {
-      this.errorMessage = 'Id inválido.'
+      this.errorMessage.set('Id inválido.');
     }
   }
 
   carregarTiposRecurso() {
-    this.tipoRecursoService.listarAtivos().subscribe({
-      next: (response) => {
-        this.tiposRecurso.set(response);
-      },
-      error: (error) => {
-        console.error('Erro ao carregar tipos de recurso', error);
-      }
-    });
+    this.tipoRecursoService.listarAtivos()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => this.tiposRecurso.set(response),
+        error: (error) => console.error('Erro ao carregar tipos de recurso', error)
+      });
   }
 
   carregarClientes() {
-    this.clienteService.listarAtivos().subscribe({
-      next: (response) => {
-        this.clientes.set(response);
-      },
-      error: (error) => {
-        console.error('Erro ao carregar clientes', error);
-      }
-    });
+    this.clienteService.listarAtivos()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => this.clientes.set(response),
+        error: (error) => console.error('Erro ao carregar clientes', error)
+      });
   }
 
   convertDatesToBr() {
-    const pessoa = this.pessoa();
-    if (!pessoa) return;
-
-    const d = this.dataService;
-
-    pessoa.dataNascimento = d.convertISOToDateBR(pessoa.dataNascimento);
-    pessoa.dataEmissaoCtps = d.convertISOToDateBR(pessoa.dataEmissaoCtps);
-    pessoa.dataEmissaoRg = d.convertISOToDateBR(pessoa.dataEmissaoRg);
-    pessoa.dataEmissaoPis = d.convertISOToDateBR(pessoa.dataEmissaoPis);
-    pessoa.validadeCnh = d.convertISOToDateBR(pessoa.validadeCnh);
+    this.pessoa.update(p => {
+      if (!p) return p;
+      const d = this.dataService;
+      return {
+        ...p,
+        dataNascimento: d.convertISOToDateBR(p.dataNascimento),
+        dataEmissaoCtps: d.convertISOToDateBR(p.dataEmissaoCtps),
+        dataEmissaoRg: d.convertISOToDateBR(p.dataEmissaoRg),
+        dataEmissaoPis: d.convertISOToDateBR(p.dataEmissaoPis),
+        validadeCnh: d.convertISOToDateBR(p.validadeCnh),
+      };
+    });
   }
 
   toggleRegistrarVaga() {
@@ -248,9 +228,9 @@ export class DetalhesPessoa implements OnInit {
     this.tipoFiltroSelecionado.set(codigo);
   }
 
-  editarVaga(event: any) {
+  editarVaga(event: string) {
     this.toggleRegistrarVaga();
-    let vaga = this.vagasPessoa()?.find(v => v.id === event);
+    const vaga = this.vagasPessoa()?.find(v => v.id === event);
     if (vaga) {
       this.editVaga.set(vaga);
     }
@@ -280,19 +260,24 @@ export class DetalhesPessoa implements OnInit {
   updateComponent() {
     const id = Number(this.pessoaId());
 
-    this.pessoaService.buscarPessoa(id).subscribe(data => {
-      this.pessoa.set(data);
-      this.convertDatesToBr();
-    });
+    this.pessoaService.buscarPessoa(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(data => {
+        this.pessoa.set(data);
+        this.convertDatesToBr();
+      });
 
-    this.vagaService.getVagaPorPessoa(id).subscribe(data => {
-      this.vagasPessoa.set(data.sort(this.sortByDate));
-      console.log('Vagas carregadas:', data);
-    });
+    this.vagaService.getVagaPorPessoa(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(data => {
+        this.vagasPessoa.set(data.sort(this.sortByDate));
+      });
 
-    this.recursoDinamicoService.listarPorPessoa(id).subscribe(data => {
-      this.recursosDinamicos.set(data.sort(this.sortByDate));
-    });
+    this.recursoDinamicoService.listarPorPessoa(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(data => {
+        this.recursosDinamicos.set(data.sort(this.sortByDate));
+      });
   }
 
   handleOnlyClose() {
@@ -318,42 +303,19 @@ export class DetalhesPessoa implements OnInit {
     );
   }
 
-  selecionarVagaParaDocumento(vagaId: number) {
-    this.vagaSelecionadaParaDocumento.set(vagaId);
+  onVagaSelectChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.vagaSelecionadaParaDocumento.set(+value);
   }
 
-  gerarDocumentosCombinados() {
-    const vagaId = this.vagaSelecionadaParaDocumento();
-    if (!vagaId) return;
-
-    const tiposSelecionados = this.tiposDocumentos()
-      .filter(t => t.selecionado)
-      .map(t => t.id);
-
-    if (tiposSelecionados.length === 0) return;
-
-    this.gerandoDocumento.set(true);
-
-    this.documentoService.gerarDocumentosCombinados(vagaId, tiposSelecionados).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        window.open(url, '_blank');
-        this.gerandoDocumento.set(false);
-      },
-      error: (error) => {
-        console.error('Erro ao gerar documentos:', error);
-        this.gerandoDocumento.set(false);
-      }
-    });
+  onClienteSelectChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.clienteSelecionadoId.set(value ? +value : null);
   }
 
-  gerarDocumentoIndividual(tipo: string) {
-    const vagaId = this.vagaSelecionadaParaDocumento();
-    if (!vagaId) return;
-
+  private abrirDocumento(obs$: Observable<Blob>): void {
     this.gerandoDocumento.set(true);
-
-    this.documentoService.gerarDocumento(vagaId, tipo).subscribe({
+    obs$.subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         window.open(url, '_blank');
@@ -366,7 +328,26 @@ export class DetalhesPessoa implements OnInit {
     });
   }
 
-  // Selecao de recurso para documentos (apenas 1 por vez)
+  gerarDocumentosCombinados() {
+    const vagaId = this.vagaSelecionadaParaDocumento();
+    if (!vagaId) return;
+
+    const tiposSelecionados = this.tiposDocumentos()
+      .filter(t => t.selecionado)
+      .map(t => t.id);
+
+    if (tiposSelecionados.length === 0) return;
+
+    this.abrirDocumento(this.documentoService.gerarDocumentosCombinados(vagaId, tiposSelecionados));
+  }
+
+  gerarDocumentoIndividual(tipo: string) {
+    const vagaId = this.vagaSelecionadaParaDocumento();
+    if (!vagaId) return;
+
+    this.abrirDocumento(this.documentoService.gerarDocumento(vagaId, tipo));
+  }
+
   toggleRecursoSelecionado(recursoId: number) {
     const atual = this.recursoSelecionadoId();
     if (atual === recursoId) {
@@ -374,7 +355,6 @@ export class DetalhesPessoa implements OnInit {
       this.itensExtrasEditaveis.set([]);
     } else {
       this.recursoSelecionadoId.set(recursoId);
-      // Carregar itens extras do recurso para edicao
       const recurso = this.recursosDinamicos().find(r => r.id === recursoId);
       this.itensExtrasEditaveis.set(recurso?.itensExtras ? [...recurso.itensExtras] : []);
     }
@@ -417,7 +397,9 @@ export class DetalhesPessoa implements OnInit {
       next: () => {
         this.salvandoItensExtras.set(false);
         this.itensSalvosComSucesso.set(true);
-        setTimeout(() => this.itensSalvosComSucesso.set(false), 2000);
+        timer(2000)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => this.itensSalvosComSucesso.set(false));
         this.updateComponent();
       },
       error: (error) => {
@@ -431,38 +413,14 @@ export class DetalhesPessoa implements OnInit {
     const recursoId = this.recursoSelecionadoId();
     if (!recursoId) return;
 
-    this.gerandoDocumento.set(true);
-
-    this.documentoService.gerarTermoEmprestimoDoRecurso(recursoId, this.clienteSelecionadoId()).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        window.open(url, '_blank');
-        this.gerandoDocumento.set(false);
-      },
-      error: (error) => {
-        console.error('Erro ao gerar termo:', error);
-        this.gerandoDocumento.set(false);
-      }
-    });
+    this.abrirDocumento(this.documentoService.gerarTermoEmprestimoDoRecurso(recursoId, this.clienteSelecionadoId()));
   }
 
   gerarDeclaracaoDevolucao() {
     const recursoId = this.recursoSelecionadoId();
     if (!recursoId) return;
 
-    this.gerandoDocumento.set(true);
-
-    this.documentoService.gerarTermoDevolucaoDoRecurso(recursoId, this.clienteSelecionadoId()).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        window.open(url, '_blank');
-        this.gerandoDocumento.set(false);
-      },
-      error: (error) => {
-        console.error('Erro ao gerar declaracao:', error);
-        this.gerandoDocumento.set(false);
-      }
-    });
+    this.abrirDocumento(this.documentoService.gerarTermoDevolucaoDoRecurso(recursoId, this.clienteSelecionadoId()));
   }
 
   private carregarFoto(pessoaId: number): void {
@@ -530,18 +488,6 @@ export class DetalhesPessoa implements OnInit {
     const recursoId = this.recursoSelecionadoId();
     if (!recursoId) return;
 
-    this.gerandoDocumento.set(true);
-
-    this.documentoService.gerarCarroChecklist(recursoId).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        window.open(url, '_blank');
-        this.gerandoDocumento.set(false);
-      },
-      error: (error) => {
-        console.error('Erro ao gerar checklist do carro:', error);
-        this.gerandoDocumento.set(false);
-      }
-    });
+    this.abrirDocumento(this.documentoService.gerarCarroChecklist(recursoId));
   }
 }
