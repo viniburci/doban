@@ -12,7 +12,11 @@
         <span class="coluna-titulo">Ativas</span>
         <span class="coluna-count">{{ pessoasAtivas().length }}</span>
       </div>
-      @if (pessoasAtivas().length > 0) {
+      @if (carregando()) {
+        @for (i of range(4); track i) {
+          <div class="pessoa-card-skeleton"></div>
+        }
+      } @else if (pessoasAtivas().length > 0) {
         @for (pessoa of pessoasAtivasPaginadas(); track pessoa.id) {
           <div class="pessoa-card ativa" (click)="navegarParaDetalhes(pessoa.id ?? null)">
             <div class="pessoa-card-body">
@@ -50,7 +54,11 @@
         <span class="coluna-titulo">Inativas</span>
         <span class="coluna-count">{{ pessoasInativas().length }}</span>
       </div>
-      @if (pessoasInativas().length > 0) {
+      @if (carregando()) {
+        @for (i of range(4); track i) {
+          <div class="pessoa-card-skeleton"></div>
+        }
+      } @else if (pessoasInativas().length > 0) {
         @for (pessoa of pessoasInativasPaginadas(); track pessoa.id) {
           <div class="pessoa-card inativa" (click)="navegarParaDetalhes(pessoa.id ?? null)">
             <div class="pessoa-card-body">

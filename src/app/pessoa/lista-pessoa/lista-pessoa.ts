@@ -18,6 +18,7 @@ export class ListaPessoa {
 
   pessoasAtivas = signal<PessoaFormData[]>([]);
   pessoasInativas = signal<PessoaFormData[]>([]);
+  carregando = signal(true);
 
   paginaAtivas = signal(0);
   paginaInativas = signal(0);
@@ -51,14 +52,23 @@ export class ListaPessoa {
   }
 
   carregarPessoas(): void {
+    this.carregando.set(true);
+    let pendentes = 2;
+
+    const verificarConclusao = () => {
+      if (--pendentes === 0) this.carregando.set(false);
+    };
+
     this.pessoaService.buscarPessoasAtivas().subscribe(data => {
       this.pessoasAtivas.set(data || []);
       this.paginaAtivas.set(0);
+      verificarConclusao();
     });
 
     this.pessoaService.buscarPessoasInativas().subscribe(data => {
       this.pessoasInativas.set(data || []);
       this.paginaInativas.set(0);
+      verificarConclusao();
     });
   }
 
