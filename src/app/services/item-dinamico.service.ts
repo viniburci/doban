@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ItemDinamicoCreateDTO, ItemDinamicoDTO, ItemDinamicoUpdateDTO } from '../entities/item-dinamico.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemDinamicoService {
-  private readonly baseUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/itens';
+  private readonly baseUrl = `${environment.apiUrl}/api/v1/itens`;
 
   constructor(private http: HttpClient) { }
 

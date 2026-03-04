@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import {
   DadosTemplate,
   GerarDocumentoRequest,
@@ -12,7 +13,7 @@ import {
 })
 export class DocumentoDinamicoService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/documentos-dinamicos';
+  private apiUrl = `${environment.apiUrl}/api/v1/documentos-dinamicos`;
 
   obterDadosTemplate(templateCodigo: string, vagaId: number): Observable<DadosTemplate> {
     return this.http.get<DadosTemplate>(`${this.apiUrl}/dados/${templateCodigo}/${vagaId}`);

@@ -3,12 +3,13 @@ import { PessoaFormData } from '../entities/pessoaFormaData.model';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { SUPPRESS_ERROR_NOTIFICATION } from './http-error.interceptor';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PessoaService {
-  private baseUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/pessoa';
+  private baseUrl = `${environment.apiUrl}/api/v1/pessoa`;
 
   constructor(private http: HttpClient) {}
 

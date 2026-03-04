@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import {
   TemplateDocumento,
   TemplateDocumentoCreate,
@@ -12,7 +13,7 @@ import {
 })
 export class TemplateDocumentoService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/templates-documento';
+  private apiUrl = `${environment.apiUrl}/api/v1/templates-documento`;
 
   listarTodos(): Observable<TemplateDocumento[]> {
     return this.http.get<TemplateDocumento[]>(this.apiUrl);

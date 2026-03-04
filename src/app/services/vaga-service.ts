@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { VagaFormData } from '../entities/vagaFormData.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VagaService {
 
-  private apiUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/vaga';
+  private apiUrl = `${environment.apiUrl}/api/v1/vaga`;
   constructor(private http: HttpClient) { }
 
   getVagaPorPessoa(pessoaId: number): Observable<VagaFormData[]> {

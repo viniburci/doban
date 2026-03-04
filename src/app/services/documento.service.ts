@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface TipoDocumento {
   id: string;
@@ -50,7 +51,7 @@ export const TIPOS_DOCUMENTOS = TIPOS_DOCUMENTOS_VAGA;
 })
 export class DocumentoService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/documentos';
+  private apiUrl = `${environment.apiUrl}/api/v1/documentos`;
 
   // Documentos baseados em VAGA
   gerarDocumento(vagaId: number, tipo: string): Observable<Blob> {

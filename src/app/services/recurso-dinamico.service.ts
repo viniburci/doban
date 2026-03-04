@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DevolucaoDinamicaDTO, ItemExtraDTO, RecursoDinamicoCreateDTO, RecursoDinamicoDTO } from '../entities/recurso-dinamico.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecursoDinamicoService {
-  private readonly baseUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/recursos-dinamicos';
+  private readonly baseUrl = `${environment.apiUrl}/api/v1/recursos-dinamicos`;
 
   constructor(private http: HttpClient) { }
 

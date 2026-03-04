@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 export interface ApiError {
   status: number;
@@ -60,7 +61,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      const isApiRequest = req.url.includes('cadastro-pessoas-docs.onrender.com');
+      const isApiRequest = req.url.includes(environment.apiUrl);
       const errorMessage = extractErrorMessage(error);
 
       if (isApiRequest && error.status === 401 && !isAuthUrl(req.url)) {

@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TipoRecursoCreateDTO, TipoRecursoDTO, TipoRecursoUpdateDTO } from '../entities/tipo-recurso.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TipoRecursoService {
-  private readonly baseUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/tipos-recurso';
+  private readonly baseUrl = `${environment.apiUrl}/api/v1/tipos-recurso`;
 
   constructor(private http: HttpClient) { }
 

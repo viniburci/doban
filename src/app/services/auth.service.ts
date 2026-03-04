@@ -2,6 +2,7 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpHandlerFn, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, of, throwError, tap, switchMap, catchError, filter, take } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface User {
   id: number;
@@ -21,7 +22,7 @@ interface RefreshTokenResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'https://cadastro-pessoas-docs.onrender.com';
+  private readonly API_URL = environment.apiUrl;
   private readonly TOKEN_KEY = 'auth_token';
   private readonly REFRESH_TOKEN_KEY = 'refreshToken';
 

@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ClienteDTO, ClienteCreateDTO } from '../entities/cliente.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClienteService {
 
-  private apiUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/clientes';
+  private apiUrl = `${environment.apiUrl}/api/v1/clientes`;
 
   constructor(private http: HttpClient) {}
 

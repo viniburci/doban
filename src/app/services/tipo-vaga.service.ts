@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TipoVagaCreateDTO, TipoVagaDTO, TipoVagaUpdateDTO } from '../entities/tipo-vaga.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TipoVagaService {
-  private readonly baseUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/tipos-vaga';
+  private readonly baseUrl = `${environment.apiUrl}/api/v1/tipos-vaga`;
 
   constructor(private http: HttpClient) { }
 
