@@ -8,7 +8,7 @@ import { VagaFormData } from '../entities/vagaFormData.model';
 })
 export class VagaService {
 
-  private apiUrl = 'http://localhost:8080/api/v1/vaga'; 
+  private apiUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/vaga';
   constructor(private http: HttpClient) { }
 
   getVagaPorPessoa(pessoaId: number): Observable<VagaFormData[]> {

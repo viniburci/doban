@@ -7,7 +7,7 @@ import { ItemDinamicoCreateDTO, ItemDinamicoDTO, ItemDinamicoUpdateDTO } from '.
   providedIn: 'root'
 })
 export class ItemDinamicoService {
-  private readonly baseUrl = 'http://localhost:8080/api/v1/itens';
+  private readonly baseUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/itens';
 
   constructor(private http: HttpClient) { }
 

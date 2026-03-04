@@ -60,7 +60,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      const isApiRequest = req.url.includes('localhost:8080');
+      const isApiRequest = req.url.includes('cadastro-pessoas-docs.onrender.com');
       const errorMessage = extractErrorMessage(error);
 
       if (isApiRequest && error.status === 401 && !isAuthUrl(req.url)) {

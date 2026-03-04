@@ -7,7 +7,7 @@ import { TipoRecursoCreateDTO, TipoRecursoDTO, TipoRecursoUpdateDTO } from '../e
   providedIn: 'root'
 })
 export class TipoRecursoService {
-  private readonly baseUrl = 'http://localhost:8080/api/v1/tipos-recurso';
+  private readonly baseUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/tipos-recurso';
 
   constructor(private http: HttpClient) { }
 

@@ -7,7 +7,7 @@ import { DevolucaoDinamicaDTO, ItemExtraDTO, RecursoDinamicoCreateDTO, RecursoDi
   providedIn: 'root'
 })
 export class RecursoDinamicoService {
-  private readonly baseUrl = 'http://localhost:8080/api/v1/recursos-dinamicos';
+  private readonly baseUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/recursos-dinamicos';
 
   constructor(private http: HttpClient) { }
 

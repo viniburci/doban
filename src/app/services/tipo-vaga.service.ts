@@ -7,7 +7,7 @@ import { TipoVagaCreateDTO, TipoVagaDTO, TipoVagaUpdateDTO } from '../entities/t
   providedIn: 'root'
 })
 export class TipoVagaService {
-  private readonly baseUrl = 'http://localhost:8080/api/v1/tipos-vaga';
+  private readonly baseUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/tipos-vaga';
 
   constructor(private http: HttpClient) { }
 

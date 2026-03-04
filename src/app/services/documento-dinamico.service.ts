@@ -12,7 +12,7 @@ import {
 })
 export class DocumentoDinamicoService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/v1/documentos-dinamicos';
+  private apiUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/documentos-dinamicos';
 
   obterDadosTemplate(templateCodigo: string, vagaId: number): Observable<DadosTemplate> {
     return this.http.get<DadosTemplate>(`${this.apiUrl}/dados/${templateCodigo}/${vagaId}`);

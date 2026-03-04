@@ -12,7 +12,7 @@ import {
 })
 export class TemplateDocumentoService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/v1/templates-documento';
+  private apiUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/templates-documento';
 
   listarTodos(): Observable<TemplateDocumento[]> {
     return this.http.get<TemplateDocumento[]>(this.apiUrl);

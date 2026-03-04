@@ -21,7 +21,7 @@ interface RefreshTokenResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8080';
+  private readonly API_URL = 'https://cadastro-pessoas-docs.onrender.com';
   private readonly TOKEN_KEY = 'auth_token';
   private readonly REFRESH_TOKEN_KEY = 'refreshToken';
 

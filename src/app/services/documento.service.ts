@@ -50,7 +50,7 @@ export const TIPOS_DOCUMENTOS = TIPOS_DOCUMENTOS_VAGA;
 })
 export class DocumentoService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/v1/documentos';
+  private apiUrl = 'https://cadastro-pessoas-docs.onrender.com/api/v1/documentos';
 
   // Documentos baseados em VAGA
   gerarDocumento(vagaId: number, tipo: string): Observable<Blob> {
