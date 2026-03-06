@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { HttpClient, HttpHandlerFn, HttpRequest, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHandlerFn, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, of, throwError, tap, switchMap, catchError, filter, take } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -60,7 +60,11 @@ export class AuthService {
     if (token && this.isValidJwtFormat(token) && !this.isTokenExpired(token)) {
       return this.loadCurrentUser().pipe(
         tap(() => this.isAuthenticatedSignal.set(true)),
-        catchError(() => {
+        catchError((err) => {
+          if (this.isNetworkError(err)) {
+            this.isAuthenticatedSignal.set(true);
+            return of(undefined);
+          }
           this.currentUserSignal.set(null);
           this.isAuthenticatedSignal.set(false);
           return of(undefined);
@@ -74,7 +78,11 @@ export class AuthService {
       return this.refreshAccessToken().pipe(
         switchMap(() => this.loadCurrentUser()),
         tap(() => this.isAuthenticatedSignal.set(true)),
-        catchError(() => {
+        catchError((err) => {
+          if (this.isNetworkError(err)) {
+            this.isAuthenticatedSignal.set(true);
+            return of(undefined);
+          }
           this.removeTokens();
           this.currentUserSignal.set(null);
           this.isAuthenticatedSignal.set(false);
@@ -88,6 +96,10 @@ export class AuthService {
       this.removeTokens();
     }
     return of(undefined);
+  }
+
+  private isNetworkError(err: unknown): boolean {
+    return err instanceof HttpErrorResponse && err.status === 0;
   }
 
   private isValidJwtFormat(token: string): boolean {
@@ -163,7 +175,9 @@ export class AuthService {
         catchError(err => {
           this.isRefreshing = false;
           this.refreshTokenSubject.next(null);
-          this.handleRefreshFailure();
+          if (!this.isNetworkError(err)) {
+            this.handleRefreshFailure();
+          }
           return throwError(() => err);
         })
       );
