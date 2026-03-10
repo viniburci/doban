@@ -1,65 +1,39 @@
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from './auth.service';
 
-/**
- * Guard funcional para proteger rotas que requerem autenticação
- */
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = (route, state): boolean | UrlTree => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const isAuthenticated = authService.isAuthenticated();
-
-  if (!isAuthenticated) {
-    // Salva a URL que o usuário tentou acessar para redirecionar após login
-    const returnUrl = state.url;
-    router.navigate(['/login'], { queryParams: { returnUrl } });
-    console.log('Usuário não autenticado. Redirecionando para a página de login.');
-    return false;
+  if (!authService.isAuthenticated()) {
+    return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
   }
 
   return true;
 };
 
-/**
- * Guard funcional para proteger rotas que requerem role ADMIN
- */
-export const adminGuard: CanActivateFn = (route, state) => {
+export const adminGuard: CanActivateFn = (route, state): boolean | UrlTree => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const isAuthenticated = authService.isAuthenticated();
-  const isAdmin = authService.isAdmin();
-
-  if (!isAuthenticated) {
-    router.navigate(['/login']);
-    console.log('Usuário não autenticado. Redirecionando para a página de login.');
-    return false;
+  if (!authService.isAuthenticated()) {
+    return router.createUrlTree(['/login']);
   }
 
-  if (!isAdmin) {
-    console.error('Acesso negado: apenas administradores podem acessar esta página');
-    router.navigate(['/pessoas']);
-    return false;
+  if (!authService.isAdmin()) {
+    return router.createUrlTree(['/pessoas']);
   }
 
   return true;
 };
 
-/**
- * Guard funcional para bloquear acesso à tela de login quando já autenticado
- */
-export const loginGuard: CanActivateFn = (route, state) => {
+export const loginGuard: CanActivateFn = (route, state): boolean | UrlTree => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const isAuthenticated = authService.isAuthenticated();
-
-  if (isAuthenticated) {
-    // Usuário já está autenticado, redireciona para a página principal
-    router.navigate(['/pessoas']);
-    return false;
+  if (authService.isAuthenticated()) {
+    return router.createUrlTree(['/pessoas']);
   }
 
   return true;

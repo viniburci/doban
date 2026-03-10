@@ -179,5 +179,9 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         redirectTo: 'login'
+    },
+    {
+        path: '**',
+        redirectTo: 'pessoas'
     }
 ];
