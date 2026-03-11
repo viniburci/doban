@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHandlerFn, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, of, throwError, tap, switchMap, catchError, filter, take } from 'rxjs';
+import { Observable, BehaviorSubject, of, throwError, tap, switchMap, catchError, filter, take, timeout, TimeoutError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface User {
@@ -58,28 +58,25 @@ export class AuthService {
     const token = this.getToken();
 
     if (token && this.isValidJwtFormat(token) && !this.isTokenExpired(token)) {
-      return this.loadCurrentUser().pipe(
-        tap(() => this.isAuthenticatedSignal.set(true)),
-        catchError((err) => {
-          if (this.isNetworkError(err)) {
-            this.isAuthenticatedSignal.set(true);
-            return of(undefined);
-          }
-          this.currentUserSignal.set(null);
-          this.isAuthenticatedSignal.set(false);
-          return of(undefined);
-        }),
-        switchMap(() => of(undefined))
-      );
+      // Token is locally valid — trust it immediately so the router can start.
+      // User data is fetched in the background without blocking the app.
+      this.isAuthenticatedSignal.set(true);
+      this.loadCurrentUser().pipe(
+        catchError(() => of(null))
+      ).subscribe();
+      return of(undefined);
     }
 
     const refreshToken = this.getRefreshToken();
     if (refreshToken) {
+      // Access token expired but refresh token exists — must exchange before navigating.
+      // Timeout ensures a slow/unreachable backend never leaves the app blank.
       return this.refreshAccessToken().pipe(
+        timeout(8000),
         switchMap(() => this.loadCurrentUser()),
         tap(() => this.isAuthenticatedSignal.set(true)),
         catchError((err) => {
-          if (this.isNetworkError(err)) {
+          if (this.isRecoverableError(err)) {
             this.isAuthenticatedSignal.set(true);
             return of(undefined);
           }
@@ -100,6 +97,10 @@ export class AuthService {
 
   private isNetworkError(err: unknown): boolean {
     return err instanceof HttpErrorResponse && err.status === 0;
+  }
+
+  private isRecoverableError(err: unknown): boolean {
+    return this.isNetworkError(err) || err instanceof TimeoutError;
   }
 
   private isValidJwtFormat(token: string): boolean {
