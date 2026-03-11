@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHandlerFn, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, of, throwError, tap, switchMap, catchError, filter, take, timeout, TimeoutError } from 'rxjs';
+import { Observable, BehaviorSubject, of, throwError, tap, switchMap, catchError, filter, take } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface User {
@@ -56,69 +56,24 @@ export class AuthService {
 
   initialize(): Observable<void> {
     const token = this.getToken();
+    const refreshToken = this.getRefreshToken();
 
-    if (token && this.isValidJwtFormat(token) && !this.isTokenExpired(token)) {
-      // Token is locally valid — trust it immediately so the router can start.
-      // User data is fetched in the background without blocking the app.
-      this.isAuthenticatedSignal.set(true);
-      this.loadCurrentUser().pipe(
-        catchError(() => of(null))
-      ).subscribe();
+    if (!token && !refreshToken) {
       return of(undefined);
     }
 
-    const refreshToken = this.getRefreshToken();
-    if (refreshToken) {
-      // Access token expired but refresh token exists — must exchange before navigating.
-      // Timeout ensures a slow/unreachable backend never leaves the app blank.
-      return this.refreshAccessToken().pipe(
-        timeout(8000),
-        switchMap(() => this.loadCurrentUser()),
-        tap(() => this.isAuthenticatedSignal.set(true)),
-        catchError((err) => {
-          if (this.isRecoverableError(err)) {
-            this.isAuthenticatedSignal.set(true);
-            return of(undefined);
-          }
-          this.removeTokens();
-          this.currentUserSignal.set(null);
-          this.isAuthenticatedSignal.set(false);
-          return of(undefined);
-        }),
-        switchMap(() => of(undefined))
-      );
-    }
-
-    if (token) {
-      this.removeTokens();
-    }
+    // Tokens present — trust them immediately so APP_INITIALIZER never blocks.
+    // The interceptor handles expired access tokens (refresh + retry) on the
+    // first real API call, and calls handleRefreshFailure() if refresh also fails.
+    this.isAuthenticatedSignal.set(true);
+    this.loadCurrentUser().pipe(
+      catchError(() => of(null))
+    ).subscribe();
     return of(undefined);
   }
 
   private isNetworkError(err: unknown): boolean {
     return err instanceof HttpErrorResponse && err.status === 0;
-  }
-
-  private isRecoverableError(err: unknown): boolean {
-    return this.isNetworkError(err) || err instanceof TimeoutError;
-  }
-
-  private isValidJwtFormat(token: string): boolean {
-    const parts = token.split('.');
-    return parts.length === 3;
-  }
-
-  private isTokenExpired(token: string): boolean {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (!payload.exp) {
-        return false;
-      }
-      const expirationDate = new Date(payload.exp * 1000);
-      return expirationDate < new Date();
-    } catch {
-      return true;
-    }
   }
 
   loginWithGoogle(): void {
