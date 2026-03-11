@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHandlerFn, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { Observable, BehaviorSubject, of, throwError, tap, switchMap, catchError, filter, take } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -62,13 +62,19 @@ export class AuthService {
       return of(undefined);
     }
 
-    // Tokens present — trust them immediately so APP_INITIALIZER never blocks.
-    // The interceptor handles expired access tokens (refresh + retry) on the
-    // first real API call, and calls handleRefreshFailure() if refresh also fails.
+    // Trust tokens immediately so APP_INITIALIZER never blocks the router.
     this.isAuthenticatedSignal.set(true);
-    this.loadCurrentUser().pipe(
-      catchError(() => of(null))
+
+    // Defer loading user data until after the first NavigationEnd.
+    // This ensures handleRefreshFailure() cannot call router.navigate() while
+    // the initial navigation chain is still in progress, which would cancel it
+    // and leave the router-outlet empty (blank page).
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      take(1),
+      switchMap(() => this.loadCurrentUser().pipe(catchError(() => of(null))))
     ).subscribe();
+
     return of(undefined);
   }
 
@@ -130,7 +136,11 @@ export class AuthService {
         }),
         catchError(err => {
           this.isRefreshing = false;
-          this.refreshTokenSubject.next(null);
+          // Error the current subject so queued requests fail immediately
+          // instead of waiting forever for a non-null token that never arrives.
+          const pending = this.refreshTokenSubject;
+          this.refreshTokenSubject = new BehaviorSubject<string | null>(null);
+          pending.error(err);
           if (!this.isNetworkError(err)) {
             this.handleRefreshFailure();
           }
